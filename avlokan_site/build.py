@@ -246,6 +246,7 @@ def shell(title: str, body: str, *, depth: int = 0, description: str = "",
   <a class="wordmark" href="{up}index.html">{e(SITE_TITLE)}</a>
   <span class="tagline">{e(SITE_TAGLINE)}</span>
   <a class="navlink" href="{up}book/index.html">The book</a>
+  <a class="navlink" href="{up}photographs.html">Photographs</a>
   <a class="navlink" href="{up}about.html">About</a>
 </header>
 <main>
@@ -708,8 +709,11 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
             bits.append(f'<p class="links muted">{note}: {links}.</p>')
     elif aud:
         bits.append(
-            f'<p class="links muted">Audio recording catalogued; not yet published. '
-            f'Entry {e(aud.get("n", ""))} in the archive list.</p>'
+            f'<p class="links unpublished"><span class="mark mark-unpublished">'
+            f'<span class="dot" aria-hidden="true"></span>Recorded, not published'
+            f'</span> &mdash; the tape exists and is listed as entry '
+            f'{e(aud.get("n", ""))} in the audio catalogue, but it has not been '
+            f'put online, so there is nothing to play here yet.</p>'
         )
     elif s["uncatalogued"]:
         bits.append(
@@ -718,7 +722,11 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
             'yet.</p>'
         )
     else:
-        bits.append('<p class="links muted">No recording is published for this sitting yet.</p>')
+        bits.append(
+            '<p class="links unpublished"><span class="mark mark-missing">'
+            '<span class="dot" aria-hidden="true"></span>No recording</span> '
+            '&mdash; this sitting is known from the catalogues, but no recording '
+            'of it is published and none is listed in the audio archive.</p>')
 
     blocks = parse_vtt(job["vtt"]) if job else []
     passages = (job or {}).get("passages") or []
@@ -783,6 +791,28 @@ def says_nothing(reference: str, name: str) -> bool:
     return a == b or SequenceMatcher(None, a, b).ratio() > 0.85
 
 
+def availability(s: dict[str, Any]) -> tuple[str, str]:
+    """What a reader can actually do with this sitting, and what to call it.
+
+    Three states, and the middle one is the point: the audio list records
+    1,229 recordings, most of which have never been published. Those sittings
+    are not lost — the tape exists — but there is nothing here to listen to,
+    and a reader deserves to be told which is which before clicking.
+    """
+    if s["youtube_id"]:
+        return "video", "Video"
+    if s["audio"]:
+        return "unpublished", "Recorded, not published"
+    return "missing", "No recording"
+
+
+def mark(s: dict[str, Any]) -> str:
+    state, label = availability(s)
+    extra = ' &middot; transcript' if s["job"] else ""
+    return (f'<span class="mark mark-{state}"><span class="dot" aria-hidden="true">'
+            f'</span>{label}</span>{extra}')
+
+
 def series_name(s: dict[str, Any]) -> str:
     """What to call the run, for a heading."""
     if s.get("run_name"):
@@ -800,13 +830,7 @@ def text_page(name: str, group: list[dict[str, Any]]) -> str:
         when = pretty_date(s["date"])
         if s["of"] > 1:
             when += f' <span class="muted">&middot; {s["part"]} of {s["of"]}</span>'
-        have = []
-        if pub:
-            have.append("video")
-        elif s["audio"]:
-            have.append("audio")
-        if s["job"]:
-            have.append("transcript")
+
         part = f'{s["part_no"]}' if s["part_no"] is not None else ""
         rows.append(
             f'<tr><td class="pt">{e(part)}</td>'
@@ -815,7 +839,7 @@ def text_page(name: str, group: list[dict[str, Any]]) -> str:
             # says nothing on a page already titled with it.
             + f'<td>{e("" if says_nothing(s["reference"], name) else s["reference"][:52])}</td>'
             f'<td>{e(pub.get("minutes", "") and str(pub["minutes"]) + " min")}</td>'
-            f'<td>{e(", ".join(have)) or "&mdash;"}</td></tr>'
+            f'<td>{mark(s)}</td></tr>'
         )
     days = len({s["date"] for s in group})
     word = "sitting" if len(group) == 1 else "sittings"
@@ -826,9 +850,18 @@ def text_page(name: str, group: list[dict[str, Any]]) -> str:
             + (f'<img class="cover" src="{e(art)}" alt="Cover of {e(name)}" '
                f'width="780" height="1080">' if art else "")
             + f'<div><h1>{e(name)}</h1><p class="meta">{count}</p></div></div>')
-    body = (head +
+    tally = Counter(availability(x)[0] for x in group)
+    legend = ('<ul class="legend">'
+              + "".join(f'<li><span class="mark mark-{k}">'
+                        f'<span class="dot" aria-hidden="true"></span>{n} {t}</span></li>'
+                        for k, t in (("video", "published"),
+                                     ("unpublished", "recorded, not published"),
+                                     ("missing", "no recording"))
+                        if (n := tally.get(k)))
+              + "</ul>")
+    body = (head + legend +
             '<table class="listing"><thead><tr><th>Part</th><th>Date</th>'
-            '<th>Reference</th><th>Length</th><th>Available</th>'
+            '<th>Reference</th><th>Length</th><th>Recording</th>'
             '</tr></thead><tbody>'
             + "\n".join(rows) + "</tbody></table>")
     return shell(f"{name} — {SITE_TITLE}", body, depth=1,
@@ -980,6 +1013,29 @@ be refused and the rest will not.</p>
                  trail=[("Avlokan", "index.html"), ("Embed check", "")])
 
 
+def gallery_page() -> str:
+    """The photographs from the old site.
+
+    They arrive named `64.jpeg` and `31 2.jpeg`, so there is nothing to caption
+    them with. They are published anyway, unlabelled, because a photograph of
+    him teaching is worth more than a caption and someone who was there can
+    write one later.
+    """
+    shots = sorted((IMAGES).glob("gallery-*.jpg"))
+    if not shots:
+        return ""
+    cells = "".join(
+        f'<li><img src="assets/covers/{e(p.name)}" alt="" loading="lazy"></li>'
+        for p in shots)
+    body = (f'<h1>Photographs</h1>'
+            f'<p class="lede">{len(shots)} pictures kept from the earlier '
+            f'avlokan.org. They came with no captions; if you know when or '
+            f'where one was taken, it is worth writing down.</p>'
+            f'<ul class="gallery">{cells}</ul>')
+    return shell(f"Photographs — {SITE_TITLE}", body, depth=0, script="none",
+                 trail=[("Avlokan", "index.html"), ("Photographs", "")])
+
+
 def about_page() -> str:
     source = CONFIG / "about.md"
     if not source.exists():
@@ -1036,7 +1092,21 @@ def book_pages(out_dir: Path) -> int:
     (out_dir / "book").mkdir(parents=True, exist_ok=True)
     done = sum(1 for i in items if i.get("english"))
 
+    front = (CONFIG / "book_front.txt")
+    titlepage = ""
+    if front.exists():
+        lines = [l.strip() for l in front.read_text(encoding="utf-8").splitlines() if l.strip()]
+        # The title repeats three times on the printed title page; once is enough.
+        seen_lines, keep = set(), []
+        for line in lines:
+            if line not in seen_lines:
+                seen_lines.add(line)
+                keep.append(line)
+        titlepage = ('<div class="titlepage" lang="gu">'
+                     + "".join(f"<p>{e(l)}</p>" for l in keep) + "</div>")
+
     intro = (
+        titlepage +
         f'<div class="book-head">'
         f'<h1>Avlokan</h1>'
         f'<p class="meta">આત્મ નિરીક્ષણની અનૂઠી કળા &middot; '
@@ -1096,6 +1166,9 @@ CSS = """/* ====================================================================
   --c-mark:#fbeec4;         /* the line now playing     */
   --c-hover:#f2f2ec;
   --c-letterbox:#000;       /* behind the video frame   */
+  --c-have:#2f7a4f;         /* published and playable   */
+  --c-unpublished:#b07d2b;  /* recorded, not published  */
+  --c-missing:#b0b0a8;      /* no recording at all      */
 
   /* type */
   --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
@@ -1194,6 +1267,27 @@ nav.series details{margin-top:var(--s-3)}
 nav.series summary{cursor:pointer;color:var(--c-muted);font-size:var(--size-sm)}
 nav.series ol{margin:var(--s-2) 0 0;padding-left:var(--s-5);font-size:var(--size-sm)}
 nav.series li{margin:var(--s-1) 0}
+.mark{white-space:nowrap}
+.mark .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;
+ margin-right:var(--s-2);vertical-align:baseline}
+.mark-video .dot{background:var(--c-have)}
+.mark-unpublished .dot{background:var(--c-unpublished)}
+.mark-missing .dot{background:var(--c-missing)}
+.mark-missing{color:var(--c-muted)}
+p.unpublished{margin:var(--s-4) 0;padding:var(--s-3) var(--s-4);
+ background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+ font-size:var(--size-sm);color:var(--c-ink)}
+.titlepage{text-align:center;font-family:var(--font-indic);
+ line-height:var(--leading-indic);margin:var(--s-6) 0;padding-bottom:var(--s-5);
+ border-bottom:var(--border);color:var(--c-ink-soft)}
+.titlepage p{margin:var(--s-1) 0}
+.titlepage p:first-child{font-size:var(--size-lg);color:var(--c-ink)}
+ul.gallery{list-style:none;padding:0;margin:var(--s-5) 0;display:grid;gap:var(--s-4);
+ grid-template-columns:repeat(auto-fill,minmax(15rem,1fr))}
+ul.gallery img{width:100%;height:auto;border:var(--border);border-radius:var(--radius);
+ display:block}
+ul.legend{list-style:none;display:flex;flex-wrap:wrap;gap:var(--s-4);padding:0;
+ margin:var(--s-3) 0 0;font-size:var(--size-sm);color:var(--c-muted)}
 table.listing td.pt{text-align:right;color:var(--c-muted);font-variant-numeric:tabular-nums;
  width:var(--w-number)}
 figure.portrait{margin:0 0 var(--s-6)}
@@ -1699,6 +1793,9 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
     about = about_page()
     if about:
         (out_dir / "about.html").write_text(about, encoding="utf-8")
+    shots = gallery_page()
+    if shots:
+        (out_dir / "photographs.html").write_text(shots, encoding="utf-8")
     (out_dir / "embed-check.html").write_text(
         embed_check_page(all_sittings), encoding="utf-8")
     (out_dir / "assets").mkdir(parents=True, exist_ok=True)

@@ -46,9 +46,10 @@ same, with every page present and the transcript sections saying so.
 | `master_index.json` | every sitting, by date: what text, what video, what audio |
 | `audio_catalogue.json` | 1,229 recordings from the original written list |
 | `catalogue.json` | the video sheet |
-| `book.json` | the book, one record per aphorism, separately correctable |
+| `book.json` | the book, 114 aphorisms, one record each, separately correctable |
+| `book_front.txt` | the book's title page, which precedes the first aphorism |
 | `about.md` | the biographical note |
-| `images/` | scanned book covers and photographs, from avlokan.org |
+| `images/` | scanned book covers and 14 photographs, from avlokan.org |
 
 Four files record deliberate changes to that data, each entry carrying its
 reasoning so a later reader can disagree with it:

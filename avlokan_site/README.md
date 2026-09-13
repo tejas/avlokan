@@ -38,7 +38,7 @@ days*, not within the day, so only the ordering is used. Anything that cannot
 be placed is reported at build time and left unattached — a transcript on the
 wrong discourse is worse than a discourse with none.
 
-Current build: **1,337 discourse pages across 29 texts, ~18 MB total.**
+Current build: **1,337 discourse pages across 29 texts, ~24 MB total.**
 13 have a transcript. 757 of them sit in one of 158 series.
 
 ## Why it is built this way
@@ -283,6 +283,20 @@ different recordings.
   recognised text
 - 17 more are re-uploads already linked under the id the video sheet recorded
 
+## What a reader can actually get
+
+Each sitting is one of three things, and the middle one is the reason to say
+so: the audio list records 1,229 recordings, and most have never been put
+online. Those sittings are not lost — the tape exists — but there is nothing
+to play, and a reader deserves to know which is which before clicking.
+
+- **Published** — on YouTube, watchable here
+- **Recorded, not published** — listed in the audio catalogue, not online
+- **No recording** — known from the catalogues, nothing recorded or listed
+
+Shown as a marked dot on every text listing, with a tally at the top of each,
+and spelled out in a sentence on the discourse page itself.
+
 ## Images
 
 `python3 -m avlokan_site.fetch_images` copies the scanned book covers and the
@@ -290,6 +304,13 @@ photographs from avlokan.org — his own site — into `avlokan/images/`, and th
 build copies them into `site/assets/covers/`. Nothing is hotlinked: an image
 served from someone else's CDN is a dependency on a subscription staying paid,
 and this archive is meant to outlive that.
+
+It also brings down the fourteen photographs from the old site's Gallery,
+which become `/photographs.html`. They arrive named `64.jpeg` and `31 2.jpeg`,
+so there is nothing to caption them with; they are published unlabelled,
+because a picture of him teaching is worth more than a caption and someone who
+was there can write one later. They are stored at 1600px — they were web
+copies to begin with, and 20 MB of them in a repository this size is not.
 
 Fourteen texts have their own cover. The rest fall back to a plain hrim on
 grey, so every card in the index grid is the same size. Note that the alt text

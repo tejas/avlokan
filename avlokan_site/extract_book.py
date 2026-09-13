@@ -18,6 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOOK = ROOT / "avlokan" / "book.json"
 FIXES = ROOT / "avlokan" / "book_corrections.json"
+FRONT = ROOT / "avlokan" / "book_front.txt"
 
 GUJ_DIGITS = "૦૧૨૩૪૫૬૭૮૯"
 
@@ -47,6 +48,9 @@ def tidy(text: str) -> str:
     """
     text = re.sub(r"\\([-_*!?.,;:()\[\]])", r"\1", text)
     text = re.sub(r"\*\*(.+?)\*\*", r"\1", text, flags=re.S)   # drop bold marks
+    # An emphasis run that opens on one aphorism and closes on the next leaves
+    # an unpaired `**` behind once they are split apart.
+    text = text.replace("**", "")
 
     text = re.sub(r"।\s*([.,;:?!])", r"\1", text)              # danda + real mark
     text = re.sub(r"[ \t]+([.,;:?!।॥)])", r"\1", text)         # gap before a mark
@@ -84,9 +88,33 @@ def correct(number: int, text: str, fixes: dict[int, list[dict]]) -> tuple[str, 
     return text, applied
 
 
+# The title page, which stands before the first numbered aphorism in the
+# source and is not part of it.
+FRONT_END = "દેવચંદ કે. શાહ"
+
+
+def split_front(body: str) -> tuple[str, str]:
+    """Separate the book's title page from the first aphorism's text.
+
+    The source opens with the title, the invocation and his name, and only
+    then the first numbered aphorism. Without this the title page is read as
+    part of that aphorism.
+    """
+    at = body.find(FRONT_END)
+    if at < 0 or at > 400:
+        return "", body
+    cut = at + len(FRONT_END)
+    return body[:cut].strip(), body[cut:].strip()
+
+
 def extract(source: Path) -> list[dict]:
     raw = source.read_text(encoding="utf-8")
-    pieces = re.split(r"([" + GUJ_DIGITS + r"]{1,3})(?=\s*(?:\n|$))", raw)
+    # The aphorism numbers are set right-aligned at the end of each one's last
+    # line. Emphasis marks sometimes close after the number rather than before
+    # it, and a lookahead for whitespace alone missed those — number 91 ended
+    # `…નથી.    ૯૧**`, so it never split, and that aphorism was swallowed whole
+    # into the next one along with the book's title page.
+    pieces = re.split(r"([" + GUJ_DIGITS + r"]{1,3})(?=[*_\s]*(?:\n|$))", raw)
 
     existing = {}
     if BOOK.exists():
@@ -101,6 +129,10 @@ def extract(source: Path) -> list[dict]:
         number = gujarati_number(pieces[i])
         if not body:
             continue
+        if not out:                      # the first aphorism in the source
+            front, body = split_front(body)
+            if front:
+                FRONT.write_text(front + "\n", encoding="utf-8")
         body, n = correct(number, body, fixes)
         fixed += n
         prior = existing.get(number, {})

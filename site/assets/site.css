@@ -19,6 +19,9 @@
   --c-mark:#fbeec4;         /* the line now playing     */
   --c-hover:#f2f2ec;
   --c-letterbox:#000;       /* behind the video frame   */
+  --c-have:#2f7a4f;         /* published and playable   */
+  --c-unpublished:#b07d2b;  /* recorded, not published  */
+  --c-missing:#b0b0a8;      /* no recording at all      */
 
   /* type */
   --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
@@ -117,6 +120,27 @@ nav.series details{margin-top:var(--s-3)}
 nav.series summary{cursor:pointer;color:var(--c-muted);font-size:var(--size-sm)}
 nav.series ol{margin:var(--s-2) 0 0;padding-left:var(--s-5);font-size:var(--size-sm)}
 nav.series li{margin:var(--s-1) 0}
+.mark{white-space:nowrap}
+.mark .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;
+ margin-right:var(--s-2);vertical-align:baseline}
+.mark-video .dot{background:var(--c-have)}
+.mark-unpublished .dot{background:var(--c-unpublished)}
+.mark-missing .dot{background:var(--c-missing)}
+.mark-missing{color:var(--c-muted)}
+p.unpublished{margin:var(--s-4) 0;padding:var(--s-3) var(--s-4);
+ background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+ font-size:var(--size-sm);color:var(--c-ink)}
+.titlepage{text-align:center;font-family:var(--font-indic);
+ line-height:var(--leading-indic);margin:var(--s-6) 0;padding-bottom:var(--s-5);
+ border-bottom:var(--border);color:var(--c-ink-soft)}
+.titlepage p{margin:var(--s-1) 0}
+.titlepage p:first-child{font-size:var(--size-lg);color:var(--c-ink)}
+ul.gallery{list-style:none;padding:0;margin:var(--s-5) 0;display:grid;gap:var(--s-4);
+ grid-template-columns:repeat(auto-fill,minmax(15rem,1fr))}
+ul.gallery img{width:100%;height:auto;border:var(--border);border-radius:var(--radius);
+ display:block}
+ul.legend{list-style:none;display:flex;flex-wrap:wrap;gap:var(--s-4);padding:0;
+ margin:var(--s-3) 0 0;font-size:var(--size-sm);color:var(--c-muted)}
 table.listing td.pt{text-align:right;color:var(--c-muted);font-variant-numeric:tabular-nums;
  width:var(--w-number)}
 figure.portrait{margin:0 0 var(--s-6)}
