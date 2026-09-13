@@ -813,6 +813,59 @@ def mark(s: dict[str, Any]) -> str:
             f'</span>{label}</span>{extra}')
 
 
+REF_WORDS = ("Patrank", "Patra", "Gatha", "Bol", "Sloka", "Adhikar", "Question", "Q")
+
+# What a bare number means in each text. The audio list often records only
+# "Srimad Rajchandra 236", and in that text 236 is a letter — a patrank.
+REF_WORD_FOR = {
+    "Shrimad Rajchandra Vachanamrut": "Patrank",
+    "Shri Dravya Drushti Prakash":    "Patra",
+    "Dravya Drashti Jineshwar":       "Bol",
+    "Shri Samaysar":                  "Gatha",
+    "Shri Samaysar Kalash":           "Kalash",
+    "Natak Samaysar":                 "Gatha",
+    "Benshri ke Vachanamrut":         "Bol",
+    "Swanubhuti Darshan":             "Question",
+    "Gyangoshti":                     "Question",
+    "Moksh Marg Prakashak":           "Adhikar",
+    "Shri Ratnakaranda Shravakachar": "Adhikar",
+    "Sahajanand Patrasudha":          "Patra",
+    "Adhyatma Ganga":                 "Bol",
+    "Drashti ke Nidhan":              "Bol",
+    "Shri Parmagamsar":               "Bol",
+    "Prayojan Siddhi":                "Bol",
+}
+
+
+def reference_label(s: dict[str, Any]) -> str:
+    """`Patrank 108` — the place in the text, without the text's own name.
+
+    A heading on the Shrimad Rajchandra Vachanamrut page does not need to say
+    "Shrimad Rajchandra Vachanamrut" again; it needs to say which letter.
+    """
+    words = "|".join(REF_WORDS)
+    for text in (s["published"].get("title") or "", s.get("reference") or "",
+                 s["audio"].get("subject") or ""):
+        hit = re.search(rf"\b({words})\b\.?\s*(\d{{1,4}})", text, re.I)
+        if hit:
+            word = hit.group(1).title()
+            return f'{"Question" if word == "Q" else word} {hit.group(2)}'
+    ref = reference_number(s)
+    if not ref:
+        return ""
+    word = REF_WORD_FOR.get(s["scripture"])
+    return f"{word} {ref}" if word else f"Number {ref}"
+
+
+def run_heading(run: list[dict[str, Any]]) -> str:
+    for s in run:
+        label = reference_label(s)
+        if label:
+            return label
+    name = series_name(run[0])
+    return name if name != run[0]["scripture"] else ""
+
+
 def series_name(s: dict[str, Any]) -> str:
     """What to call the run, for a heading."""
     if s.get("run_name"):
@@ -823,33 +876,110 @@ def series_name(s: dict[str, Any]) -> str:
     return f'{s["scripture"]} {ref}' if ref else s["scripture"]
 
 
-def text_page(name: str, group: list[dict[str, Any]]) -> str:
-    rows = []
-    for s in group:
-        pub = s["published"]
-        when = pretty_date(s["date"])
-        if s["of"] > 1:
-            when += f' <span class="muted">&middot; {s["part"]} of {s["of"]}</span>'
-
-        part = f'{s["part_no"]}' if s["part_no"] is not None else ""
-        rows.append(
-            f'<tr><td class="pt">{e(part)}</td>'
+def sitting_row(s: dict[str, Any], name: str) -> str:
+    pub = s["published"]
+    when = pretty_date(s["date"])
+    if s["of"] > 1:
+        when += f' <span class="muted">&middot; {s["part"]} of {s["of"]}</span>'
+    part = f'{s["part_no"]}' if s["part_no"] is not None else ""
+    # The audio list uses the text's own name as the subject, which says
+    # nothing on a page already titled with it.
+    ref = "" if says_nothing(s["reference"], name) else s["reference"][:52]
+    return (f'<tr><td class="pt">{e(part)}</td>'
             f'<td><a href="../d/{sitting_slug(s)}.html">{when}</a></td>'
-            # The audio list uses the text's own name as the subject, which
-            # says nothing on a page already titled with it.
-            + f'<td>{e("" if says_nothing(s["reference"], name) else s["reference"][:52])}</td>'
+            f'<td>{e(ref)}</td>'
             f'<td>{e(pub.get("minutes", "") and str(pub["minutes"]) + " min")}</td>'
-            f'<td>{mark(s)}</td></tr>'
-        )
+            f'<td>{mark(s)}</td></tr>')
+
+
+def listing(rows: list[str]) -> str:
+    return ('<table class="listing"><thead><tr><th>Part</th><th>Date</th>'
+            '<th>Reference</th><th>Length</th><th>Recording</th>'
+            '</tr></thead><tbody>' + "\n".join(rows) + "</tbody></table>")
+
+
+def group_into_runs(group: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    """The sittings in the order they happened, split where the run changes."""
+    runs: list[list[dict[str, Any]]] = []
+    for s in group:
+        run = s.get("run")
+        key = id(run) if run is not None and len(run) > 1 else None
+        if runs and runs[-1][0].get("_key") == key and key is not None:
+            runs[-1].append(s)
+        else:
+            s = dict(s) if False else s
+            runs.append([s])
+        runs[-1][0]["_key"] = key
+    # merge consecutive singletons into one block
+    merged: list[list[dict[str, Any]]] = []
+    for run in runs:
+        if run[0].get("_key") is None and merged and merged[-1][0].get("_key") is None:
+            merged[-1].extend(run)
+        else:
+            merged.append(run)
+    return merged
+
+
+def text_page(name: str, group: list[dict[str, Any]]) -> str:
+    """One text, broken into the runs he taught it in.
+
+    Shrimad Rajchandra's Vachanamrut is 352 sittings. As one list that is
+    unusable — nobody scrolls 352 rows looking for a letter. He did not teach
+    it as one list either: he took a letter and stayed with it for six or
+    twenty sittings, then moved on. Those runs are the natural divisions, and
+    the archive already knows them from the reference numbers.
+
+    Sittings that belong to no run — Tatva Charcha is 77 separate discussions
+    — are gathered at the end rather than given a heading each.
+    """
+    runs = group_into_runs(group)
+    named = [r for r in runs if r[0].get("_key") is not None and run_heading(r)]
+
+    sections, jumps, used = [], [], set()
+    loose: list[dict[str, Any]] = []
+    for run in runs:
+        label = run_heading(run) if run[0].get("_key") is not None else ""
+        if not label or len(run) < 2:
+            loose.extend(run)
+            continue
+        anchor = slug(label)
+        n = 2
+        while anchor in used:
+            anchor, n = f"{slug(label)}-{n}", n + 1
+        used.add(anchor)
+        years = sorted({x["date"][:4] for x in run})
+        span = years[0] if len(years) == 1 else f"{years[0]}–{years[-1]}"
+        jumps.append({"label": label, "anchor": anchor, "span": span,
+                      "n": int(re.search(r"(\d+)", label).group(1))
+                           if re.search(r"(\d+)", label) else 0,
+                      "word": label.rsplit(" ", 1)[0] if " " in label else label})
+        sections.append(
+            f'<section class="run-block"><h2 id="{anchor}">{e(label)}'
+            f'<span class="muted"> &middot; {len(run)} sittings &middot; {e(span)}'
+            f'</span></h2>'
+            + listing([sitting_row(x, name) for x in run]) + '</section>')
+
+    if loose:
+        loose.sort(key=lambda x: (x["date"], x["part"]))
+        heading = ("Other sittings" if sections else "")
+        sections.append(
+            (f'<section class="run-block"><h2 id="other">{heading}'
+             f'<span class="muted"> &middot; {len(loose)} sittings</span></h2>'
+             if heading else '<section class="run-block">')
+            + listing([sitting_row(x, name) for x in loose]) + '</section>')
+
     days = len({s["date"] for s in group})
     word = "sitting" if len(group) == 1 else "sittings"
     count = (f"{len(group)} {word}" if days == len(group)
              else f"{len(group)} {word} across {days} days")
+    if named:
+        count += f", in {len(named)} runs"
     art = cover(name, depth=1)
     head = (f'<div class="text-head">'
             + (f'<img class="cover" src="{e(art)}" alt="Cover of {e(name)}" '
                f'width="780" height="1080">' if art else "")
             + f'<div><h1>{e(name)}</h1><p class="meta">{count}</p></div></div>')
+
     tally = Counter(availability(x)[0] for x in group)
     legend = ('<ul class="legend">'
               + "".join(f'<li><span class="mark mark-{k}">'
@@ -859,13 +989,25 @@ def text_page(name: str, group: list[dict[str, Any]]) -> str:
                                      ("missing", "no recording"))
                         if (n := tally.get(k)))
               + "</ul>")
-    body = (head + legend +
-            '<table class="listing"><thead><tr><th>Part</th><th>Date</th>'
-            '<th>Reference</th><th>Length</th><th>Recording</th>'
-            '</tr></thead><tbody>'
-            + "\n".join(rows) + "</tbody></table>")
-    return shell(f"{name} — {SITE_TITLE}", body, depth=1,
-                 trail=[("Avlokan", "../index.html"), (name, "")])
+    # The index is ordered by number, while the page itself stays in the order
+    # he taught. Someone looking for a letter knows its number, not its date.
+    # He came back to the same letter years apart, so where a number appears
+    # more than once the years tell them apart.
+    counts = Counter(j["label"] for j in jumps)
+    chips = []
+    for j in sorted(jumps, key=lambda j: (j["word"], j["n"])):
+        shown = j["label"].rsplit(" ", 1)[-1] if " " in j["label"] else j["label"]
+        if counts[j["label"]] > 1:
+            shown += f' <span class="yr">{j["span"]}</span>'
+        chips.append(f'<a href="#{j["anchor"]}" title="{e(j["label"])}, '
+                     f'{e(j["span"])}">{shown}</a>')
+    word = jumps[0]["word"] if jumps and len(set(j["word"] for j in jumps)) == 1 else ""
+    index = (f'<nav class="jump" aria-label="Runs in this text">'
+             + (f'<span class="jump-label">{e(word)}</span>' if word else "")
+             + f'{" ".join(chips)}</nav>' if len(jumps) > 1 else "")
+
+    return shell(f"{name} — {SITE_TITLE}", head + legend + index + "".join(sections),
+                 depth=1, trail=[("Avlokan", "../index.html"), (name, "")])
 
 
 def index_page(groups: dict[str, list[dict[str, Any]]]) -> str:
@@ -1021,15 +1163,17 @@ def gallery_page() -> str:
     him teaching is worth more than a caption and someone who was there can
     write one later.
     """
-    shots = sorted((IMAGES).glob("gallery-*.jpg"))
+    # His own scans first — they are much better than the small copies the old
+    # site was serving — then the ones rescued from it.
+    shots = sorted(IMAGES.glob("photo-*.jpg")) + sorted(IMAGES.glob("gallery-*.jpg"))
     if not shots:
         return ""
     cells = "".join(
         f'<li><img src="assets/covers/{e(p.name)}" alt="" loading="lazy"></li>'
         for p in shots)
     body = (f'<h1>Photographs</h1>'
-            f'<p class="lede">{len(shots)} pictures kept from the earlier '
-            f'avlokan.org. They came with no captions; if you know when or '
+            f'<p class="lede">{len(shots)} pictures of him — teaching, reading, '
+            f'in conversation. They came with no captions; if you know when or '
             f'where one was taken, it is worth writing down.</p>'
             f'<ul class="gallery">{cells}</ul>')
     return shell(f"Photographs — {SITE_TITLE}", body, depth=0, script="none",
@@ -1042,10 +1186,10 @@ def about_page() -> str:
         return ""
     body = render_prose(source.read_text(encoding="utf-8"))
     photo = ""
-    if (IMAGES / "devchand-bhai.jpg").exists():
+    if (IMAGES / "photo-05.jpg").exists():
         photo = ('<figure class="portrait">'
-                 '<img src="assets/covers/devchand-bhai.jpg" width="1024" height="649"'
-                 ' alt="Shri Devchand bhai Shah, holding two of the texts he taught from">'
+                 '<img src="assets/covers/photo-05.jpg" width="1600" height="1024"'
+                 ' alt="Shri Devchand bhai Shah teaching outdoors, a book open on a stand">'
                  '<figcaption>Shri Devchand bhai Shah</figcaption></figure>')
     return shell(f"About — {SITE_TITLE}", f'<article class="prose">{photo}{body}</article>',
                  depth=0, description=SITE_DESC, script="none",
@@ -1267,6 +1411,18 @@ nav.series details{margin-top:var(--s-3)}
 nav.series summary{cursor:pointer;color:var(--c-muted);font-size:var(--size-sm)}
 nav.series ol{margin:var(--s-2) 0 0;padding-left:var(--s-5);font-size:var(--size-sm)}
 nav.series li{margin:var(--s-1) 0}
+nav.jump{margin:var(--s-4) 0 var(--s-6);line-height:2.1}
+nav.jump a{display:inline-block;padding:var(--s-1) var(--s-3);margin:0 var(--s-1) var(--s-1) 0;
+ border:var(--border);border-radius:var(--radius);text-decoration:none;
+ font-size:var(--size-sm);color:var(--c-accent);background:var(--c-surface)}
+nav.jump a:hover{background:var(--c-hover);border-color:var(--c-accent)}
+nav.jump .jump-label{margin-right:var(--s-2);color:var(--c-muted);
+ font-size:var(--size-sm);text-transform:uppercase;letter-spacing:var(--track-caps)}
+nav.jump .yr{color:var(--c-muted);font-size:var(--size-xs)}
+.run-block{margin:var(--s-6) 0}
+.run-block h2{scroll-margin-top:var(--s-4);font-size:var(--size-lg);
+ padding-bottom:var(--s-2);border-bottom:var(--border)}
+.run-block h2 .muted{font-size:var(--size-sm);font-weight:var(--weight-normal)}
 .mark{white-space:nowrap}
 .mark .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;
  margin-right:var(--s-2);vertical-align:baseline}

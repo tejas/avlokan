@@ -38,7 +38,7 @@ days*, not within the day, so only the ordering is used. Anything that cannot
 be placed is reported at build time and left unattached — a transcript on the
 wrong discourse is worse than a discourse with none.
 
-Current build: **1,337 discourse pages across 29 texts, ~24 MB total.**
+Current build: **1,337 discourse pages across 29 texts, ~30 MB total.**
 13 have a transcript. 757 of them sit in one of 158 series.
 
 ## Why it is built this way
@@ -282,6 +282,28 @@ different recordings.
 - 4 channel videos are unlinked: they have no date in the title, or name no
   recognised text
 - 17 more are re-uploads already linked under the id the video sheet recorded
+
+## A text is not one long list
+
+Shrimad Rajchandra's Vachanamrut is 352 sittings. As a single table that is
+unusable — nobody scrolls 352 rows looking for a letter. He did not teach it as
+one list either: he took a letter and stayed with it for six or twenty
+sittings, then moved on. Those runs are the natural divisions, and the archive
+already knows them from the reference numbers, so each text page is broken into
+them — 77 runs for that text, each with its own heading and count.
+
+The index at the top is **ordered by number while the page stays in the order
+he taught**, because someone looking for a letter knows its number, not its
+date. He returned to the same letter years apart — Patrank 108 appears four
+times — so where a number repeats the years are shown to tell them apart.
+
+The heading says only the letter. On a page titled *Shrimad Rajchandra
+Vachanamrut* a heading reading "Patrank 108, Shrimad Rajchandra Vachanamrut" is
+noise; and where the source records only a bare number, the word is supplied
+from the text — 236 in the Vachanamrut is a patrank, in Samaysar a gatha.
+
+Sittings belonging to no run are gathered at the end rather than given a
+heading each. Tatva Charcha is 77 separate discussions, not 77 runs of one.
 
 ## What a reader can actually get
 

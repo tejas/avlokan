@@ -23,9 +23,10 @@
     "part": 3,
     "title_card": "/Users/tejas/Downloads/DDP 22 9 Feb 2002.jpg",
     "crop_top": 0,
+    "backdrop": "/Users/tejas/Pravachan Process/Pravachan Templates.fcpbundle/30-06-23/Original Media/Dev guru loop new.mp4",
     "start": 0.0,
     "end": null,
-    "note": "Audio cassette, no video was ever recorded. Needs a still or standing-video treatment before it can be assembled."
+    "note": "Audio cassette, no video was ever recorded, so the photo loop runs under the audio. The tape runs out mid-sentence; there is no closing stuti on it to trim."
   },
   "12Feb2002 Dravya Drushti Prakash22-3-68d326a5fb": {
     "label": "Patra 22 Part 4 — 12 Feb 2002",
@@ -33,9 +34,10 @@
     "part": 4,
     "title_card": "/Users/tejas/Downloads/DDP 22 12 Feb 2002.jpg",
     "crop_top": 42,
+    "backdrop": "/Users/tejas/Pravachan Process/Pravachan Templates.fcpbundle/30-06-23/Original Media/Dev guru loop new.mp4",
     "start": 662.0,
     "end": null,
-    "note": "The camcorder was left in demo mode: SONY DCR-TRV130E, STAMINA, SIMULATED and DEMO graphics run across the middle of the picture for the whole recording. Cropping cannot remove them."
+    "note": "The camcorder was left in demo mode for this whole recording: SONY DCR-TRV130E, STAMINA, SIMULATED, FADER and a full-screen character set run over the picture, blacking it out entirely at times. Published audio-only over the photo loop instead."
   },
   "13Feb2002 Dravya Drushti Prakash22-4-b59c58d90f": {
     "label": "Patra 22 Part 5 — 13 Feb 2002",

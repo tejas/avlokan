@@ -120,6 +120,18 @@ nav.series details{margin-top:var(--s-3)}
 nav.series summary{cursor:pointer;color:var(--c-muted);font-size:var(--size-sm)}
 nav.series ol{margin:var(--s-2) 0 0;padding-left:var(--s-5);font-size:var(--size-sm)}
 nav.series li{margin:var(--s-1) 0}
+nav.jump{margin:var(--s-4) 0 var(--s-6);line-height:2.1}
+nav.jump a{display:inline-block;padding:var(--s-1) var(--s-3);margin:0 var(--s-1) var(--s-1) 0;
+ border:var(--border);border-radius:var(--radius);text-decoration:none;
+ font-size:var(--size-sm);color:var(--c-accent);background:var(--c-surface)}
+nav.jump a:hover{background:var(--c-hover);border-color:var(--c-accent)}
+nav.jump .jump-label{margin-right:var(--s-2);color:var(--c-muted);
+ font-size:var(--size-sm);text-transform:uppercase;letter-spacing:var(--track-caps)}
+nav.jump .yr{color:var(--c-muted);font-size:var(--size-xs)}
+.run-block{margin:var(--s-6) 0}
+.run-block h2{scroll-margin-top:var(--s-4);font-size:var(--size-lg);
+ padding-bottom:var(--s-2);border-bottom:var(--border)}
+.run-block h2 .muted{font-size:var(--size-sm);font-weight:var(--weight-normal)}
 .mark{white-space:nowrap}
 .mark .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;
  margin-right:var(--s-2);vertical-align:baseline}
