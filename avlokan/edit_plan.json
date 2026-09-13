@@ -4,7 +4,7 @@
     "date": "2002-02-06",
     "part": 1,
     "title_card": "/Users/tejas/Downloads/DDP 22 6 Feb 2002.jpg",
-    "crop_top": 42,
+    "crop_top": 0,
     "start": 82.0,
     "end": 3530.0
   },
@@ -13,7 +13,7 @@
     "date": "2002-02-08",
     "part": 2,
     "title_card": "/Users/tejas/Downloads/DDP 22 8 Feb 2002.jpg",
-    "crop_top": 42,
+    "crop_top": 0,
     "start": 4.0,
     "end": 3386.0
   },
@@ -33,7 +33,7 @@
     "date": "2002-02-12",
     "part": 4,
     "title_card": "/Users/tejas/Downloads/DDP 22 12 Feb 2002.jpg",
-    "crop_top": 42,
+    "crop_top": 0,
     "backdrop": "/Users/tejas/Pravachan Process/Pravachan Templates.fcpbundle/30-06-23/Original Media/Dev guru loop new.mp4",
     "start": 662.0,
     "end": null,
@@ -44,7 +44,7 @@
     "date": "2002-02-13",
     "part": 5,
     "title_card": "/Users/tejas/Downloads/DDP 22 13 Feb 2002.jpg",
-    "crop_top": 42,
+    "crop_top": 0,
     "start": 207.0,
     "end": 2883.0
   },
@@ -53,7 +53,7 @@
     "date": "2002-02-14",
     "part": 6,
     "title_card": "/Users/tejas/Downloads/DDP 22 14 Feb 2002.jpg",
-    "crop_top": 42,
+    "crop_top": 0,
     "start": 229.0,
     "end": 3252.0
   },

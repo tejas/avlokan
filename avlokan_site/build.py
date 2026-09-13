@@ -229,7 +229,8 @@ def crumbs(trail: list[tuple[str, str]]) -> str:
 
 
 def shell(title: str, body: str, *, depth: int = 0, description: str = "",
-          head_extra: str = "", script: str = "", trail: list[tuple[str, str]] | None = None) -> str:
+          head_extra: str = "", script: str = "", trail: list[tuple[str, str]] | None = None,
+          wide: bool = False) -> str:
     up = "../" * depth
     return f"""<!doctype html>
 <html lang="hi">
@@ -249,7 +250,7 @@ def shell(title: str, body: str, *, depth: int = 0, description: str = "",
   <a class="navlink" href="{up}photographs.html">Photographs</a>
   <a class="navlink" href="{up}about.html">About</a>
 </header>
-<main>
+<main{' class="watching"' if wide else ''}>
 {crumbs(trail or [])}
 {body}
 </main>
@@ -677,15 +678,18 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
             for o in others)
         bits.append(f'<p class="links muted">Also on this day: {links}</p>')
 
+    # The media, gathered separately so that a page with a transcript can
+    # put it beside the words rather than above them.
+    stage: list[str] = []
     # Video. The iframe is written by script so the page does not phone Google
     # just for being opened; the link below always works either way.
     if youtube:
-        bits.append(
+        stage.append(
             f'<div class="video" data-youtube="{e(youtube)}">'
             f'<noscript><p><a href="https://www.youtube.com/watch?v={e(youtube)}">'
             f'Watch on YouTube</a></p></noscript></div>'
         )
-        bits.append(
+        stage.append(
             f'<p class="links"><a href="https://www.youtube.com/watch?v={e(youtube)}">Watch on YouTube</a>'
             f'<span class="archive-slot" data-archive=""></span></p>'
         )
@@ -706,9 +710,9 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
             else:
                 note = ("The video above is the most recent upload of this "
                         "sitting. The earlier ones are still there")
-            bits.append(f'<p class="links muted">{note}: {links}.</p>')
+            stage.append(f'<p class="links muted">{note}: {links}.</p>')
     elif aud:
-        bits.append(
+        stage.append(
             f'<p class="links unpublished"><span class="mark mark-unpublished">'
             f'<span class="dot" aria-hidden="true"></span>Recorded, not published'
             f'</span> &mdash; the tape exists and is listed as entry '
@@ -716,13 +720,13 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
             f'put online, so there is nothing to play here yet.</p>'
         )
     elif s["uncatalogued"]:
-        bits.append(
+        stage.append(
             '<p class="links muted">This sitting appears in no catalogue. The page '
             'exists because the original recording does; nothing is published for it '
             'yet.</p>'
         )
     else:
-        bits.append(
+        stage.append(
             '<p class="links unpublished"><span class="mark mark-missing">'
             '<span class="dot" aria-hidden="true"></span>No recording</span> '
             '&mdash; this sitting is known from the catalogues, but no recording '
@@ -730,6 +734,15 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
 
     blocks = parse_vtt(job["vtt"]) if job else []
     passages = (job or {}).get("passages") or []
+
+    # With a timed transcript the two belong together: the line being spoken is
+    # highlighted, and scrolling to read it should not carry the recording off
+    # the screen. Everything above stays full width.
+    if blocks:
+        bits.append('<div class="watch">')
+        bits.append('<div class="stage">' + "\n".join(stage) + '</div>')
+    else:
+        bits.extend(stage)
 
     if blocks:
         bits.append('<section class="transcript" id="transcript">')
@@ -750,7 +763,7 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
                 f'<span class="t">{fmt_hms(b["start"])}</span>'
                 f'<span class="w">{e(b["text"]).replace(chr(10), "<br>")}</span></p>'
             )
-        bits.append("</div></section>")
+        bits.append("</div></section></div>")
     elif job and job["transcript"].exists():
         text = job["transcript"].read_text(encoding="utf-8", errors="replace")
         bits.append('<section class="transcript"><h2>Transcript</h2><div class="blocks">')
@@ -764,7 +777,7 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
         )
 
     bits.append("</article>")
-    return shell(title, "\n".join(bits), depth=depth,
+    return shell(title, "\n".join(bits), depth=depth, wide=bool(blocks),
                  description=f"{scripture}. {pretty_date(date)}. {reference}".strip(),
                  trail=[("Avlokan", "../index.html"),
                         (scripture, f"../texts/{slug(scripture)}.html"),
@@ -1330,6 +1343,7 @@ CSS = """/* ====================================================================
   /* shape and layout */
   --radius:3px;
   --measure:46rem;          /* reading column           */
+  --measure-watch:76rem;    /* wider, for a transcript beside its video */
   --measure-prose:34rem;    /* narrower, for continuous prose */
   --border:1px solid var(--c-line);
   --rule:3px;               /* the thick left-hand marker */
@@ -1345,6 +1359,7 @@ CSS = """/* ====================================================================
 body{margin:0;background:var(--c-bg);color:var(--c-ink);
  font:var(--weight-normal) var(--size-base)/var(--leading-body) var(--font-body)}
 main{max-width:var(--measure);margin:0 auto;padding:var(--s-5) var(--s-4) var(--s-8)}
+main.watching{max-width:var(--measure-watch)}
 a{color:var(--c-accent)}
 h1{font-size:var(--size-xl);line-height:var(--leading-tight);margin:var(--s-5) 0 var(--s-1)}
 h2{font-size:var(--size-lg);margin:var(--s-6) 0 var(--s-2)}
@@ -1423,6 +1438,27 @@ nav.jump .yr{color:var(--c-muted);font-size:var(--size-xs)}
 .run-block h2{scroll-margin-top:var(--s-4);font-size:var(--size-lg);
  padding-bottom:var(--s-2);border-bottom:var(--border)}
 .run-block h2 .muted{font-size:var(--size-sm);font-weight:var(--weight-normal)}
+/* Video and transcript together. The recording stays put while the words
+   scroll past it, because following a highlighted line is the whole point and
+   scrolling to read used to carry the video off the top of the screen. */
+.watch{margin-top:var(--s-5)}
+.watch .stage{margin-bottom:var(--s-5)}
+@media (min-width:64rem){
+  .watch{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+   gap:var(--s-6);align-items:start}
+  .watch .stage{position:sticky;top:var(--s-4);margin-bottom:0}
+  .watch .transcript{margin-top:0}
+  .watch .transcript h2{margin-top:0}
+}
+/* Narrow: the recording pins to the top of the screen and gives up most of
+   its height, so there is still room to read. */
+@media (max-width:63.99rem){
+  .watch .stage{position:sticky;top:0;z-index:5;background:var(--c-bg);
+   padding:var(--s-2) 0;margin:0 0 var(--s-4)}
+  .watch .stage .video{max-height:34vh;padding-top:min(56.25%,34vh);margin:0}
+  .watch .stage .links{margin:var(--s-2) 0 0}
+  .block{scroll-margin-top:42vh}
+}
 .mark{white-space:nowrap}
 .mark .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;
  margin-right:var(--s-2);vertical-align:baseline}

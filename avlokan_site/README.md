@@ -124,6 +124,19 @@ Archive identifier once the mirror exists.
 build, plain CSS and one small script to run. Nothing here needs updating to
 keep working.
 
+## Reading along with the recording
+
+A page with a timed transcript puts the two side by side: the recording in a
+column that stays put, the words scrolling past it. The highlighted line is
+the point of the whole feature, and scrolling to read it used to carry the
+video off the top of the screen.
+
+It is plain CSS — `position: sticky`, one grid, two media queries — so it
+works with the script blocked and there is nothing to go wrong in it. Below
+64rem the recording pins to the top instead and gives up most of its height,
+keeping about a third of the screen, so there is still room to read. Only the
+pages that have a transcript widen their column; the rest are unchanged.
+
 ## Enhancements, all local
 
 - **Synced transcript** — the current line highlights and scrolls into view,

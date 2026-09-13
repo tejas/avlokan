@@ -39,6 +39,7 @@
   /* shape and layout */
   --radius:3px;
   --measure:46rem;          /* reading column           */
+  --measure-watch:76rem;    /* wider, for a transcript beside its video */
   --measure-prose:34rem;    /* narrower, for continuous prose */
   --border:1px solid var(--c-line);
   --rule:3px;               /* the thick left-hand marker */
@@ -54,6 +55,7 @@
 body{margin:0;background:var(--c-bg);color:var(--c-ink);
  font:var(--weight-normal) var(--size-base)/var(--leading-body) var(--font-body)}
 main{max-width:var(--measure);margin:0 auto;padding:var(--s-5) var(--s-4) var(--s-8)}
+main.watching{max-width:var(--measure-watch)}
 a{color:var(--c-accent)}
 h1{font-size:var(--size-xl);line-height:var(--leading-tight);margin:var(--s-5) 0 var(--s-1)}
 h2{font-size:var(--size-lg);margin:var(--s-6) 0 var(--s-2)}
@@ -132,6 +134,27 @@ nav.jump .yr{color:var(--c-muted);font-size:var(--size-xs)}
 .run-block h2{scroll-margin-top:var(--s-4);font-size:var(--size-lg);
  padding-bottom:var(--s-2);border-bottom:var(--border)}
 .run-block h2 .muted{font-size:var(--size-sm);font-weight:var(--weight-normal)}
+/* Video and transcript together. The recording stays put while the words
+   scroll past it, because following a highlighted line is the whole point and
+   scrolling to read used to carry the video off the top of the screen. */
+.watch{margin-top:var(--s-5)}
+.watch .stage{margin-bottom:var(--s-5)}
+@media (min-width:64rem){
+  .watch{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+   gap:var(--s-6);align-items:start}
+  .watch .stage{position:sticky;top:var(--s-4);margin-bottom:0}
+  .watch .transcript{margin-top:0}
+  .watch .transcript h2{margin-top:0}
+}
+/* Narrow: the recording pins to the top of the screen and gives up most of
+   its height, so there is still room to read. */
+@media (max-width:63.99rem){
+  .watch .stage{position:sticky;top:0;z-index:5;background:var(--c-bg);
+   padding:var(--s-2) 0;margin:0 0 var(--s-4)}
+  .watch .stage .video{max-height:34vh;padding-top:min(56.25%,34vh);margin:0}
+  .watch .stage .links{margin:var(--s-2) 0 0}
+  .block{scroll-margin-top:42vh}
+}
 .mark{white-space:nowrap}
 .mark .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;
  margin-right:var(--s-2);vertical-align:baseline}
