@@ -124,6 +124,25 @@ Archive identifier once the mirror exists.
 build, plain CSS and one small script to run. Nothing here needs updating to
 keep working.
 
+## Carrying the recording to the next sitting
+
+Press play and the recording follows you. Open another sitting, the index, the
+book — it lets go of the page, settles into the corner and keeps playing, with
+the title of what it is playing as a link back. Return to its own page and it
+settles into place again. Close it with the ×.
+
+The one thing that makes this work is where the player lives: **at the end of
+`<body>`, never inside the page content.** Moving an iframe in the DOM reloads
+it, so anything that re-parents the player stops the recording — which is
+exactly what turning a page would do. Instead there is a placeholder in the
+page, which the stylesheet keeps sticky by itself, and the player is laid over
+it and told to follow. Navigating swaps what is inside `<main>` and never
+touches the player.
+
+Following a link fetches the next page and replaces `<main>`. If any part of
+that fails the link is followed normally, which is what the browser would have
+done anyway, so a broken fetch costs nothing. Back and forward work.
+
 ## Reading along with the recording
 
 A page with a timed transcript puts the two side by side: the recording in a

@@ -134,6 +134,34 @@ nav.jump .yr{color:var(--c-muted);font-size:var(--size-xs)}
 .run-block h2{scroll-margin-top:var(--s-4);font-size:var(--size-lg);
  padding-bottom:var(--s-2);border-bottom:var(--border)}
 .run-block h2 .muted{font-size:var(--size-sm);font-weight:var(--weight-normal)}
+/* The player. It sits at the end of <body>, never inside the page, because
+   moving an iframe reloads it and that would stop the recording every time you
+   turned a page. While you are on its own page it is put exactly over the
+   placeholder below; when you leave, it lets go and floats. */
+#dock{z-index:20}
+#dock .dock-frame{position:absolute;inset:0;background:var(--c-letterbox);
+ border-radius:var(--radius);overflow:hidden}
+#dock iframe,#dock .dock-frame>div{position:absolute;inset:0;width:100%;height:100%;border:0}
+#dock .dock-bar{display:none}
+#dock.afloat{position:fixed;right:var(--s-4);bottom:var(--s-4);left:auto;top:auto;
+ width:min(26rem,84vw);height:auto;aspect-ratio:16/9;box-shadow:0 6px 28px rgba(0,0,0,.28);
+ border-radius:var(--radius);background:var(--c-letterbox)}
+#dock.afloat .dock-bar{display:flex;position:absolute;top:0;left:0;right:0;
+ align-items:center;gap:var(--s-2);margin:0;padding:var(--s-1) var(--s-2);
+ background:rgba(0,0,0,.72);color:#fff;font-size:var(--size-xs);
+ border-radius:var(--radius) var(--radius) 0 0;z-index:2}
+#dock.afloat .dock-title{color:#fff;text-decoration:none;overflow:hidden;
+ text-overflow:ellipsis;white-space:nowrap;flex:1}
+#dock.afloat .dock-title:hover{text-decoration:underline}
+#dock.afloat .dock-close{flex:none;background:transparent;border:0;color:#fff;
+ cursor:pointer;font-size:var(--size-base);line-height:1;padding:0 var(--s-1)}
+/* The placeholder keeps the space and the sticky behaviour; the player above
+   is laid over it. Once playing, its own play button is gone. */
+.video.is-playing button.play{display:none}
+@media (max-width:40rem){
+  #dock.afloat{right:var(--s-2);bottom:var(--s-2);width:min(18rem,72vw)}
+}
+
 /* Video and transcript together. The recording stays put while the words
    scroll past it, because following a highlighted line is the whole point and
    scrolling to read used to carry the video off the top of the screen. */

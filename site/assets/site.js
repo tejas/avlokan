@@ -44,13 +44,93 @@
      as it was before. */
   var apiReady = false;
 
+  /* ---- the dock -------------------------------------------------------------
+     The player is never a child of the page content. Moving an iframe in the
+     DOM reloads it, so anything that re-parents the player stops the
+     recording — which is exactly what carrying it to the next sitting would
+     do. Instead it lives in one element at the end of <body> and is put over
+     the placeholder in the page, which the stylesheet keeps sticky by itself.
+     Navigating swaps the page around it and never touches it. */
+  var dock = document.getElementById("dock");
+  if (!dock) {
+    dock = document.createElement("div");
+    dock.id = "dock";
+    dock.hidden = true;
+    document.body.appendChild(dock);
+  }
+  var floating = false, ticking = false, playingId = null;
+
+  function place() {
+    ticking = false;
+    if (dock.hidden) return;
+    if (floating || !holder || !document.contains(holder)) {
+      dock.classList.add("afloat");
+      dock.style.cssText = "";
+      return;
+    }
+    var box = holder.getBoundingClientRect();
+    /* The placeholder has scrolled away entirely — let go and float. */
+    if (box.bottom < 8 || box.top > window.innerHeight - 8) {
+      dock.classList.add("afloat");
+      dock.style.cssText = "";
+      return;
+    }
+    dock.classList.remove("afloat");
+    dock.style.cssText = "position:fixed;left:" + box.left + "px;top:" + box.top +
+                         "px;width:" + box.width + "px;height:" + box.height + "px";
+  }
+
+  function reposition() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(place);
+  }
+  window.addEventListener("scroll", reposition, { passive: true });
+  window.addEventListener("resize", reposition, { passive: true });
+
+  function dockChrome(title, href) {
+    var bar = document.createElement("p");
+    bar.className = "dock-bar";
+    bar.innerHTML = '<a class="dock-title" href="' + href + '"></a>' +
+                    '<button type="button" class="dock-close" ' +
+                    'aria-label="Close the recording">&times;</button>';
+    bar.querySelector(".dock-title").textContent = title;
+    bar.querySelector(".dock-close").addEventListener("click", stop);
+    return bar;
+  }
+
+  function stop() {
+    try { if (player && player.destroy) player.destroy(); } catch (err) {}
+    player = null;
+    playingId = null;
+    clearInterval(timer);
+    dock.hidden = true;
+    dock.innerHTML = "";
+    dock.classList.remove("afloat");
+    dock.style.cssText = "";
+    if (holder) holder.classList.remove("is-playing");
+  }
+
   function play(autoplay, seconds) {
     var id = holder.getAttribute("data-youtube");
-    holder.innerHTML = "";
+    playingId = id;
+    holder.classList.add("is-playing");
+    dock.hidden = false;
+    dock.innerHTML = "";
+    /* The whole path, not the file name. Once you have navigated away the
+       link is being resolved against a different directory, and a bare
+       "2000-11-06-….html" points at nothing. */
+    dock.appendChild(dockChrome(document.title, location.pathname));
+    var shell = document.createElement("div");
+    shell.className = "dock-frame";
+    dock.appendChild(shell);
+    floating = false;
+    place();
+
     if (apiReady && window.YT && YT.Player) {
       var mount = document.createElement("div");
       mount.id = "player-mount";      /* YT.Player needs an element with an id */
-      holder.appendChild(mount);
+      shell.appendChild(mount);
       player = new YT.Player(mount, {
         videoId: id,
         playerVars: { rel: 0, playsinline: 1, autoplay: autoplay ? 1 : 0,
@@ -65,7 +145,7 @@
     frame.title = "Recording";
     frame.allow = "accelerometer; autoplay; encrypted-media; picture-in-picture";
     frame.allowFullscreen = true;
-    holder.appendChild(frame);
+    shell.appendChild(frame);
     return frame;
   }
 
@@ -82,6 +162,7 @@
     var code = event && event.data;
     if (code !== 101 && code !== 150 && code !== 2 && code !== 5) return;
     var id = holder.getAttribute("data-youtube");
+    stop();
     holder.classList.add("elsewhere");
     holder.innerHTML =
       '<p>This recording plays on YouTube but cannot be shown here. ' +
@@ -107,7 +188,92 @@
     window.onYouTubeIframeAPIReady = function () { apiReady = true; };
   }
 
-  if (!blocks.length) return;
+  /* ---- carrying it to the next sitting --------------------------------------
+     A link is followed by fetching the next page and swapping what is inside
+     <main>. The dock is outside <main>, so the recording is never touched and
+     keeps playing while you read ahead. Anything that goes wrong here falls
+     through to an ordinary page load, which is what the browser would have
+     done anyway. */
+  function samePage(href) {
+    try {
+      var url = new URL(href, location.href);
+      return url.origin === location.origin && /\.html$/.test(url.pathname);
+    } catch (err) { return false; }
+  }
+
+  function swap(url, push) {
+    return fetch(url, { credentials: "same-origin" })
+      .then(function (r) { return r.ok ? r.text() : Promise.reject(r.status); })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, "text/html");
+        var fresh = doc.querySelector("main");
+        var here = document.querySelector("main");
+        if (!fresh || !here) return Promise.reject("no main");
+        here.replaceWith(fresh);
+        document.title = doc.title;
+        if (push) history.pushState({}, "", url);
+        window.scrollTo(0, 0);
+        bind();
+        /* The recording carries over. On any other page it floats; come back
+           to the page it belongs to and it settles into place again. */
+        if (playingId) {
+          var home = document.querySelector('.video[data-youtube="' + playingId + '"]');
+          floating = !home;
+          if (home) home.classList.add("is-playing");
+          place();
+        }
+        return true;
+      });
+  }
+
+  document.addEventListener("click", function (ev) {
+    if (ev.defaultPrevented || ev.button || ev.metaKey || ev.ctrlKey ||
+        ev.shiftKey || ev.altKey) return;
+    var a = ev.target.closest && ev.target.closest("a[href]");
+    if (!a || a.target || a.hasAttribute("download") || !samePage(a.href)) return;
+    ev.preventDefault();
+    swap(a.href, true).catch(function () { location.href = a.href; });
+  });
+
+  window.addEventListener("popstate", function () {
+    swap(location.href, false).catch(function () { location.reload(); });
+  });
+
+  /* Everything below depends on the page currently in <main>, so it is run
+     again after a swap. */
+  function bind() {
+    page = location.pathname;
+    blocks = [].slice.call(document.querySelectorAll(".block[data-start]"));
+    holder = document.querySelector(".video[data-youtube]");
+    if (holder && !holder.querySelector("button.play")) addPlayButton();
+    bindTranscript();
+    place();
+  }
+
+  function addPlayButton() {
+    var start = document.createElement("button");
+    start.type = "button";
+    start.className = "play";
+    start.setAttribute("aria-label", "Play the recording");
+    start.innerHTML = '<span class="play-mark" aria-hidden="true"></span>';
+    start.addEventListener("click", function () { play(true); });
+    holder.appendChild(start);
+  }
+
+  function bindTranscript() {
+    if (!blocks.length) return;
+    wireTimestamps();
+    KEY = "avlokan:pos:" + page;
+    MARKS = "avlokan:marks:" + page;
+    live = null;
+    toolbar();
+    restoreMarks();
+  }
+
+  var KEY = "avlokan:pos:" + page;
+  var MARKS = "avlokan:marks:" + page;
+
+  if (!blocks.length) { bind(); return; }
 
   /* ---- 2. click a timestamp to jump there ---- */
   function seek(seconds) {
@@ -117,20 +283,22 @@
       if (i) i.src = i.src.replace(/([?&])start=\d+/, "$1") + "&start=" + Math.floor(seconds) + "&autoplay=1";
     }
   }
-  blocks.forEach(function (b) {
-    var t = b.querySelector(".t");
-    if (!t) return;
-    t.setAttribute("role", "button");
-    t.setAttribute("tabindex", "0");
-    t.addEventListener("click", function () { seek(parseFloat(b.dataset.start)); });
-    t.addEventListener("keydown", function (ev) {
-      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); t.click(); }
+  function wireTimestamps() {
+    blocks.forEach(function (b) {
+      var t = b.querySelector(".t");
+      if (!t || t.dataset.wired) return;
+      t.dataset.wired = "1";
+      t.setAttribute("role", "button");
+      t.setAttribute("tabindex", "0");
+      t.addEventListener("click", function () { seek(parseFloat(b.dataset.start)); });
+      t.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); t.click(); }
+      });
     });
-  });
+  }
+  wireTimestamps();
 
   /* ---- 3. follow along, and remember where you stopped ---- */
-  var KEY = "avlokan:pos:" + page;
-  var MARKS = "avlokan:marks:" + page;
   var follow = true, live = null;
 
   function highlight(seconds) {
@@ -158,6 +326,8 @@
   }
 
   function toolbar() {
+    var was = document.querySelector(".transcript .toolbar");
+    if (was) was.remove();
     var bar = document.createElement("div");
     bar.className = "toolbar";
     var saved = 0;
@@ -204,21 +374,24 @@
   }
 
   /* ---- 4. highlight a passage by clicking its text ---- */
-  var marked = {};
-  try { marked = JSON.parse(localStorage.getItem(MARKS) || "{}"); } catch (err) {}
-  blocks.forEach(function (b) {
-    if (marked[b.dataset.start]) b.classList.add("is-marked");
-    var w = b.querySelector(".w");
-    if (!w) return;
-    w.addEventListener("dblclick", function () {
-      b.classList.toggle("is-marked");
-      if (b.classList.contains("is-marked")) marked[b.dataset.start] = 1;
-      else delete marked[b.dataset.start];
-      try { localStorage.setItem(MARKS, JSON.stringify(marked)); } catch (err) {}
+  function restoreMarks() {
+    var marked = {};
+    try { marked = JSON.parse(localStorage.getItem(MARKS) || "{}"); } catch (err) {}
+    blocks.forEach(function (b) {
+      if (marked[b.dataset.start]) b.classList.add("is-marked");
+      var w = b.querySelector(".w");
+      if (!w || w.dataset.wired) return;
+      w.dataset.wired = "1";
+      w.addEventListener("dblclick", function () {
+        b.classList.toggle("is-marked");
+        if (b.classList.contains("is-marked")) marked[b.dataset.start] = 1;
+        else delete marked[b.dataset.start];
+        try { localStorage.setItem(MARKS, JSON.stringify(marked)); } catch (err) {}
+      });
     });
-  });
+  }
 
-  toolbar();
+  bindTranscript();
 
   /* The player itself is built when play is pressed; see section 1. */
 })();
