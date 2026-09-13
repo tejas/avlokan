@@ -1,0 +1,10 @@
+{
+ "_why": "Typing errors in the source of the book, corrected here rather than in the source file so that re-running extract_book.py cannot quietly undo them, and so every change to his text carries its reasoning. Each entry is an exact string replacement within one aphorism. Nothing here rewords anything; these are single mistyped characters.",
+ "76": [
+  {
+   "from": "સત્પુરૂષની અજ્ઞાને શિરોધાર્ય કરી",
+   "to": "સત્પુરૂષની આજ્ઞાને શિરોધાર્ય કરી",
+   "why": "A dropped matra: અજ્ઞાને (ignorance) for આજ્ઞાને (instruction). As printed the sentence says one should hold the satpurush's ignorance as binding, which contradicts the clause it sits in — the whole aphorism is about removing ignorance through his instruction. આજ્ઞા appears 18 other times in the book, always spelled correctly, including 'સત્પુરૂષની આજ્ઞાનું આરાધન' in aphorism 200. Confirmed present in the source markdown, so the error came from the typing, not from extraction."
+  }
+ ]
+}

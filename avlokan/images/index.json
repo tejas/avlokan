@@ -1,0 +1,23 @@
+{
+ "source": "avlokan.org, the author's own site",
+ "covers": {
+  "Shrimad Rajchandra Vachanamrut": "cover-shrimad-rajchandra-vachanamrut.jpg",
+  "Shri Samaysar": "cover-shri-samaysar.jpg",
+  "Shri Dravya Drushti Prakash": "cover-shri-dravya-drushti-prakash.jpg",
+  "Benshri ke Vachanamrut": "cover-benshri-ke-vachanamrut.jpg",
+  "Swanubhuti Darshan": "cover-swanubhuti-darshan.jpg",
+  "Apoorva Avasar": "cover-apoorva-avasar.jpg",
+  "Moksh Marg Prakashak": "cover-moksh-marg-prakashak.jpg",
+  "Solah Karan Bhavna": "cover-solah-karan-bhavna.jpg",
+  "Daslakshan Dharma": "cover-daslakshan-dharma.jpg",
+  "Gyangoshti": "cover-gyangoshti.jpg",
+  "Tatva Charcha": "cover-tatva-charcha.jpg",
+  "Tatkalmoksha": "cover-tatkalmoksha.jpg",
+  "Shri Parmagamsar": "cover-shri-parmagamsar.jpg",
+  "Shri Ratnakaranda Shravakachar": "cover-shri-ratnakaranda-shravakachar.jpg",
+  "fallback cover": "cover-default.jpg",
+  "devchand-bhai": "devchand-bhai.jpg",
+  "devchand-bhai-seated": "devchand-bhai-seated.jpg",
+  "devchand-bhai-avatar": "devchand-bhai-avatar.jpg"
+ }
+}

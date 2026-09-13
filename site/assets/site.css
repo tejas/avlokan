@@ -1,0 +1,191 @@
+/* ==========================================================================
+   Avlokan — design tokens
+   --------------------------------------------------------------------------
+   Everything visual is driven by the custom properties in :root. To restyle
+   the whole archive, edit this block and nothing else — every rule below
+   consumes a token rather than a literal value. No build step, no toolchain,
+   nothing to reinstall in five years.
+   ========================================================================== */
+:root{
+  /* colour */
+  --c-ink:#1a1a18;          /* body text                */
+  --c-ink-soft:#3a3a35;     /* quotations               */
+  --c-muted:#6b6b64;        /* secondary text           */
+  --c-line:#e3e3dc;         /* rules and borders        */
+  --c-bg:#fbfbf9;           /* page                     */
+  --c-surface:#ffffff;      /* raised areas             */
+  --c-accent:#2f5fa8;       /* links, active state      */
+  --c-accent-ink:#ffffff;   /* text on accent           */
+  --c-mark:#fbeec4;         /* the line now playing     */
+  --c-hover:#f2f2ec;
+  --c-letterbox:#000;       /* behind the video frame   */
+
+  /* type */
+  --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --font-indic:"Noto Sans Gujarati","Noto Sans Devanagari",var(--font-body);
+  --size-xs:.75rem; --size-sm:.85rem; --size-md:.95rem; --size-base:1.0625rem;
+  --size-lg:1.25rem; --size-xl:1.5rem;
+  --leading-tight:1.3; --leading-body:1.75; --leading-indic:1.9;
+  --weight-normal:400; --weight-medium:500; --weight-bold:600;
+  --track-caps:.06em;
+
+  /* space — one scale, used everywhere */
+  --s-1:.25rem; --s-2:.5rem; --s-3:.75rem; --s-4:1rem;
+  --s-5:1.5rem; --s-6:2rem; --s-7:3rem; --s-8:5rem;
+
+  /* shape and layout */
+  --radius:3px;
+  --measure:46rem;          /* reading column           */
+  --measure-prose:34rem;    /* narrower, for continuous prose */
+  --border:1px solid var(--c-line);
+  --rule:3px;               /* the thick left-hand marker */
+  --w-time:4rem;            /* timestamp gutter         */
+  --w-number:2.5rem;        /* sitting-count column     */
+  --w-cover:10rem;          /* a book cover             */
+  --h-sticky:4.5rem;        /* masthead, for scroll-margin */
+  --underline-offset:2px;
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+body{margin:0;background:var(--c-bg);color:var(--c-ink);
+ font:var(--weight-normal) var(--size-base)/var(--leading-body) var(--font-body)}
+main{max-width:var(--measure);margin:0 auto;padding:var(--s-5) var(--s-4) var(--s-8)}
+a{color:var(--c-accent)}
+h1{font-size:var(--size-xl);line-height:var(--leading-tight);margin:var(--s-5) 0 var(--s-1)}
+h2{font-size:var(--size-lg);margin:var(--s-6) 0 var(--s-2)}
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px}
+
+/* ---------- text roles ---------- */
+.tagline,.meta,.sub,.muted,.note{color:var(--c-muted);font-size:var(--size-sm)}
+.lede{font-size:var(--size-lg);line-height:var(--leading-body)}
+.indic{font-family:var(--font-indic);line-height:var(--leading-indic)}
+
+/* ---------- masthead, crumbs, footer ---------- */
+.masthead{display:flex;gap:var(--s-3);align-items:baseline;flex-wrap:wrap;
+ padding:var(--s-4);border-bottom:var(--border);max-width:var(--measure);margin:0 auto}
+.wordmark{font-weight:var(--weight-bold);letter-spacing:var(--track-caps);
+ text-transform:uppercase;text-decoration:none;color:var(--c-ink)}
+.navlink{margin-left:auto;font-size:var(--size-sm)}
+.navlink+.navlink{margin-left:var(--s-3)}
+.crumbs{margin:var(--s-3) 0 var(--s-1);font-size:var(--size-sm)}
+.crumbs ol{list-style:none;display:flex;flex-wrap:wrap;gap:var(--s-1);margin:0;padding:0}
+.crumbs li+li::before{content:"/";color:var(--c-line);margin-right:var(--s-1)}
+.crumbs li[aria-current]{color:var(--c-muted)}
+.crumbs a{text-decoration:none}
+.crumbs a:hover{text-decoration:underline}
+footer{max-width:var(--measure);margin:0 auto;padding:var(--s-5) var(--s-4) var(--s-7);
+ border-top:var(--border);color:var(--c-muted);font-size:var(--size-sm)}
+
+/* ---------- controls ---------- */
+.btn{font:inherit;font-size:var(--size-sm);padding:var(--s-1) var(--s-3);
+ border:var(--border);border-radius:var(--radius);background:var(--c-surface);
+ color:var(--c-ink);cursor:pointer}
+.btn:hover{background:var(--c-hover)}
+.btn[aria-pressed=true]{background:var(--c-ink);color:var(--c-accent-ink);border-color:var(--c-ink)}
+.toolbar{position:sticky;top:0;z-index:5;display:flex;gap:var(--s-2);flex-wrap:wrap;
+ align-items:center;background:var(--c-bg);border-bottom:var(--border);
+ padding:var(--s-2) 0;margin-bottom:var(--s-3)}
+.toolbar button{font:inherit;font-size:var(--size-sm);padding:var(--s-1) var(--s-3);
+ border:var(--border);border-radius:var(--radius);background:var(--c-surface);
+ color:var(--c-ink);cursor:pointer}
+.toolbar button[aria-pressed=true]{background:var(--c-ink);color:var(--c-accent-ink);
+ border-color:var(--c-ink)}
+
+/* ---------- index and listings ---------- */
+ul.texts{list-style:none;padding:0;margin:var(--s-5) 0;display:grid;gap:var(--s-5) var(--s-4);
+ grid-template-columns:repeat(auto-fill,minmax(var(--w-cover),1fr))}
+ul.texts a{display:block;text-decoration:none;color:inherit}
+ul.texts .cover{display:block;width:100%;height:auto;aspect-ratio:780/1080;object-fit:cover;
+ background:var(--c-hover);border:var(--border);border-radius:var(--radius)}
+ul.texts a:hover .cover{border-color:var(--c-accent)}
+ul.texts .cover-none{aspect-ratio:780/1080}
+ul.texts .name{display:block;margin-top:var(--s-2);color:var(--c-accent);
+ line-height:var(--leading-tight)}
+ul.texts .sub{display:block;margin-top:var(--s-1);color:var(--c-muted);font-size:var(--size-sm)}
+.text-head{display:flex;gap:var(--s-5);align-items:flex-start;margin:var(--s-5) 0 var(--s-4)}
+.text-head .cover{flex:none;width:var(--w-cover);height:auto;border:var(--border);
+ border-radius:var(--radius)}
+.text-head h1{margin-top:0}
+nav.series{margin:var(--s-5) 0;padding:var(--s-3) var(--s-4);background:var(--c-surface);
+ border:var(--border);border-radius:var(--radius)}
+nav.series .meta{margin:0}
+nav.series .where{color:var(--c-ink);font-weight:var(--weight-medium)}
+nav.series .links{display:flex;justify-content:space-between;gap:var(--s-4);margin:var(--s-2) 0 0}
+nav.series .next{margin-left:auto;text-align:right}
+nav.series details{margin-top:var(--s-3)}
+nav.series summary{cursor:pointer;color:var(--c-muted);font-size:var(--size-sm)}
+nav.series ol{margin:var(--s-2) 0 0;padding-left:var(--s-5);font-size:var(--size-sm)}
+nav.series li{margin:var(--s-1) 0}
+table.listing td.pt{text-align:right;color:var(--c-muted);font-variant-numeric:tabular-nums;
+ width:var(--w-number)}
+figure.portrait{margin:0 0 var(--s-6)}
+figure.portrait img{width:100%;height:auto;border-radius:var(--radius)}
+figure.portrait figcaption{margin-top:var(--s-2);color:var(--c-muted);
+ font-size:var(--size-sm)}
+@media (max-width:34rem){.text-head .cover{width:7rem}}
+table.listing{width:100%;border-collapse:collapse;font-size:var(--size-sm);margin-top:var(--s-4)}
+table.listing th{text-align:left;font-size:var(--size-xs);text-transform:uppercase;
+ letter-spacing:var(--track-caps);color:var(--c-muted);border-bottom:var(--border);
+ padding:var(--s-1) var(--s-2)}
+table.listing td{padding:var(--s-1) var(--s-2);border-bottom:var(--border)}
+
+/* ---------- discourse ---------- */
+.video{position:relative;padding-top:56.25%;background:var(--c-letterbox);border-radius:var(--radius);
+ overflow:hidden;margin:var(--s-4) 0}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* The play button stands in for the player until it is pressed, so opening a
+   page fetches nothing at all — not even a thumbnail. */
+.video.elsewhere{padding-top:0;background:var(--c-surface);border:var(--border);
+ display:grid;place-content:center;gap:var(--s-2);padding:var(--s-6) var(--s-4);
+ text-align:center;color:var(--c-ink)}
+.video.elsewhere p{margin:0;max-width:var(--measure-prose)}
+button.play{position:absolute;inset:0;width:100%;height:100%;border:0;cursor:pointer;
+ background:transparent;display:grid;place-items:center}
+button.play:hover .play-mark,button.play:focus-visible .play-mark{background:var(--c-accent)}
+.play-mark{width:4.5rem;height:3.2rem;border-radius:var(--radius);background:#5a5a5a;
+ display:block;position:relative;transition:background .12s}
+.play-mark::after{content:"";position:absolute;top:50%;left:50%;
+ transform:translate(-42%,-50%);border-style:solid;border-width:.62rem 0 .62rem 1.05rem;
+ border-color:transparent transparent transparent var(--c-accent-ink)}
+.links{font-size:var(--size-sm)}
+.links a{margin-right:var(--s-4)}
+.transcript .note{margin:var(--s-1) 0 var(--s-4)}
+.block{display:flex;gap:var(--s-3);margin:0 0 var(--s-3);scroll-margin-top:var(--h-sticky)}
+.block .t{flex:none;width:var(--w-time);color:var(--c-muted);font-size:var(--size-sm);
+ font-variant-numeric:tabular-nums;padding-top:.35rem}
+.block .w{flex:1;font-family:var(--font-indic);line-height:var(--leading-indic)}
+.block.is-live .w{background:var(--c-mark);box-shadow:0 0 0 var(--s-1) var(--c-mark);
+ border-radius:var(--radius)}
+.block .t[role=button]{cursor:pointer;color:var(--c-accent);text-decoration:underline;
+ text-underline-offset:var(--underline-offset)}
+.block.is-marked .w{border-left:var(--rule) solid var(--c-accent);padding-left:var(--s-2)}
+
+/* ---------- prose and quotations ---------- */
+.prose{max-width:var(--measure-prose)}
+.prose h1{margin-top:var(--s-5)}
+.prose blockquote{margin:var(--s-5) 0;padding:0 0 0 var(--s-4);
+ border-left:var(--rule) solid var(--c-line);color:var(--c-ink-soft)}
+.prose blockquote p{margin:var(--s-1) 0}
+.prose blockquote p:first-child{font-family:var(--font-indic);line-height:var(--leading-indic)}
+.prose blockquote p:last-child{color:var(--c-muted);font-size:var(--size-md);font-family:var(--font-body)}
+
+/* ---------- the book ---------- */
+.aphorism{padding:var(--s-5) 0;border-bottom:var(--border)}
+.aphorism:last-child{border-bottom:0}
+.aphorism .n{display:inline-block;font-size:var(--size-xs);letter-spacing:var(--track-caps);
+ text-transform:uppercase;color:var(--c-muted);text-decoration:none}
+.aphorism .n:hover{color:var(--c-accent)}
+.aphorism .guj{font-family:var(--font-indic);line-height:var(--leading-indic);
+ margin:var(--s-2) 0}
+.aphorism .eng{color:var(--c-ink-soft);margin:var(--s-3) 0 0;
+ padding-left:var(--s-4);border-left:var(--rule) solid var(--c-line)}
+.aphorism .eng p{margin:var(--s-1) 0}
+.aphorism .pending{color:var(--c-muted);font-size:var(--size-sm);font-style:italic;
+ margin-top:var(--s-2)}
+.book-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-2)}
+
+@media (max-width:34rem){
+  .block{flex-direction:column;gap:var(--s-1)}
+  .block .t{width:auto;padding:0}
+}

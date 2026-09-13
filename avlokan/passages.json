@@ -1,0 +1,74 @@
+[
+  {
+    "id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "text": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "min_score": 0.58,
+    "suggest_score": 0.45,
+    "notes": "Opens almost every discourse. Transcribed differently in every recording.",
+    "source": "https://docs.google.com/spreadsheets/d/1eXQB6Scs4p0jDASlJxQki2QF3T5fYM4jW-AxfhsseFg/edit?gid=0#gid=0",
+    "enabled": true,
+    "opening_only": true,
+    "opening_fraction": 0.15
+  },
+  {
+    "id": "namokar-culika",
+    "title": "Namokar mantra — culika",
+    "text": "एसो पंच णमोक्कारो, सव्वपावप्पणासणो।\nमंगलाणं च सव्वेसिं, पढमं हवइ मंगलं॥",
+    "min_score": 0.62,
+    "suggest_score": 0.55,
+    "notes": "Not in the sheet — added by Avlokan. Has not matched any recording yet.",
+    "source": "avlokan",
+    "enabled": true,
+    "opening_only": true,
+    "opening_fraction": 0.15
+  },
+  {
+    "id": "samayasara-mangalacharana",
+    "title": "Samaysar mangalacharan",
+    "text": "नमः समयसाराय स्वानुभूत्या चकासते ।\nचित्स्वभावाय भावाय सर्वभावान्तरच्छिदे",
+    "min_score": 0.6,
+    "suggest_score": 0.48,
+    "notes": "",
+    "source": "https://docs.google.com/spreadsheets/d/1eXQB6Scs4p0jDASlJxQki2QF3T5fYM4jW-AxfhsseFg/edit?gid=0#gid=0",
+    "enabled": true,
+    "opening_only": true,
+    "opening_fraction": 0.15
+  },
+  {
+    "id": "mangalam-bhagavan-viro",
+    "title": "Mangalacharan — Mangalam Bhagavan Viro",
+    "text": "मंगलं भगवान वीरो, मंगलं गौतमो गणी।\nमंगलं कुन्दकुन्दार्यो, जैनधर्मोऽस्तु मंगलम्॥",
+    "min_score": 0.6,
+    "suggest_score": 0.48,
+    "notes": "First half of the sheet's Mangalacharan cell. Kept separate because the two halves are often recited or heard independently.",
+    "source": "https://docs.google.com/spreadsheets/d/1eXQB6Scs4p0jDASlJxQki2QF3T5fYM4jW-AxfhsseFg/edit?gid=0#gid=0",
+    "enabled": true,
+    "opening_only": true,
+    "opening_fraction": 0.15
+  },
+  {
+    "id": "sarva-mangala-mangalyam",
+    "title": "Mangalacharan — Sarva Mangala Mangalyam",
+    "text": "सर्वमङ्गलमाङ्गल्यं सर्वकल्याणकारकम।\nप्रधानं सर्वधर्माणां जैनं जयति शासनम॥",
+    "min_score": 0.6,
+    "suggest_score": 0.48,
+    "notes": "Second half of the sheet's Mangalacharan cell.",
+    "source": "https://docs.google.com/spreadsheets/d/1eXQB6Scs4p0jDASlJxQki2QF3T5fYM4jW-AxfhsseFg/edit?gid=0#gid=0",
+    "enabled": true,
+    "opening_only": true,
+    "opening_fraction": 0.15
+  },
+  {
+    "id": "omkara-bindu-samyuktam",
+    "title": "Omkar bindu sainyuktam",
+    "text": "ॐकारबिन्दुसंयुक्तं नित्यं ध्यायन्ति योगिनः।\nकामदं मोक्षदं चैव ॐकाराय नमो नमः",
+    "min_score": 0.6,
+    "suggest_score": 0.48,
+    "notes": "",
+    "source": "https://docs.google.com/spreadsheets/d/1eXQB6Scs4p0jDASlJxQki2QF3T5fYM4jW-AxfhsseFg/edit?gid=0#gid=0",
+    "enabled": true,
+    "opening_only": true,
+    "opening_fraction": 0.15
+  }
+]

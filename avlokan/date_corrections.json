@@ -1,0 +1,18 @@
+{
+ "Shrimad Rajchandra Vachanamrut, Patrank 466, Part 11, 15 Sep 2011": {
+  "from": "2011-09-15",
+  "to": "2001-09-15",
+  "why": "Typo in the YouTube title. He died in 2002. Audio catalogue entry #915 records Patrank 466 parts 11 and 12 on 15 Sep 2001, and part 12 is already published under that date."
+ },
+ "30Mar202 Dravya Drushti Prakash17-3[chinchini yatra morning].DAT": {
+  "from": "30Mar202",
+  "to": "2002-03-30",
+  "why": "A digit dropped from the year in the source folder name, so the recording had no parseable date and was missing from the archive entirely. The two sittings either side of it — 17-4 (noon) and 17-5 (morning) — are both 30 March 2002 at the Chinchani yatra, and 17-1 and 17-2 are 29 March."
+ },
+ "Solahkaran Bhavana, Part 32, 23 Sep 1999": {
+  "youtube_id": "1s_Xotp8DjQ",
+  "from": "1999-09-23",
+  "to": "1999-09-20",
+  "why": "The video title is wrong; Tejas confirmed the sitting is 20 September 1999 and is correcting the title on YouTube. Audio catalogue entry #296 records part 32 on 20 September, and the series is otherwise continuous: part 31 on the 19th, part 33 on the 23rd. Keyed by video id as well as title so it still applies once the title is fixed."
+ }
+}

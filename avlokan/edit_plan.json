@@ -1,0 +1,103 @@
+{
+  "06Feb2002 Dravya Drushti Prakash22-1-cbd113b566": {
+    "label": "Patra 22 Part 1 — 6 Feb 2002",
+    "date": "2002-02-06",
+    "part": 1,
+    "title_card": "/Users/tejas/Downloads/DDP 22 6 Feb 2002.jpg",
+    "crop_top": 42,
+    "start": 82.0,
+    "end": 3530.0
+  },
+  "08Feb2002 Dravya Drushti Prakash22-2-a8435ea253": {
+    "label": "Patra 22 Part 2 — 8 Feb 2002",
+    "date": "2002-02-08",
+    "part": 2,
+    "title_card": "/Users/tejas/Downloads/DDP 22 8 Feb 2002.jpg",
+    "crop_top": 42,
+    "start": 4.0,
+    "end": 3386.0
+  },
+  "DDP 22, part 3, 9 Feb 2002-6aed533699": {
+    "label": "Patra 22 Part 3 — 9 Feb 2002",
+    "date": "2002-02-09",
+    "part": 3,
+    "title_card": "/Users/tejas/Downloads/DDP 22 9 Feb 2002.jpg",
+    "crop_top": 0,
+    "start": 0.0,
+    "end": null,
+    "note": "Audio cassette, no video was ever recorded. Needs a still or standing-video treatment before it can be assembled."
+  },
+  "12Feb2002 Dravya Drushti Prakash22-3-68d326a5fb": {
+    "label": "Patra 22 Part 4 — 12 Feb 2002",
+    "date": "2002-02-12",
+    "part": 4,
+    "title_card": "/Users/tejas/Downloads/DDP 22 12 Feb 2002.jpg",
+    "crop_top": 42,
+    "start": 662.0,
+    "end": null,
+    "note": "The camcorder was left in demo mode: SONY DCR-TRV130E, STAMINA, SIMULATED and DEMO graphics run across the middle of the picture for the whole recording. Cropping cannot remove them."
+  },
+  "13Feb2002 Dravya Drushti Prakash22-4-b59c58d90f": {
+    "label": "Patra 22 Part 5 — 13 Feb 2002",
+    "date": "2002-02-13",
+    "part": 5,
+    "title_card": "/Users/tejas/Downloads/DDP 22 13 Feb 2002.jpg",
+    "crop_top": 42,
+    "start": 207.0,
+    "end": 2883.0
+  },
+  "14Feb2002 Dravya Drushti Prakash22-5-7301436ba6": {
+    "label": "Patra 22 Part 6 — 14 Feb 2002",
+    "date": "2002-02-14",
+    "part": 6,
+    "title_card": "/Users/tejas/Downloads/DDP 22 14 Feb 2002.jpg",
+    "crop_top": 42,
+    "start": 229.0,
+    "end": 3252.0
+  },
+  "29Mar2002 Dravya Drushti Prakash17-1[chinchini yatra]-aeb13f47be": {
+    "label": "Patra 17 Part 1 — 29 Mar 2002",
+    "date": "2002-03-29",
+    "part": 1,
+    "title_card": null,
+    "crop_top": 0,
+    "start": 57.0,
+    "end": 3594.0
+  },
+  "29Mar2002 Dravya Drushti Prakash17-2[chinchini Yatra Night]-7fff575435": {
+    "label": "Patra 17 Part 2 — 29 Mar 2002 (night)",
+    "date": "2002-03-29",
+    "part": 2,
+    "title_card": null,
+    "crop_top": 0,
+    "start": 53.0,
+    "end": 3462.0
+  },
+  "30Mar202 Dravya Drushti Prakash17-3[chinchini yatra morning]-a772bddcfe": {
+    "label": "Patra 17 Part 3 — 30 Mar 2002 (morning)",
+    "date": "2002-03-30",
+    "part": 3,
+    "title_card": null,
+    "crop_top": 0,
+    "start": 66.0,
+    "end": null
+  },
+  "30Mar2002 Dravya Drushti Prakash17-4[chinchini yatra noon]-068ea35961": {
+    "label": "Patra 17 Part 4 — 30 Mar 2002 (noon)",
+    "date": "2002-03-30",
+    "part": 4,
+    "title_card": null,
+    "crop_top": 0,
+    "start": 57.0,
+    "end": 3447.0
+  },
+  "30Mar2002 Dravya Drushti Prakash17-5[chinchin yatra morning]-d90538e39e": {
+    "label": "Patra 17 Part 5 — 30 Mar 2002",
+    "date": "2002-03-30",
+    "part": 5,
+    "title_card": null,
+    "crop_top": 0,
+    "start": 56.0,
+    "end": null
+  }
+}

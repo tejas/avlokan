@@ -1,0 +1,11 @@
+{
+ "_why": "Videos on the channel that are not discourses. Most were hidden from public view on YouTube, but the Studio CSV export lists hidden videos, so they entered the index that way. Listed here by title so that re-importing a CSV cannot resurrect them silently. Devotional singing is NOT listed here — bhajans belong to the archive and are categorised under Bhakti.",
+ "titles": {
+  "Blue by Kangaroo kids": "A children's dance performance. Still public on the channel.",
+  "Five food groups dance, CV Annual Day 2015": "A school annual-day performance. Hidden on YouTube.",
+  "Morni baga ma.. Dhun dances": "Dance footage, not a discourse. Hidden on YouTube.",
+  "Guruji ka 49th Janma mahotsav Part 1": "Birth-anniversary celebration footage, not a discourse. Hidden on YouTube.",
+  "Guruji ka 49th Janma mahotsav Part 2": "Birth-anniversary celebration footage, not a discourse. Hidden on YouTube.",
+  "Guruji ka 49th Janma mahotsav Part 3": "Birth-anniversary celebration footage, not a discourse. Hidden on YouTube."
+ }
+}

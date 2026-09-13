@@ -1,0 +1,37 @@
+# This repository is the archive: the catalogues, the generator that turns
+# them into a website, and the website itself. Everything below is either the
+# raw material those were made from, a machine's working state, or a copy git
+# already keeps for us.
+
+# The recordings and everything derived from them. Hundreds of gigabytes, and
+# the originals belong on the drive, not in a repository.
+/originals/
+/outputs/
+/inbox/
+/work/
+
+# The transcription pipeline and its local app. Kept out for now so this
+# repository stays about the archive rather than the machine that made it.
+/avlokan_cli/
+/avlokan_app/
+/pyproject.toml
+/queue*.txt
+/PRODUCT.md
+/DESIGN.md
+/docs/
+
+# Local pipeline settings: an absolute path to this machine and private
+# spreadsheet links. Nothing the site needs.
+/avlokan/settings.json
+/avlokan/queue.json
+
+# Timestamped copies written before each data change. Git is the history now.
+*.backup-*.json
+
+.venv*/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Downloaded model weights.
+/.hf-cache/
