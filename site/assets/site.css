@@ -22,6 +22,7 @@
   --c-have:#2f7a4f;         /* published and playable   */
   --c-unpublished:#b07d2b;  /* recorded, not published  */
   --c-missing:#b0b0a8;      /* no recording at all      */
+  --c-offsite:#6b6b64;      /* published, but only YouTube will play it */
 
   /* type */
   --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
@@ -189,6 +190,7 @@ nav.jump .yr{color:var(--c-muted);font-size:var(--size-xs)}
 .mark-video .dot{background:var(--c-have)}
 .mark-unpublished .dot{background:var(--c-unpublished)}
 .mark-missing .dot{background:var(--c-missing)}
+.mark-offsite .dot{background:var(--c-offsite)}
 .mark-missing{color:var(--c-muted)}
 p.unpublished{margin:var(--s-4) 0;padding:var(--s-3) var(--s-4);
  background:var(--c-surface);border:var(--border);border-radius:var(--radius);

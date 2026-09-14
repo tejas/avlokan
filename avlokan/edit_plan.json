@@ -40,10 +40,18 @@
     "title_card": "/Users/tejas/Downloads/DDP 22 9 Feb 2002.jpg",
     "crop_top": 0,
     "backdrop": "/Users/tejas/Pravachan Process/Pravachan Templates.fcpbundle/30-06-23/Original Media/Dev guru loop new.mp4",
-    "start": 0.0,
+    "start": 88.2,
     "end": null,
-    "note": "Audio cassette, no video was ever recorded, so the photo loop runs under the audio. The tape runs out mid-sentence; there is no closing stuti on it to trim.",
-    "card_seconds": 11.845
+    "note": "Audio cassette, no video was ever recorded, so the photo loop runs under the audio. The cassette's own opening was replaced with the standard Namokar clip, and the 107s gap at the cassette flip was cut out.",
+    "card_seconds": 86.0,
+    "opening_clip": "standard Namokar and mangalacharan, 00:12 to about 01:05",
+    "cuts": [
+      [
+        1467.2,
+        1574.7
+      ]
+    ],
+    "timecodes": "measured against the finished export, 9 Feb 2002.mp3"
   },
   "12Feb2002 Dravya Drushti Prakash22-3-68d326a5fb": {
     "label": "Patra 22 Part 4 — 12 Feb 2002",
@@ -52,10 +60,14 @@
     "title_card": "/Users/tejas/Downloads/DDP 22 12 Feb 2002.jpg",
     "crop_top": 0,
     "backdrop": "/Users/tejas/Pravachan Process/Pravachan Templates.fcpbundle/30-06-23/Original Media/Dev guru loop new.mp4",
-    "start": 662.0,
+    "start": 729.0,
     "end": null,
     "note": "The camcorder was left in demo mode for this whole recording: SONY DCR-TRV130E, STAMINA, SIMULATED, FADER and a full-screen character set run over the picture, blacking it out entirely at times. Published audio-only over the photo loop instead.",
-    "card_seconds": 11.845
+    "card_seconds": 64.0,
+    "opening_clip": "standard Namokar and mangalacharan, 00:12 to about 01:04",
+    "cuts": [],
+    "timecodes": "measured against the finished export, 12 Feb 2002.mp3",
+    "numbering": "He calls this the third on the tape, not the fourth, because he knew the 9 Feb session was never recorded on video and was counting recordings. The part numbers here follow the sessions, so this is Part 4."
   },
   "13Feb2002 Dravya Drushti Prakash22-4-b59c58d90f": {
     "label": "Patra 22 Part 5 — 13 Feb 2002",
@@ -63,9 +75,16 @@
     "part": 5,
     "title_card": "/Users/tejas/Downloads/DDP 22 13 Feb 2002.jpg",
     "crop_top": 0,
-    "start": 207.0,
-    "end": 2883.0,
-    "card_seconds": 11.845
+    "start": 206.07,
+    "end": 2882.91,
+    "card_seconds": 11.845,
+    "cuts": [
+      [
+        1856.42,
+        1868.97
+      ]
+    ],
+    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card"
   },
   "14Feb2002 Dravya Drushti Prakash22-5-7301436ba6": {
     "label": "Patra 22 Part 6 — 14 Feb 2002",

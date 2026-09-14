@@ -63,7 +63,41 @@ normal "Watch on YouTube" link are always in the markup.
 This was not true for a while: the iframe was created as the page loaded,
 directly under a comment claiming it was not.
 
-### Roughly a third of the recordings refuse to be embedded
+### 175 recordings refuse to be embedded, and it is the stuti
+
+Nothing in a video's public settings says so. The ones that refuse report
+`playableInEmbed: true`, `isPrivate: false` and the same category as the ones
+that work; `yt-dlp` fetches them happily. A bare iframe with no parameters at
+all, on `www.youtube.com`, is refused just the same — so this is a property of
+the video, not of how the archive asks for it.
+
+`/embed-check.html` asked the player about all 815 and listened for the
+refusal. The answer is not spread evenly, which is the whole finding:
+
+| | refused | of | |
+|---|---|---|---|
+| Shrimad Rajchandra Vachanamrut | 137 | 263 | 52% |
+| Apoorva Avasar | 7 | 33 | 21% |
+| Shri Dravya Drushti Prakash | 6 | 46 | 13% |
+| Benshri ke Vachanamrut | 3 | 125 | 2% |
+| Solah Karan Bhavna | 0 | 42 | 0% |
+| Moksh Marg Prakashak | 0 | 39 | 0% |
+
+And within the Vachanamrut it is a matter of *when*: **81 of the 82 sittings
+recorded in 2000 are refused, against 0 of the 66 from 2002.** Everything else
+recorded in 2000 runs at 1%.
+
+It also falls by batch rather than at random — **69 runs are refused entirely
+and only 9 partly.** A whole Patrank run is either all blocked or all fine.
+That is the signature of a claimed recording appended while editing a batch,
+which matches what Tejas said: a different recording of the closing stuti was
+used on most of the Shrimad Rajchandra patranks.
+
+`avlokan/embed_refused.json` holds the list, so those 175 pages say so
+themselves rather than waiting for the player to fail and flashing YouTube's
+black box on the way. The player still catches any that are refused later.
+
+### The old finding, kept for the record
 
 Nothing in a video's public settings says so. The ones that refuse report
 `playableInEmbed: true`, `isPrivate: false`, `isUnlisted: false` and the same

@@ -683,7 +683,14 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
     stage: list[str] = []
     # Video. The iframe is written by script so the page does not phone Google
     # just for being opened; the link below always works either way.
-    if youtube:
+    if youtube and youtube in REFUSED:
+        stage.append(
+            f'<div class="video elsewhere"><p>This recording plays on YouTube '
+            f'but cannot be shown here. That is a restriction on the video '
+            f'itself, not on this page.</p>'
+            f'<p><a href="https://www.youtube.com/watch?v={e(youtube)}">'
+            f'Watch it on YouTube</a></p></div>')
+    elif youtube:
         stage.append(
             f'<div class="video" data-youtube="{e(youtube)}">'
             f'<noscript><p><a href="https://www.youtube.com/watch?v={e(youtube)}">'
@@ -804,6 +811,9 @@ def says_nothing(reference: str, name: str) -> bool:
     return a == b or SequenceMatcher(None, a, b).ratio() > 0.85
 
 
+REFUSED: set[str] = set(read_json(CONFIG / "embed_refused.json", {}).get("ids", []))
+
+
 def availability(s: dict[str, Any]) -> tuple[str, str]:
     """What a reader can actually do with this sitting, and what to call it.
 
@@ -813,6 +823,8 @@ def availability(s: dict[str, Any]) -> tuple[str, str]:
     and a reader deserves to be told which is which before clicking.
     """
     if s["youtube_id"]:
+        if s["youtube_id"] in REFUSED:
+            return "offsite", "On YouTube only"
         return "video", "Video"
     if s["audio"]:
         return "unpublished", "Recorded, not published"
@@ -998,6 +1010,7 @@ def text_page(name: str, group: list[dict[str, Any]]) -> str:
               + "".join(f'<li><span class="mark mark-{k}">'
                         f'<span class="dot" aria-hidden="true"></span>{n} {t}</span></li>'
                         for k, t in (("video", "published"),
+                                     ("offsite", "on YouTube only"),
                                      ("unpublished", "recorded, not published"),
                                      ("missing", "no recording"))
                         if (n := tally.get(k)))
@@ -1326,6 +1339,7 @@ CSS = """/* ====================================================================
   --c-have:#2f7a4f;         /* published and playable   */
   --c-unpublished:#b07d2b;  /* recorded, not published  */
   --c-missing:#b0b0a8;      /* no recording at all      */
+  --c-offsite:#6b6b64;      /* published, but only YouTube will play it */
 
   /* type */
   --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
@@ -1493,6 +1507,7 @@ nav.jump .yr{color:var(--c-muted);font-size:var(--size-xs)}
 .mark-video .dot{background:var(--c-have)}
 .mark-unpublished .dot{background:var(--c-unpublished)}
 .mark-missing .dot{background:var(--c-missing)}
+.mark-offsite .dot{background:var(--c-offsite)}
 .mark-missing{color:var(--c-muted)}
 p.unpublished{margin:var(--s-4) 0;padding:var(--s-3) var(--s-4);
  background:var(--c-surface);border:var(--border);border-radius:var(--radius);
