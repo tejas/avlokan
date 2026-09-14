@@ -248,6 +248,7 @@
     if (holder && !holder.querySelector("button.play")) addPlayButton();
     bindTranscript();
     place();
+    resumeFromHash();
   }
 
   function addPlayButton() {
@@ -272,6 +273,105 @@
 
   var KEY = "avlokan:pos:" + page;
   var MARKS = "avlokan:marks:" + page;
+
+  /* ---- where you left off -------------------------------------------------
+     The position of a recording was already being kept, under the page's own
+     address, so that "Resume at 12:34" could appear on the sitting itself.
+     What it could not do was tell you, from the front page, which sittings
+     those were — an address is not a title.
+
+     So alongside it a short list is kept: the last few sittings played, each
+     with what it is, when it was given and where you stopped. Entirely in
+     this browser. There is no account, nothing is sent anywhere, and clearing
+     the browser clears it. The archive cannot see it and neither can I. */
+  var RECENT = "avlokan:recent";
+  var KEEP = 8;
+
+  function recent() {
+    try {
+      var got = JSON.parse(localStorage.getItem(RECENT) || "[]");
+      return Object.prototype.toString.call(got) === "[object Array]" ? got : [];
+    } catch (err) { return []; }
+  }
+
+  function clock(seconds) {
+    var s = Math.max(0, Math.floor(seconds));
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
+    var mm = (h && m < 10 ? "0" : "") + m;
+    return (h ? h + ":" : "") + mm + ":" + (r < 10 ? "0" : "") + r;
+  }
+
+  /* Under half a minute is not a sitting you were listening to, it is one you
+     opened and thought better of. Offering to resume those would bury the
+     ones you meant. */
+  var WORTH_KEEPING = 30;
+
+  function remember(seconds) {
+    var art = document.querySelector("article.discourse[data-slug]");
+    if (!art || !(seconds > WORTH_KEEPING)) return;
+    var kept = recent().filter(function (x) { return x && x.slug !== art.dataset.slug; });
+    kept.unshift({ slug: art.dataset.slug, text: art.dataset.text,
+                   when: art.dataset.when, ref: art.dataset.ref,
+                   t: Math.floor(seconds), at: Date.now() });
+    try { localStorage.setItem(RECENT, JSON.stringify(kept.slice(0, KEEP))); } catch (err) {}
+  }
+
+  /* Someone who has been using the archive already has positions saved but no
+     list, because the list did not exist when they listened. The page knows
+     what it is, so the first visit back to a sitting puts it in. */
+  (function () {
+    var art = document.querySelector("article.discourse[data-slug]");
+    if (!art) return;
+    var was = 0;
+    try { was = parseInt(localStorage.getItem("avlokan:pos:" + location.pathname) || "0", 10) || 0; }
+    catch (err) { return; }
+    var listed = recent().some(function (x) { return x && x.slug === art.dataset.slug; });
+    if (was > WORTH_KEEPING && !listed) remember(was);
+  })();
+
+  /* Arriving from the front page: start the recording where it was left.
+     Deliberately not the `#t…` that a search result uses — that one lands on
+     a line to read, and should not begin playing under you.
+
+     Called again after every in-page navigation. Following a link does not
+     reload the document, it swaps what is in <main>, so anything that only
+     runs when the script first loads never runs again. */
+  function resumeFromHash() {
+    var at = /^#at([0-9]+)$/.exec(location.hash || "");
+    if (!at || !holder) return;
+    if (playingId === holder.getAttribute("data-youtube")) return;
+    play(true, parseInt(at[1], 10));
+  }
+  resumeFromHash();
+
+  (function () {
+    var panel = document.getElementById("recent");
+    if (!panel) return;
+    var items = recent().filter(function (x) { return x && x.slug && x.t; });
+    if (!items.length) return;
+    var list = panel.querySelector("ol");
+    items.forEach(function (x) {
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = "d/" + x.slug + ".html#at" + x.t;
+      a.appendChild(document.createElement("strong")).textContent = x.text || x.slug;
+      var sub = document.createElement("span");
+      sub.className = "muted";
+      sub.textContent = [x.when, x.ref].filter(Boolean).join(" · ");
+      a.appendChild(sub);
+      var at = document.createElement("span");
+      at.className = "at";
+      at.textContent = "stopped at " + clock(x.t);
+      a.appendChild(at);
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+    panel.hidden = false;
+    panel.querySelector(".forget").addEventListener("click", function () {
+      try { localStorage.removeItem(RECENT); } catch (err) {}
+      panel.hidden = true;
+    });
+  })();
 
   /* ---- corrections -------------------------------------------------------
      The form is on every discourse page and hidden on all of them. Shift+E
@@ -400,11 +500,15 @@
 
   function watch() {
     clearInterval(timer);
+    var ticks = 0;
     timer = setInterval(function () {
       if (!player || !player.getCurrentTime) return;
       var t = player.getCurrentTime();
       highlight(t);
       try { localStorage.setItem(KEY, String(Math.floor(t))); } catch (err) {}
+      /* The front-page list is rewritten whole each time, so it is kept to
+         once every few seconds rather than every tick. */
+      if (++ticks % 5 === 0) remember(t);
     }, 1000);
   }
 

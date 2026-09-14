@@ -231,6 +231,31 @@ place once it is complete, because a half-finished list is worse than
 yesterday's — YouTube rate-limits this often enough to matter. If the read
 fails entirely it carries on with the previous list and says how old it is.
 
+## Where you left off
+
+The front page offers back the last eight sittings whose recording was played,
+each with the point it stopped at. Clicking one opens the sitting and starts
+the recording there.
+
+Kept entirely in the browser, under `avlokan:recent`. There is no account,
+nothing is sent anywhere, and clearing the browser clears it — which also
+means it does not follow anyone from the laptop to the television. The section
+is absent until there is something to put in it, so a first-time reader sees
+the page exactly as it has always been.
+
+The position itself was already being kept, under the page's address, for the
+"Resume at 12:34" button on the sitting. What that could not do was name the
+sitting on another page — an address is not a title — so each entry now
+carries the text, the date and the reference, read off `data-` attributes on
+the discourse page rather than looked up, which costs no extra request.
+
+Anything under thirty seconds is ignored: that is a sitting someone opened and
+thought better of, and offering to resume it would bury the ones they meant.
+
+A resume link ends `#at<seconds>`, deliberately not the `#t<seconds>` a search
+result uses — that one lands on a line to read and must not start playing
+under you.
+
 ## Correcting an entry
 
 ```bash

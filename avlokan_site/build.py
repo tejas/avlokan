@@ -714,7 +714,12 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
     youtube = s["youtube_id"]
     title = sitting_title(s)
 
-    bits = [f'<article class="discourse">',
+    # What a listener needs to be offered this sitting again from the front
+    # page. Written into the page rather than looked up, so the list costs no
+    # extra request and keeps working if the catalogue is ever reorganised.
+    bits = [f'<article class="discourse" data-slug="{e(sitting_slug(s))}" '
+            f'data-text="{e(scripture)}" data-when="{e(pretty_date(date))}" '
+            f'data-ref="{e(reference)}">',
             f'<h1>{e(scripture)}</h1>',
             '<p class="meta">']
     line = [pretty_date(date)]
@@ -1232,10 +1237,19 @@ def index_page(groups: dict[str, list[dict[str, Any]]]) -> str:
             + (f'<br>{n_t} transcribed' if n_t else '') +
             f'</span></a></li>'
         )
+    # Empty, and hidden, until the browser fills it from what this person has
+    # actually listened to. There is no account and nothing is sent anywhere;
+    # a reader who has not played anything, or who clears their browser, sees
+    # the page exactly as it has always been.
     body = (
         f'<h1>{e(SITE_TAGLINE)}</h1>'
         f'<p class="lede">{e(SITE_DESC)}</p>'
         f'<p class="meta">{total} sittings &middot; {done} transcribed</p>'
+        '<section id="recent" class="recent" hidden aria-labelledby="recent-h">'
+        '<h2 id="recent-h">Where you left off</h2>'
+        '<ol></ol>'
+        '<p class="links"><button type="button" class="forget">Forget these</button></p>'
+        '</section>'
         f'<ul class="texts">{"".join(cards)}</ul>'
     )
     return shell(SITE_TITLE, body, depth=0)
@@ -1850,6 +1864,36 @@ button.play:hover .play-mark,button.play:focus-visible .play-mark{background:var
  margin-top:var(--s-2)}
 .book-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-2)}
 
+/* ---------- where you left off ----------
+   Quiet on purpose. It sits above the texts and must not compete with them:
+   a way back in for someone who was already listening, not an invitation. */
+.recent[hidden]{display:none}
+.recent{margin:var(--s-6) 0 var(--s-7);padding-top:var(--s-5);
+ border-top:var(--border)}
+.recent h2{margin:0 0 var(--s-4);font-size:var(--size-sm);
+ letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--c-muted);
+ font-weight:var(--weight-medium)}
+.recent ol{list-style:none;margin:0;padding:0}
+.recent li{border-bottom:var(--border)}
+.recent li:last-child{border-bottom:0}
+.recent a{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s-2);
+ padding:var(--s-3) 0;text-decoration:none;color:var(--c-ink)}
+.recent a:hover{background:var(--c-hover)}
+.recent a strong{font-weight:var(--weight-medium)}
+.recent a:hover strong{color:var(--c-accent);
+ text-decoration:underline;text-underline-offset:var(--underline-offset)}
+.recent .muted{font-size:var(--size-sm);color:var(--c-muted)}
+.recent .at{margin-left:auto;font-size:var(--size-sm);color:var(--c-muted);
+ font-variant-numeric:tabular-nums;white-space:nowrap}
+.recent .forget{margin-top:var(--s-3);font:inherit;font-size:var(--size-sm);
+ padding:var(--s-1) var(--s-3);color:var(--c-muted);background:none;
+ border:var(--border);border-radius:var(--radius);cursor:pointer}
+.recent .forget:hover{color:var(--c-ink);background:var(--c-surface)}
+
+@media (max-width:34rem){
+  .recent .at{margin-left:0;width:100%}
+}
+
 /* ---------- the correction form ----------
    Hidden until Shift+E or ?edit. Deliberately plain: it is a tool, not part
    of the archive, and it should not look like something a reader was meant
@@ -2135,6 +2179,7 @@ JS = """/* Enhancement only. The page is complete without any of this.
     if (holder && !holder.querySelector("button.play")) addPlayButton();
     bindTranscript();
     place();
+    resumeFromHash();
   }
 
   function addPlayButton() {
@@ -2159,6 +2204,105 @@ JS = """/* Enhancement only. The page is complete without any of this.
 
   var KEY = "avlokan:pos:" + page;
   var MARKS = "avlokan:marks:" + page;
+
+  /* ---- where you left off -------------------------------------------------
+     The position of a recording was already being kept, under the page's own
+     address, so that "Resume at 12:34" could appear on the sitting itself.
+     What it could not do was tell you, from the front page, which sittings
+     those were — an address is not a title.
+
+     So alongside it a short list is kept: the last few sittings played, each
+     with what it is, when it was given and where you stopped. Entirely in
+     this browser. There is no account, nothing is sent anywhere, and clearing
+     the browser clears it. The archive cannot see it and neither can I. */
+  var RECENT = "avlokan:recent";
+  var KEEP = 8;
+
+  function recent() {
+    try {
+      var got = JSON.parse(localStorage.getItem(RECENT) || "[]");
+      return Object.prototype.toString.call(got) === "[object Array]" ? got : [];
+    } catch (err) { return []; }
+  }
+
+  function clock(seconds) {
+    var s = Math.max(0, Math.floor(seconds));
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
+    var mm = (h && m < 10 ? "0" : "") + m;
+    return (h ? h + ":" : "") + mm + ":" + (r < 10 ? "0" : "") + r;
+  }
+
+  /* Under half a minute is not a sitting you were listening to, it is one you
+     opened and thought better of. Offering to resume those would bury the
+     ones you meant. */
+  var WORTH_KEEPING = 30;
+
+  function remember(seconds) {
+    var art = document.querySelector("article.discourse[data-slug]");
+    if (!art || !(seconds > WORTH_KEEPING)) return;
+    var kept = recent().filter(function (x) { return x && x.slug !== art.dataset.slug; });
+    kept.unshift({ slug: art.dataset.slug, text: art.dataset.text,
+                   when: art.dataset.when, ref: art.dataset.ref,
+                   t: Math.floor(seconds), at: Date.now() });
+    try { localStorage.setItem(RECENT, JSON.stringify(kept.slice(0, KEEP))); } catch (err) {}
+  }
+
+  /* Someone who has been using the archive already has positions saved but no
+     list, because the list did not exist when they listened. The page knows
+     what it is, so the first visit back to a sitting puts it in. */
+  (function () {
+    var art = document.querySelector("article.discourse[data-slug]");
+    if (!art) return;
+    var was = 0;
+    try { was = parseInt(localStorage.getItem("avlokan:pos:" + location.pathname) || "0", 10) || 0; }
+    catch (err) { return; }
+    var listed = recent().some(function (x) { return x && x.slug === art.dataset.slug; });
+    if (was > WORTH_KEEPING && !listed) remember(was);
+  })();
+
+  /* Arriving from the front page: start the recording where it was left.
+     Deliberately not the `#t…` that a search result uses — that one lands on
+     a line to read, and should not begin playing under you.
+
+     Called again after every in-page navigation. Following a link does not
+     reload the document, it swaps what is in <main>, so anything that only
+     runs when the script first loads never runs again. */
+  function resumeFromHash() {
+    var at = /^#at([0-9]+)$/.exec(location.hash || "");
+    if (!at || !holder) return;
+    if (playingId === holder.getAttribute("data-youtube")) return;
+    play(true, parseInt(at[1], 10));
+  }
+  resumeFromHash();
+
+  (function () {
+    var panel = document.getElementById("recent");
+    if (!panel) return;
+    var items = recent().filter(function (x) { return x && x.slug && x.t; });
+    if (!items.length) return;
+    var list = panel.querySelector("ol");
+    items.forEach(function (x) {
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.href = "d/" + x.slug + ".html#at" + x.t;
+      a.appendChild(document.createElement("strong")).textContent = x.text || x.slug;
+      var sub = document.createElement("span");
+      sub.className = "muted";
+      sub.textContent = [x.when, x.ref].filter(Boolean).join(" · ");
+      a.appendChild(sub);
+      var at = document.createElement("span");
+      at.className = "at";
+      at.textContent = "stopped at " + clock(x.t);
+      a.appendChild(at);
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+    panel.hidden = false;
+    panel.querySelector(".forget").addEventListener("click", function () {
+      try { localStorage.removeItem(RECENT); } catch (err) {}
+      panel.hidden = true;
+    });
+  })();
 
   /* ---- corrections -------------------------------------------------------
      The form is on every discourse page and hidden on all of them. Shift+E
@@ -2287,11 +2431,15 @@ JS = """/* Enhancement only. The page is complete without any of this.
 
   function watch() {
     clearInterval(timer);
+    var ticks = 0;
     timer = setInterval(function () {
       if (!player || !player.getCurrentTime) return;
       var t = player.getCurrentTime();
       highlight(t);
       try { localStorage.setItem(KEY, String(Math.floor(t))); } catch (err) {}
+      /* The front-page list is rewritten whole each time, so it is kept to
+         once every few seconds rather than every tick. */
+      if (++ticks % 5 === 0) remember(t);
     }, 1000);
   }
 

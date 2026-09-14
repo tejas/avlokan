@@ -287,6 +287,36 @@ button.play:hover .play-mark,button.play:focus-visible .play-mark{background:var
  margin-top:var(--s-2)}
 .book-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-2)}
 
+/* ---------- where you left off ----------
+   Quiet on purpose. It sits above the texts and must not compete with them:
+   a way back in for someone who was already listening, not an invitation. */
+.recent[hidden]{display:none}
+.recent{margin:var(--s-6) 0 var(--s-7);padding-top:var(--s-5);
+ border-top:var(--border)}
+.recent h2{margin:0 0 var(--s-4);font-size:var(--size-sm);
+ letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--c-muted);
+ font-weight:var(--weight-medium)}
+.recent ol{list-style:none;margin:0;padding:0}
+.recent li{border-bottom:var(--border)}
+.recent li:last-child{border-bottom:0}
+.recent a{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s-2);
+ padding:var(--s-3) 0;text-decoration:none;color:var(--c-ink)}
+.recent a:hover{background:var(--c-hover)}
+.recent a strong{font-weight:var(--weight-medium)}
+.recent a:hover strong{color:var(--c-accent);
+ text-decoration:underline;text-underline-offset:var(--underline-offset)}
+.recent .muted{font-size:var(--size-sm);color:var(--c-muted)}
+.recent .at{margin-left:auto;font-size:var(--size-sm);color:var(--c-muted);
+ font-variant-numeric:tabular-nums;white-space:nowrap}
+.recent .forget{margin-top:var(--s-3);font:inherit;font-size:var(--size-sm);
+ padding:var(--s-1) var(--s-3);color:var(--c-muted);background:none;
+ border:var(--border);border-radius:var(--radius);cursor:pointer}
+.recent .forget:hover{color:var(--c-ink);background:var(--c-surface)}
+
+@media (max-width:34rem){
+  .recent .at{margin-left:0;width:100%}
+}
+
 /* ---------- the correction form ----------
    Hidden until Shift+E or ?edit. Deliberately plain: it is a tool, not part
    of the archive, and it should not look like something a reader was meant

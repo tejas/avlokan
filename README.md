@@ -64,6 +64,12 @@ reasoning so a later reader can disagree with it:
 Nothing about the archive is corrected silently. A correction appears on the
 page it corrects, saying what was decided and why.
 
+## Where you left off
+
+The front page offers back the last few sittings you played, each with the
+point you stopped at. It lives in your browser only — no account, nothing
+sent anywhere, and "Forget these" clears it.
+
 ## Correcting something that is wrong
 
 ```bash
