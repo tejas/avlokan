@@ -132,6 +132,15 @@ EXCLUDED = {title_key(t) for t in json.loads(
 CORRECTIONS = json.loads((ROOT / "avlokan" / "date_corrections.json").read_text(
     encoding="utf-8")) if (ROOT / "avlokan" / "date_corrections.json").exists() else {}
 
+# Uploads a better one has replaced, dropped from the archive on purpose.
+# Kept as a list rather than forgotten for two reasons: the merge would
+# otherwise find them on the channel, not recognise them, and add each one
+# back as a sitting of its own; and an archive that quietly discards things
+# should at least be able to say what it discarded and in favour of what.
+RETIRED_FILE = ROOT / "avlokan" / "superseded_uploads.json"
+RETIRED: dict = json.loads(RETIRED_FILE.read_text(encoding="utf-8")) \
+    if RETIRED_FILE.exists() else {}
+
 
 def title_date(title: str) -> tuple[str | None, str]:
     """The recording date from the title, or a reason it could not be read."""
@@ -851,10 +860,17 @@ def dedupe(index: list[dict], recency: dict[str, int],
                     pubs[i].pop("superseded_by", None)
                     pubs[i].pop("superseded_reason", None)
                     continue
-                if pubs[i].get("superseded_by") == ids[best]:
+                reason = ("not yet premiered" if ids[i] in pending
+                          else "later upload")
+                if (pubs[i].get("superseded_by") == ids[best]
+                        and pubs[i].get("superseded_reason") == reason):
                     continue
                 pubs[i]["superseded_by"] = ids[best]
-                pubs[i]["superseded_reason"] = "later upload"
+                # A premiere is not an older upload; it is the coming one,
+                # set aside only until it airs. Recorded distinctly so the
+                # page does not call it "the earlier one" and so `retire`
+                # never mistakes it for something to throw away.
+                pubs[i]["superseded_reason"] = reason
                 marked.append((entry["date"], pubs[i].get("title", ""),
                                pubs[best].get("title", "")))
     return marked
@@ -985,6 +1001,69 @@ def attach_id(entry: dict, i: int, row: dict[str, str]) -> int:
     if not cat[i].get("scripture"):
         cat[i]["scripture"] = scripture
     return 1
+
+
+def retire(index: list[dict], pending: set[str]) -> list[dict]:
+    """Drop an upload that a better one has replaced.
+
+    He has been restoring the old recordings and re-uploading them, so a
+    sitting can carry two or three uploads of itself. Until now the older ones
+    were kept and offered under the video — but the newer upload is the same
+    discourse, sounding and looking better, and a memorial archive offering an
+    inferior copy of the same hour is clutter, not generosity.
+
+    A scheduled premiere is never retired. It is marked superseded only
+    because nobody can watch it yet, and it is the version that will replace
+    everything else the moment it airs.
+
+    Segments are not retired either. A sitting published whole and also cut
+    into pieces is not an older version of itself.
+    """
+    dropped = []
+    for entry in index:
+        pubs = entry.get("published") or []
+        cats = entry.get("catalogued") or []
+        # By position and nothing else. The two lists are parallel but not
+        # always the same length — `realign` leaves spare catalogue rows at
+        # the end — so padding them to match, or zipping them, either invents
+        # empty rows or silently drops the spares. Both wreck the pairing
+        # `sittings()` depends on: 16 sittings lost their text and fell into
+        # "Other discourses" the first time this was written that way.
+        drop = set()
+        for i, pub in enumerate(pubs):
+            vid = (cats[i].get("youtube_id") or "") if i < len(cats) else ""
+            if (pub.get("superseded_by")
+                    and pub.get("superseded_reason") == "later upload"
+                    and vid not in pending):
+                drop.add(i)
+                dropped.append({
+                    "youtube_id": vid,
+                    "date": entry["date"],
+                    "title": pub.get("title", ""),
+                    "replaced_by": pub["superseded_by"],
+                    "why": "a later upload of the same sitting replaced it",
+                })
+        if not drop:
+            continue
+        # The catalogue row at the same position is not always the same
+        # sitting's record. On 9 November 2001 it reads "Shri Parmagamsar,
+        # Gatha 291, 279, 280, 292" and only happens to sit beside a Tatva
+        # Charcha upload; deleting it with the video would throw away the one
+        # record that sitting has. `sittings()` groups by text before pairing,
+        # so a row naming a different text can stay where it is — it just
+        # loses the id of the video that is going.
+        keep_cats = []
+        for i, cat in enumerate(cats):
+            if i not in drop:
+                keep_cats.append(cat)
+                continue
+            same = (cat.get("scripture") or "") == (pubs[i].get("scripture") or "")
+            if same or not (cat.get("reference") or cat.get("location")):
+                continue
+            keep_cats.append(dict(cat, youtube_id=""))
+        entry["published"] = [p for i, p in enumerate(pubs) if i not in drop]
+        entry["catalogued"] = keep_cats
+    return dropped
 
 
 def repoint(entry: dict, i: int, row: dict[str, str],
@@ -1121,6 +1200,10 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     for row in rows:
         if row["id"] in known:
             continue
+        if row["id"] in RETIRED:
+            # Replaced by a better upload and dropped on purpose; finding it
+            # on the channel again is not a reason to bring it back.
+            continue
         if title_key(row["title"]) in EXCLUDED:
             continue
         key = title_key(row["title"])
@@ -1206,6 +1289,10 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     pending = {r["id"] for r in rows if not r["duration"].isdigit()}
     superseded = dedupe(list(by_date.values()), upload_order(rows), pending)
     superseded += fold_segments(list(by_date.values()))
+    # Last: dedupe has to have decided what replaces what before anything is
+    # dropped, and fold_segments must have run so segments are not mistaken
+    # for older versions.
+    retired = retire(list(by_date.values()), pending)
     moved = sorted(set(moved) | set(again))
     stale.extend(more_stale)
 
@@ -1220,7 +1307,7 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
             "superseded": superseded, "renamed": renamed,
             "audio_moved": audio_moved, "audio_named": audio_named, "same_day": same_day, "relocated": relocated, "in_series": in_series, "from_playlists": from_playlists,
             "crossed": crossed, "resorted": resorted, "ambiguous": ambiguous,
-            "repointed": repointed,
+            "repointed": repointed, "retired": retired,
             "pending": [r for r in rows if r["id"] in pending]}
 
 
@@ -1298,6 +1385,11 @@ def main() -> None:
               f"video gives for that sitting:")
         for was, now, text, part in result["audio_moved"]:
             print(f"   {was} -> {now}  {text} part {part}")
+    if result["retired"]:
+        print(f"{len(result['retired'])} older upload(s) removed from the archive, "
+              f"replaced by a better one of the same sitting:")
+        for r in result["retired"]:
+            print(f"   {r['date']}  {r['youtube_id'] or '(no id)':12} {r['title'][:50]}")
     if result["repointed"]:
         print(f"{len(result['repointed'])} sitting(s) were carrying a title over the "
               f"wrong video; given the upload that matches what they say:")
@@ -1329,6 +1421,19 @@ def main() -> None:
     shutil.copy2(INDEX, backup)
     INDEX.write_text(json.dumps(result["index"], indent=1, ensure_ascii=False),
                      encoding="utf-8")
+    if result["retired"]:
+        # Recorded before they are needed: without this the next run finds
+        # them on the channel and adds each one back as a sitting of its own.
+        keeping = dict(RETIRED)
+        for r in result["retired"]:
+            if r["youtube_id"]:
+                keeping[r["youtube_id"]] = {k: v for k, v in r.items()
+                                            if k != "youtube_id"}
+        RETIRED_FILE.write_text(
+            json.dumps(keeping, indent=1, ensure_ascii=False, sort_keys=True) + "\n",
+            encoding="utf-8")
+        print(f"{len(result['retired'])} upload(s) recorded in "
+              f"{RETIRED_FILE.name} so they are not added back")
     print(f"\nwritten. previous index kept at {backup.name}")
 
 

@@ -550,6 +550,8 @@ def alt_label(alt: dict[str, Any]) -> str:
     hit = re.search(r"\bsegment\s*(\d{1,2})\b", alt.get("title") or "", re.I)
     if hit:
         return f'segment {hit.group(1)}'
+    if alt.get("reason") == "not yet premiered":
+        return "the re-edited version"
     minutes = alt.get("minutes") or 0
     return f"earlier upload ({minutes} min)" if minutes else "earlier upload"
 
@@ -803,7 +805,10 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
             links = " &middot; ".join(
                 f'<a href="https://www.youtube.com/watch?v={e(a["youtube_id"])}">'
                 f'{e(alt_label(a))}</a>' for a in alts)
-            if all(a["reason"] == "segment" for a in alts):
+            if all(a["reason"] == "not yet premiered" for a in alts):
+                note = ("A re-edited upload of this sitting is scheduled on "
+                        "YouTube and will replace the video above once it airs")
+            elif all(a["reason"] == "segment" for a in alts):
                 note = ("The same recording is also published cut into pieces, "
                         "which together run to the same length")
             elif len(alts) == 1:
