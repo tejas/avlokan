@@ -231,6 +231,37 @@ place once it is complete, because a half-finished list is worse than
 yesterday's — YouTube rate-limits this often enough to matter. If the read
 fails entirely it carries on with the previous list and says how old it is.
 
+## Reading the book
+
+A hundred and fourteen aphorisms were one unbroken scroll set at the size of
+the English around it. Three things changed.
+
+**The Gujarati is bigger.** `--size-indic-book` is its own step in the scale,
+above the body text rather than equal to it. Gujarati and Devanagari carry
+more strokes in the same square than Latin does and hang matras above and
+below the line; set at the Latin size they read smaller than it and the
+conjuncts close up.
+
+**There is an index.** Every aphorism, with its opening words — a column of
+bare numbers is a table of contents for nobody. It is written into every page
+of the book as real links, not built by script, because it is the only way
+through and it has to work where nothing runs. On wide screens it is a sticky
+column; on a phone the same links become one scrollable row of numbers, so the
+book still starts at the top of the screen. Script only adds telling you which
+aphorism you are at.
+
+**Two things the renderer was flattening.** Three aphorisms carry a heading,
+marked the way markdown does, so `### વિકાસક્રમ` was printed with its hashes.
+And a single line break inside a paragraph was dropped, which ran the nine
+numbered stages of aphorism 64 into one unreadable line. Blank lines separate
+paragraphs; a line break inside one is now a line break.
+
+One CSS note worth keeping. The layout grid needs `minmax(0,1fr)` and not
+`1fr`: a track's default minimum is its content's own width, and on a phone
+the index is a row of 114 links that scrolls sideways. Left to size itself the
+track grew to hold all of them, the column overflowed the screen, and the
+centred title page went off the right-hand edge leaving a band of nothing.
+
 ## Where you left off
 
 The front page offers back the last eight sittings whose recording was played,

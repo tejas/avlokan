@@ -29,6 +29,12 @@
   --font-indic:"Noto Sans Gujarati","Noto Sans Devanagari",var(--font-body);
   --size-xs:.75rem; --size-sm:.85rem; --size-md:.95rem; --size-base:1.0625rem;
   --size-lg:1.25rem; --size-xl:1.5rem;
+  /* Gujarati and Devanagari carry more strokes in the same square than Latin
+     does, and matras sit above and below the line. Set at the size the Latin
+     text is, they read smaller than it and the conjuncts close up. The book
+     is a book — it is read continuously, not glanced at — so it gets its own
+     step, a little larger again. */
+  --size-indic:1.25rem; --size-indic-book:1.4rem;
   --leading-tight:1.3; --leading-body:1.75; --leading-indic:1.9;
   --weight-normal:400; --weight-medium:500; --weight-bold:600;
   --track-caps:.06em;
@@ -41,6 +47,8 @@
   --radius:3px;
   --measure:46rem;          /* reading column           */
   --measure-watch:76rem;    /* wider, for a transcript beside its video */
+  --measure-book:68rem;     /* the book, beside its index */
+  --w-index:15rem;          /* the book's index column   */
   --measure-prose:34rem;    /* narrower, for continuous prose */
   --border:1px solid var(--c-line);
   --rule:3px;               /* the thick left-hand marker */
@@ -279,13 +287,71 @@ button.play:hover .play-mark,button.play:focus-visible .play-mark{background:var
  text-transform:uppercase;color:var(--c-muted);text-decoration:none}
 .aphorism .n:hover{color:var(--c-accent)}
 .aphorism .guj{font-family:var(--font-indic);line-height:var(--leading-indic);
- margin:var(--s-2) 0}
+ font-size:var(--size-indic-book);margin:var(--s-3) 0}
+.aphorism .guj p{margin:0 0 var(--s-4)}
+.aphorism .guj p:last-child{margin-bottom:0}
+.aphorism .guj h3{font-size:var(--size-lg);line-height:var(--leading-tight);
+ margin:var(--s-5) 0 var(--s-3);font-weight:var(--weight-medium)}
 .aphorism .eng{color:var(--c-ink-soft);margin:var(--s-3) 0 0;
  padding-left:var(--s-4);border-left:var(--rule) solid var(--c-line)}
 .aphorism .eng p{margin:var(--s-1) 0}
 .aphorism .pending{color:var(--c-muted);font-size:var(--size-sm);font-style:italic;
  margin-top:var(--s-2)}
 .book-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-2)}
+
+/* ---------- the book, beside its index ----------
+   The index is real links in the page, not built by script: it is how you
+   find your way through a hundred and fourteen aphorisms, and it has to work
+   in a browser that runs nothing. Script only marks which one you are at. */
+main.reading{max-width:var(--measure-book)}
+/* `minmax(0,1fr)` and not `1fr`: a grid track's default minimum is its
+   content's own width, and the index is a row of a hundred and fourteen
+   links that scrolls sideways. Left to size itself the track grew to hold all
+   of them, the column overflowed the screen, and the centred title page went
+   with it — off the right-hand edge, leaving a band of nothing behind. */
+.book-layout{display:grid;grid-template-columns:minmax(0,1fr);
+ gap:var(--s-6);align-items:start}
+@media (min-width:62rem){
+  .book-layout{grid-template-columns:var(--w-index) minmax(0,1fr)}
+  .book-index{position:sticky;top:var(--h-sticky);max-height:calc(100vh - var(--h-sticky) - var(--s-5));
+   overflow-y:auto;overscroll-behavior:contain;border-right:var(--border);
+   padding-right:var(--s-4)}
+}
+.book-index h2{margin:0 0 var(--s-3);font-size:var(--size-sm);
+ letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--c-muted);
+ font-weight:var(--weight-medium)}
+.book-index ol{list-style:none;margin:0;padding:0}
+.book-index li{margin:0}
+.book-index a{display:grid;grid-template-columns:2.5rem minmax(0,1fr);gap:var(--s-2);
+ padding:var(--s-2) var(--s-2) var(--s-2) 0;text-decoration:none;color:var(--c-ink-soft);
+ border-radius:var(--radius);line-height:var(--leading-tight)}
+.book-index a:hover{background:var(--c-hover);color:var(--c-ink)}
+.book-index .num{font-size:var(--size-sm);color:var(--c-muted);
+ font-variant-numeric:tabular-nums;text-align:right}
+.book-index .open{font-family:var(--font-indic);font-size:var(--size-sm);
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.book-index a[aria-current]{background:var(--c-hover);color:var(--c-ink)}
+.book-index a[aria-current] .num{color:var(--c-accent);font-weight:var(--weight-bold)}
+/* On a phone the same links become one scrollable row of numbers, so the book
+   still begins at the top of the screen. A hundred and fourteen entries with
+   their opening words would be a page of its own before the text started, and
+   collapsing it behind a control would need script to stay collapsed. */
+@media (max-width:61.999rem){
+  .book-index{position:sticky;top:0;z-index:5;margin:0 calc(-1 * var(--s-4));
+   padding:var(--s-2) var(--s-4);background:var(--c-bg);
+   border-bottom:var(--border)}
+  .book-index h2{position:absolute;width:1px;height:1px;overflow:hidden;
+   clip-path:inset(50%);white-space:nowrap}
+  .book-index ol{display:flex;gap:var(--s-1);overflow-x:auto;
+   overscroll-behavior-x:contain;scroll-snap-type:x proximity;
+   -webkit-overflow-scrolling:touch}
+  .book-index li{scroll-snap-align:center}
+  .book-index a{display:block;padding:var(--s-2) var(--s-3);min-width:2.75rem;
+   text-align:center}
+  .book-index .open{display:none}
+  .book-index .num{text-align:center;font-size:var(--size-md)}
+}
+.aphorism:target{scroll-margin-top:var(--h-sticky)}
 
 /* ---------- where you left off ----------
    Quiet on purpose. It sits above the texts and must not compete with them:

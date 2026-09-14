@@ -230,8 +230,9 @@ def crumbs(trail: list[tuple[str, str]]) -> str:
 
 def shell(title: str, body: str, *, depth: int = 0, description: str = "",
           head_extra: str = "", script: str = "", trail: list[tuple[str, str]] | None = None,
-          wide: bool = False) -> str:
+          wide: bool = False, reading: bool = False) -> str:
     up = "../" * depth
+    room = " class=\"watching\"" if wide else (" class=\"reading\"" if reading else "")
     return f"""<!doctype html>
 <html lang="hi">
 <head>
@@ -251,7 +252,7 @@ def shell(title: str, body: str, *, depth: int = 0, description: str = "",
   <a class="navlink" href="{up}photographs.html">Photographs</a>
   <a class="navlink" href="{up}about.html">About</a>
 </header>
-<main{' class="watching"' if wide else ''}>
+<main{room}>
 {crumbs(trail or [])}
 {body}
 </main>
@@ -1486,12 +1487,38 @@ def about_page() -> str:
 # the book
 # --------------------------------------------------------------------------
 
+HEADING = re.compile(r"^#{1,6}\s*")
+
+
+def render_gujarati(text: str) -> str:
+    """The aphorism as it is laid out on the page, not as one block of prose.
+
+    Two things were being flattened. Three aphorisms carry a heading, which
+    the extraction marked the way markdown does, so `### વિકાસક્રમ` was being
+    printed with its hashes. And a single line break inside a paragraph was
+    being dropped, which runs a numbered list — aphorism 64 is one — into a
+    single unreadable line. Blank lines separate paragraphs; a line break
+    inside one is a line break.
+    """
+    out = []
+    for block in text.split("\n\n"):
+        lines = [l for l in block.splitlines() if l.strip()]
+        if not lines:
+            continue
+        if HEADING.match(lines[0]):
+            out.append(f'<h3>{e(HEADING.sub("", lines[0]).strip())}</h3>')
+            lines = lines[1:]
+        if lines:
+            out.append("<p>" + "<br>".join(e(l.strip()) for l in lines) + "</p>")
+    return "".join(out)
+
+
 def aphorism_html(item: dict[str, Any], *, linked: bool = True, depth: int = 1) -> str:
     up = "../" * depth
     n = item["n"]
     label = (f'<a class="n" href="{up}book/{n}.html">Aphorism {n}</a>' if linked
              else f'<span class="n">Aphorism {n}</span>')
-    guj = "".join(f'<p>{e(par)}</p>' for par in item["gujarati"].split("\n\n") if par.strip())
+    guj = render_gujarati(item["gujarati"])
     bits = [f'<article class="aphorism" id="a{n}">', label,
             f'<div class="guj" lang="gu">{guj}</div>']
     if item.get("english"):
@@ -1513,6 +1540,43 @@ def aphorism_html(item: dict[str, Any], *, linked: bool = True, depth: int = 1) 
 def inline_em(text: str) -> str:
     out = e(text)
     return re.sub(r"\*(?!\s)(.+?)(?<!\s)\*", r"<em>\1</em>", out)
+
+
+def opening_words(text: str, limit: int = 40) -> str:
+    """Enough of an aphorism to recognise it by in the index.
+
+    A column of bare numbers is a table of contents for nobody: 8, 12, 13 says
+    nothing about which one is the one you were reading. The first few words
+    do, and they are the words he chose to open with.
+    """
+    flat = " ".join(HEADING.sub("", text).split())
+    if len(flat) <= limit:
+        return flat
+    cut = flat[:limit]
+    space = cut.rfind(" ")
+    return (cut[:space] if space > limit // 2 else cut).rstrip(" ,.-") + "…"
+
+
+def book_index(items: list[dict[str, Any]], here: int | None = None) -> str:
+    """The list of every aphorism, as real links.
+
+    Written into every page of the book rather than built by script, because
+    it is the only way through a hundred and fourteen of them and it has to
+    work where nothing runs. On the index it points within the page; on a
+    single aphorism it points at the other pages.
+    """
+    rows = []
+    for item in items:
+        n = item["n"]
+        target = f"#a{n}" if here is None else f"{n}.html"
+        current = ' aria-current="true"' if here == n else ""
+        rows.append(
+            f'<li><a href="{target}"{current}><span class="num">{n}</span>'
+            f'<span class="open" lang="gu">{e(opening_words(item["gujarati"]))}</span>'
+            f'</a></li>')
+    return ('<nav class="book-index" aria-label="All aphorisms">'
+            f'<h2>All {len(items)} aphorisms</h2>'
+            f'<ol>{"".join(rows)}</ol></nav>')
 
 
 def book_pages(out_dir: Path) -> int:
@@ -1547,9 +1611,12 @@ def book_pages(out_dir: Path) -> int:
         f'{done} of {len(items)} have one so far. Each aphorism has its own page, so a '
         f'correction to one changes nothing else.</p></div>'
     )
-    body = intro + "\n".join(aphorism_html(i, depth=1) for i in items)
+    body = ('<div class="book-layout">' + book_index(items)
+            + '<div class="book-body">'
+            + intro + "\n".join(aphorism_html(i, depth=1) for i in items)
+            + '</div></div>')
     (out_dir / "book" / "index.html").write_text(
-        shell(f"Avlokan — the book", body, depth=1, script="none",
+        shell(f"Avlokan — the book", body, depth=1, reading=True,
               description="Avlokan — the unique art of self-observation, by Shri Devchand bhai Shah.",
               trail=[("Avlokan", "../index.html"), ("The book", "")]),
         encoding="utf-8")
@@ -1561,11 +1628,14 @@ def book_pages(out_dir: Path) -> int:
         nav.append('<a href="index.html">All aphorisms</a>')
         if idx + 1 < len(items):
             nav.append(f'<a href="{items[idx+1]["n"]}.html">{items[idx+1]["n"]} &rarr;</a>')
-        page = (aphorism_html(item, linked=False, depth=1)
-                + f'<p class="links">{" &middot; ".join(nav)}</p>')
+        page = ('<div class="book-layout">' + book_index(items, here=item["n"])
+                + '<div class="book-body">'
+                + aphorism_html(item, linked=False, depth=1)
+                + f'<p class="links">{" &middot; ".join(nav)}</p>'
+                + '</div></div>')
         (out_dir / "book" / f'{item["n"]}.html').write_text(
-            shell(f'Avlokan, aphorism {item["n"]}', page, depth=1, script="none",
-                  description=item["gujarati"][:150],
+            shell(f'Avlokan, aphorism {item["n"]}', page, depth=1, reading=True,
+                  description=opening_words(item["gujarati"], 150),
                   trail=[("Avlokan", "../index.html"), ("The book", "index.html"),
                          (f'Aphorism {item["n"]}', "")]),
             encoding="utf-8")
@@ -1606,6 +1676,12 @@ CSS = """/* ====================================================================
   --font-indic:"Noto Sans Gujarati","Noto Sans Devanagari",var(--font-body);
   --size-xs:.75rem; --size-sm:.85rem; --size-md:.95rem; --size-base:1.0625rem;
   --size-lg:1.25rem; --size-xl:1.5rem;
+  /* Gujarati and Devanagari carry more strokes in the same square than Latin
+     does, and matras sit above and below the line. Set at the size the Latin
+     text is, they read smaller than it and the conjuncts close up. The book
+     is a book — it is read continuously, not glanced at — so it gets its own
+     step, a little larger again. */
+  --size-indic:1.25rem; --size-indic-book:1.4rem;
   --leading-tight:1.3; --leading-body:1.75; --leading-indic:1.9;
   --weight-normal:400; --weight-medium:500; --weight-bold:600;
   --track-caps:.06em;
@@ -1618,6 +1694,8 @@ CSS = """/* ====================================================================
   --radius:3px;
   --measure:46rem;          /* reading column           */
   --measure-watch:76rem;    /* wider, for a transcript beside its video */
+  --measure-book:68rem;     /* the book, beside its index */
+  --w-index:15rem;          /* the book's index column   */
   --measure-prose:34rem;    /* narrower, for continuous prose */
   --border:1px solid var(--c-line);
   --rule:3px;               /* the thick left-hand marker */
@@ -1856,13 +1934,71 @@ button.play:hover .play-mark,button.play:focus-visible .play-mark{background:var
  text-transform:uppercase;color:var(--c-muted);text-decoration:none}
 .aphorism .n:hover{color:var(--c-accent)}
 .aphorism .guj{font-family:var(--font-indic);line-height:var(--leading-indic);
- margin:var(--s-2) 0}
+ font-size:var(--size-indic-book);margin:var(--s-3) 0}
+.aphorism .guj p{margin:0 0 var(--s-4)}
+.aphorism .guj p:last-child{margin-bottom:0}
+.aphorism .guj h3{font-size:var(--size-lg);line-height:var(--leading-tight);
+ margin:var(--s-5) 0 var(--s-3);font-weight:var(--weight-medium)}
 .aphorism .eng{color:var(--c-ink-soft);margin:var(--s-3) 0 0;
  padding-left:var(--s-4);border-left:var(--rule) solid var(--c-line)}
 .aphorism .eng p{margin:var(--s-1) 0}
 .aphorism .pending{color:var(--c-muted);font-size:var(--size-sm);font-style:italic;
  margin-top:var(--s-2)}
 .book-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-2)}
+
+/* ---------- the book, beside its index ----------
+   The index is real links in the page, not built by script: it is how you
+   find your way through a hundred and fourteen aphorisms, and it has to work
+   in a browser that runs nothing. Script only marks which one you are at. */
+main.reading{max-width:var(--measure-book)}
+/* `minmax(0,1fr)` and not `1fr`: a grid track's default minimum is its
+   content's own width, and the index is a row of a hundred and fourteen
+   links that scrolls sideways. Left to size itself the track grew to hold all
+   of them, the column overflowed the screen, and the centred title page went
+   with it — off the right-hand edge, leaving a band of nothing behind. */
+.book-layout{display:grid;grid-template-columns:minmax(0,1fr);
+ gap:var(--s-6);align-items:start}
+@media (min-width:62rem){
+  .book-layout{grid-template-columns:var(--w-index) minmax(0,1fr)}
+  .book-index{position:sticky;top:var(--h-sticky);max-height:calc(100vh - var(--h-sticky) - var(--s-5));
+   overflow-y:auto;overscroll-behavior:contain;border-right:var(--border);
+   padding-right:var(--s-4)}
+}
+.book-index h2{margin:0 0 var(--s-3);font-size:var(--size-sm);
+ letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--c-muted);
+ font-weight:var(--weight-medium)}
+.book-index ol{list-style:none;margin:0;padding:0}
+.book-index li{margin:0}
+.book-index a{display:grid;grid-template-columns:2.5rem minmax(0,1fr);gap:var(--s-2);
+ padding:var(--s-2) var(--s-2) var(--s-2) 0;text-decoration:none;color:var(--c-ink-soft);
+ border-radius:var(--radius);line-height:var(--leading-tight)}
+.book-index a:hover{background:var(--c-hover);color:var(--c-ink)}
+.book-index .num{font-size:var(--size-sm);color:var(--c-muted);
+ font-variant-numeric:tabular-nums;text-align:right}
+.book-index .open{font-family:var(--font-indic);font-size:var(--size-sm);
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.book-index a[aria-current]{background:var(--c-hover);color:var(--c-ink)}
+.book-index a[aria-current] .num{color:var(--c-accent);font-weight:var(--weight-bold)}
+/* On a phone the same links become one scrollable row of numbers, so the book
+   still begins at the top of the screen. A hundred and fourteen entries with
+   their opening words would be a page of its own before the text started, and
+   collapsing it behind a control would need script to stay collapsed. */
+@media (max-width:61.999rem){
+  .book-index{position:sticky;top:0;z-index:5;margin:0 calc(-1 * var(--s-4));
+   padding:var(--s-2) var(--s-4);background:var(--c-bg);
+   border-bottom:var(--border)}
+  .book-index h2{position:absolute;width:1px;height:1px;overflow:hidden;
+   clip-path:inset(50%);white-space:nowrap}
+  .book-index ol{display:flex;gap:var(--s-1);overflow-x:auto;
+   overscroll-behavior-x:contain;scroll-snap-type:x proximity;
+   -webkit-overflow-scrolling:touch}
+  .book-index li{scroll-snap-align:center}
+  .book-index a{display:block;padding:var(--s-2) var(--s-3);min-width:2.75rem;
+   text-align:center}
+  .book-index .open{display:none}
+  .book-index .num{text-align:center;font-size:var(--size-md)}
+}
+.aphorism:target{scroll-margin-top:var(--h-sticky)}
 
 /* ---------- where you left off ----------
    Quiet on purpose. It sits above the texts and must not compete with them:
@@ -2204,6 +2340,49 @@ JS = """/* Enhancement only. The page is complete without any of this.
 
   var KEY = "avlokan:pos:" + page;
   var MARKS = "avlokan:marks:" + page;
+
+  /* ---- the book's index ---------------------------------------------------
+     The index is already complete in the page and every link already works.
+     All this adds is telling you where you are in it — which of a hundred and
+     fourteen aphorisms is on the screen — and keeping that entry in view in a
+     column that is itself scrollable. */
+  (function () {
+    var index = document.querySelector(".book-index");
+    var marks = index && [].slice.call(document.querySelectorAll(".aphorism[id]"));
+    if (!index || !marks || marks.length < 2 || !window.IntersectionObserver) return;
+
+    var links = {};
+    [].forEach.call(index.querySelectorAll('a[href^="#a"]'), function (a) {
+      links[a.getAttribute("href").slice(1)] = a;
+    });
+    if (!Object.keys(links).length) return;
+
+    var shown = {}, current = null;
+    function settle() {
+      var first = null;
+      marks.forEach(function (m) {
+        if (shown[m.id] && (!first || m.offsetTop < first.offsetTop)) first = m;
+      });
+      var want = first ? links[first.id] : null;
+      if (want === current) return;
+      if (current) current.removeAttribute("aria-current");
+      current = want;
+      if (!current) return;
+      current.setAttribute("aria-current", "true");
+      /* Only when it has gone out of the column's own view; scrolling the
+         index on every aphorism would fight the reader's own scrolling. */
+      var box = index.getBoundingClientRect(), at = current.getBoundingClientRect();
+      if (at.top < box.top || at.bottom > box.bottom) {
+        current.scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    var watcher = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { shown[entry.target.id] = entry.isIntersecting; });
+      settle();
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    marks.forEach(function (m) { watcher.observe(m); });
+  })();
 
   /* ---- where you left off -------------------------------------------------
      The position of a recording was already being kept, under the page's own

@@ -274,6 +274,49 @@
   var KEY = "avlokan:pos:" + page;
   var MARKS = "avlokan:marks:" + page;
 
+  /* ---- the book's index ---------------------------------------------------
+     The index is already complete in the page and every link already works.
+     All this adds is telling you where you are in it — which of a hundred and
+     fourteen aphorisms is on the screen — and keeping that entry in view in a
+     column that is itself scrollable. */
+  (function () {
+    var index = document.querySelector(".book-index");
+    var marks = index && [].slice.call(document.querySelectorAll(".aphorism[id]"));
+    if (!index || !marks || marks.length < 2 || !window.IntersectionObserver) return;
+
+    var links = {};
+    [].forEach.call(index.querySelectorAll('a[href^="#a"]'), function (a) {
+      links[a.getAttribute("href").slice(1)] = a;
+    });
+    if (!Object.keys(links).length) return;
+
+    var shown = {}, current = null;
+    function settle() {
+      var first = null;
+      marks.forEach(function (m) {
+        if (shown[m.id] && (!first || m.offsetTop < first.offsetTop)) first = m;
+      });
+      var want = first ? links[first.id] : null;
+      if (want === current) return;
+      if (current) current.removeAttribute("aria-current");
+      current = want;
+      if (!current) return;
+      current.setAttribute("aria-current", "true");
+      /* Only when it has gone out of the column's own view; scrolling the
+         index on every aphorism would fight the reader's own scrolling. */
+      var box = index.getBoundingClientRect(), at = current.getBoundingClientRect();
+      if (at.top < box.top || at.bottom > box.bottom) {
+        current.scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    var watcher = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { shown[entry.target.id] = entry.isIntersecting; });
+      settle();
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    marks.forEach(function (m) { watcher.observe(m); });
+  })();
+
   /* ---- where you left off -------------------------------------------------
      The position of a recording was already being kept, under the page's own
      address, so that "Resume at 12:34" could appear on the sitting itself.
