@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search — Avlokan</title>
+<meta name="description" content="Search the discourses of Shri Devchand bhai Shah.">
+<link rel="stylesheet" href="assets/site.css">
+
+</head>
+<body>
+<header class="masthead">
+  <a class="wordmark" href="index.html">Avlokan</a>
+  <span class="tagline">Discourses of Shri Devchand bhai Shah</span>
+  <a class="navlink" href="book/index.html">The book</a>
+  <a class="navlink" href="search.html">Search</a>
+  <a class="navlink" href="photographs.html">Photographs</a>
+  <a class="navlink" href="about.html">About</a>
+</header>
+<main>
+<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="index.html">Avlokan</a></li><li aria-current="page">Search</li></ol></nav>
+<h1>Search</h1>
+<p class="lede">Every sitting by text, letter, date or title, and the book by
+its words. Tick <em>inside the transcripts</em> to search what he actually
+said in the sittings that have been transcribed, and land on the moment he
+said it.</p>
+<form class="find" role="search" onsubmit="return false">
+  <input type="search" id="q" autocomplete="off" autofocus
+         placeholder="Patrank 254, or avlokan, or 1999, or a phrase">
+  <label><input type="checkbox" id="deep"> inside the transcripts</label>
+</form>
+<p id="count" class="muted" role="status"></p>
+<div id="results"></div>
+<script src="assets/search.js" defer></script>
+</main>
+<footer>
+  <p>These teachings are offered freely. Copy them, re-host them, translate them.</p>
+  <p class="muted">Recorded 1994&ndash;2002. Archive built from the preserved original recordings.</p>
+</footer>
+
+</body>
+</html>

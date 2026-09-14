@@ -123,6 +123,19 @@ nav.series details{margin-top:var(--s-3)}
 nav.series summary{cursor:pointer;color:var(--c-muted);font-size:var(--size-sm)}
 nav.series ol{margin:var(--s-2) 0 0;padding-left:var(--s-5);font-size:var(--size-sm)}
 nav.series li{margin:var(--s-1) 0}
+form.find{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center;
+ margin:var(--s-5) 0 var(--s-3)}
+form.find input[type=search]{flex:1;min-width:16rem;font:inherit;padding:var(--s-2) var(--s-3);
+ border:var(--border);border-radius:var(--radius);background:var(--c-surface);color:var(--c-ink)}
+form.find label{font-size:var(--size-sm);color:var(--c-muted);display:flex;
+ align-items:center;gap:var(--s-2)}
+ul.results{list-style:none;padding:0;margin:var(--s-4) 0}
+ul.results li{padding:var(--s-3) 0;border-bottom:var(--border)}
+ul.results a{text-decoration:none}
+ul.results a:hover{text-decoration:underline}
+ul.results .guj{font-family:var(--font-indic);line-height:var(--leading-indic)}
+ul.results div{font-size:var(--size-sm);margin-top:var(--s-1)}
+.block:target .w{background:var(--c-mark)}
 nav.jump{margin:var(--s-4) 0 var(--s-6);line-height:2.1}
 nav.jump a{display:inline-block;padding:var(--s-1) var(--s-3);margin:0 var(--s-1) var(--s-1) 0;
  border:var(--border);border-radius:var(--radius);text-decoration:none;

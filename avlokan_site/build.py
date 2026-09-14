@@ -247,6 +247,7 @@ def shell(title: str, body: str, *, depth: int = 0, description: str = "",
   <a class="wordmark" href="{up}index.html">{e(SITE_TITLE)}</a>
   <span class="tagline">{e(SITE_TAGLINE)}</span>
   <a class="navlink" href="{up}book/index.html">The book</a>
+  <a class="navlink" href="{up}search.html">Search</a>
   <a class="navlink" href="{up}photographs.html">Photographs</a>
   <a class="navlink" href="{up}about.html">About</a>
 </header>
@@ -766,7 +767,9 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
         bits.append('<div class="blocks">')
         for b in blocks:
             bits.append(
-                f'<p class="block" data-start="{b["start"]:.2f}" data-end="{b["end"]:.2f}">'
+                # The id lets a search result land on the moment itself.
+                f'<p class="block" id="t{int(b["start"])}" '
+                f'data-start="{b["start"]:.2f}" data-end="{b["end"]:.2f}">'
                 f'<span class="t">{fmt_hms(b["start"])}</span>'
                 f'<span class="w">{e(b["text"]).replace(chr(10), "<br>")}</span></p>'
             )
@@ -1131,6 +1134,75 @@ def render_prose(text: str) -> str:
     return "\n".join(out)
 
 
+def search_index(all_sittings: list[dict[str, Any]], out_dir: Path) -> dict[str, int]:
+    """Two files: what every sitting is, and what was said in the few we have.
+
+    They are separate because they grow at wildly different rates. The first
+    describes all 1,337 sittings in a couple of hundred kilobytes and is
+    always loaded. The second holds the words, and one sitting is 7,500 of
+    them — the whole archive transcribed would be 10 million words and 60MB,
+    which no browser should be asked to swallow to answer one query. So it is
+    fetched only when someone asks to search inside the transcripts, and when
+    it outgrows that it can be split by text without changing anything here.
+    """
+    meta = []
+    for s in sorted(all_sittings, key=lambda x: x["date"]):
+        state, _ = availability(s)
+        meta.append({
+            "d": s["date"],
+            "t": s["scripture"],
+            "r": reference_label(s) or "",
+            "n": (s["published"].get("title") or "")[:110],
+            "u": sitting_slug(s),
+            "a": state,
+            "x": 1 if s["job"] else 0,
+        })
+    book = []
+    for item in read_json(CONFIG / "book.json", []):
+        book.append({"n": item["n"], "g": item["gujarati"],
+                     "e": item.get("english") or ""})
+
+    (out_dir / "assets").mkdir(parents=True, exist_ok=True)
+    (out_dir / "assets" / "search.json").write_text(
+        json.dumps({"sittings": meta, "book": book}, ensure_ascii=False,
+                   separators=(",", ":")), encoding="utf-8")
+
+    words = []
+    for s in all_sittings:
+        if not s["job"]:
+            continue
+        blocks = parse_vtt(s["job"]["vtt"])
+        if not blocks:
+            continue
+        words.append({
+            "u": sitting_slug(s), "d": s["date"], "t": s["scripture"],
+            "b": [[round(b["start"]), b["text"]] for b in blocks],
+        })
+    (out_dir / "assets" / "transcripts.json").write_text(
+        json.dumps(words, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8")
+    return {"sittings": len(meta), "aphorisms": len(book), "transcripts": len(words)}
+
+
+def search_page() -> str:
+    body = """<h1>Search</h1>
+<p class="lede">Every sitting by text, letter, date or title, and the book by
+its words. Tick <em>inside the transcripts</em> to search what he actually
+said in the sittings that have been transcribed, and land on the moment he
+said it.</p>
+<form class="find" role="search" onsubmit="return false">
+  <input type="search" id="q" autocomplete="off" autofocus
+         placeholder="Patrank 254, or avlokan, or 1999, or a phrase">
+  <label><input type="checkbox" id="deep"> inside the transcripts</label>
+</form>
+<p id="count" class="muted" role="status"></p>
+<div id="results"></div>
+<script src="assets/search.js" defer></script>"""
+    return shell(f"Search — {SITE_TITLE}", body, depth=0, script="none",
+                 description="Search the discourses of Shri Devchand bhai Shah.",
+                 trail=[("Avlokan", "index.html"), ("Search", "")])
+
+
 def embed_check_page(all_sittings: list[dict[str, Any]]) -> str:
     """A page that finds every recording YouTube will not let the site show.
 
@@ -1440,6 +1512,19 @@ nav.series details{margin-top:var(--s-3)}
 nav.series summary{cursor:pointer;color:var(--c-muted);font-size:var(--size-sm)}
 nav.series ol{margin:var(--s-2) 0 0;padding-left:var(--s-5);font-size:var(--size-sm)}
 nav.series li{margin:var(--s-1) 0}
+form.find{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center;
+ margin:var(--s-5) 0 var(--s-3)}
+form.find input[type=search]{flex:1;min-width:16rem;font:inherit;padding:var(--s-2) var(--s-3);
+ border:var(--border);border-radius:var(--radius);background:var(--c-surface);color:var(--c-ink)}
+form.find label{font-size:var(--size-sm);color:var(--c-muted);display:flex;
+ align-items:center;gap:var(--s-2)}
+ul.results{list-style:none;padding:0;margin:var(--s-4) 0}
+ul.results li{padding:var(--s-3) 0;border-bottom:var(--border)}
+ul.results a{text-decoration:none}
+ul.results a:hover{text-decoration:underline}
+ul.results .guj{font-family:var(--font-indic);line-height:var(--leading-indic)}
+ul.results div{font-size:var(--size-sm);margin-top:var(--s-1)}
+.block:target .w{background:var(--c-mark)}
 nav.jump{margin:var(--s-4) 0 var(--s-6);line-height:2.1}
 nav.jump a{display:inline-block;padding:var(--s-1) var(--s-3);margin:0 var(--s-1) var(--s-1) 0;
  border:var(--border);border-radius:var(--radius);text-decoration:none;
@@ -2149,6 +2234,120 @@ CHECK_JS = """/* Asks YouTube to play every recording in a hidden player and not
 })();
 """
 
+
+SEARCH_JS = """/* Search, entirely in the browser. No server, no index service, nothing to
+   keep paid for — the whole thing is two JSON files and this. */
+(function () {
+  "use strict";
+  var q = document.getElementById("q");
+  var deep = document.getElementById("deep");
+  var out = document.getElementById("results");
+  var count = document.getElementById("count");
+  var data = null, words = null, wordsAsked = false, timer = null;
+
+  function fold(t) {
+    return (t || "").toLowerCase()
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ").trim();
+  }
+
+  function terms(s) {
+    return fold(s).split(" ").filter(Boolean);
+  }
+
+  function hit(hay, parts) {
+    for (var i = 0; i < parts.length; i++) {
+      if (hay.indexOf(parts[i]) < 0) return false;
+    }
+    return true;
+  }
+
+  function esc(t) {
+    var d = document.createElement("div");
+    d.textContent = t == null ? "" : t;
+    return d.innerHTML;
+  }
+
+  /* Show where the match is, not the first 200 characters of something else. */
+  function around(text, parts) {
+    var low = fold(text), at = -1;
+    for (var i = 0; i < parts.length && at < 0; i++) at = low.indexOf(parts[i]);
+    if (at < 0) at = 0;
+    var from = Math.max(0, at - 70), to = Math.min(text.length, at + 170);
+    return (from ? "…" : "") + esc(text.slice(from, to)) + (to < text.length ? "…" : "");
+  }
+
+  function stamp(sec) {
+    var m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function run() {
+    var raw = q.value.trim();
+    if (!data || raw.length < 2) {
+      out.innerHTML = "";
+      count.textContent = raw && raw.length < 2 ? "Keep typing…" : "";
+      return;
+    }
+    var parts = terms(raw), rows = [], n = 0;
+
+    data.sittings.forEach(function (s) {
+      if (n >= 300) return;
+      var hay = fold([s.d, s.t, s.r, s.n].join(" "));
+      if (!hit(hay, parts)) return;
+      n++;
+      rows.push('<li><a href="d/' + s.u + '.html">' +
+        esc(s.r || s.t) + ' <span class="muted">' + esc(s.d) + '</span></a>' +
+        '<div class="muted">' + esc(s.n || s.t) +
+        (s.x ? ' &middot; transcript' : '') + '</div></li>');
+    });
+
+    var found = n;
+    data.book.forEach(function (b) {
+      if (n >= 300) return;
+      if (!hit(fold(b.g + " " + b.e + " aphorism " + b.n), parts)) return;
+      n++;
+      rows.push('<li><a href="book/' + b.n + '.html">Aphorism ' + b.n + '</a>' +
+        '<div class="guj" lang="gu">' + around(b.g, parts) + '</div></li>');
+    });
+
+    if (deep.checked && words) {
+      words.forEach(function (w) {
+        w.b.forEach(function (blk) {
+          if (n >= 300) return;
+          if (!hit(fold(blk[1]), parts)) return;
+          n++;
+          rows.push('<li><a href="d/' + w.u + '.html#t' + blk[0] + '">' +
+            esc(w.t) + ' <span class="muted">' + esc(w.d) + ' &middot; ' +
+            stamp(blk[0]) + '</span></a>' +
+            '<div>' + around(blk[1], parts) + '</div></li>');
+        });
+      });
+    }
+
+    count.textContent = n ? (n >= 300 ? "First 300 matches" : n + " found") : "Nothing found";
+    out.innerHTML = rows.length ? '<ul class="results">' + rows.join("") + "</ul>" : "";
+  }
+
+  function later() { clearTimeout(timer); timer = setTimeout(run, 120); }
+
+  fetch("assets/search.json").then(function (r) { return r.json(); })
+    .then(function (d) { data = d; run(); })
+    .catch(function () { count.textContent = "The search index did not load."; });
+
+  deep.addEventListener("change", function () {
+    if (!deep.checked || wordsAsked) { run(); return; }
+    wordsAsked = true;
+    count.textContent = "Fetching the transcripts…";
+    fetch("assets/transcripts.json").then(function (r) { return r.json(); })
+      .then(function (d) { words = d; run(); })
+      .catch(function () { count.textContent = "The transcripts did not load."; });
+  });
+
+  q.addEventListener("input", later);
+})();
+"""
+
 # --------------------------------------------------------------------------
 # build
 # --------------------------------------------------------------------------
@@ -2204,6 +2403,9 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
     shots = gallery_page()
     if shots:
         (out_dir / "photographs.html").write_text(shots, encoding="utf-8")
+    counts = search_index(all_sittings, out_dir)
+    (out_dir / "search.html").write_text(search_page(), encoding="utf-8")
+    (out_dir / "assets" / "search.js").write_text(SEARCH_JS, encoding="utf-8")
     (out_dir / "embed-check.html").write_text(
         embed_check_page(all_sittings), encoding="utf-8")
     (out_dir / "assets").mkdir(parents=True, exist_ok=True)

@@ -84,7 +84,9 @@
         1868.97
       ]
     ],
-    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card"
+    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card",
+    "note": "Ends on 'ये जो समाधि मरण का जो प्रसंग बना' — the occasion referred to is 11 Feb 2002, the first anniversary of Tejas's mother's passing, marked with a discourse on samadhi maran and readings of letters from devotees. No recording of 11 Feb is in the archive.",
+    "sequence": "13 Feb: 'कल चौथा चला था आज पांचवा चलेगा'. With 9 Feb counted, 12 Feb is the fourth and 13 Feb the fifth, which is what the part numbers say. 11 Feb was a separate occasion, not a Patra 22 session."
   },
   "14Feb2002 Dravya Drushti Prakash22-5-7301436ba6": {
     "label": "Patra 22 Part 6 — 14 Feb 2002",
@@ -92,9 +94,11 @@
     "part": 6,
     "title_card": "/Users/tejas/Downloads/DDP 22 14 Feb 2002.jpg",
     "crop_top": 0,
-    "start": 229.0,
-    "end": 3252.0,
-    "card_seconds": 11.845
+    "start": 226.79,
+    "end": 3253.32,
+    "card_seconds": 11.845,
+    "cuts": [],
+    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card"
   },
   "29Mar2002 Dravya Drushti Prakash17-1[chinchini yatra]-aeb13f47be": {
     "label": "Patra 17 Part 1 — 29 Mar 2002",
