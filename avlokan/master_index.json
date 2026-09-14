@@ -15371,7 +15371,9 @@
     "minutes": 84,
     "views": 311,
     "uploaded": "2021-09-11",
-    "scripture": "Shri Dravya Drushti Prakash"
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "JKZtSP6XYZ4",
+    "superseded_reason": "later upload"
    },
    {
     "title": "Dravya Drashti Prakash—1, Patra 20, Part 1, 15 Jul 2000",
@@ -15429,7 +15431,9 @@
     "minutes": 67,
     "views": 294,
     "uploaded": "2021-09-12",
-    "scripture": "Shri Dravya Drushti Prakash"
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "LjbvoJqIII4",
+    "superseded_reason": "later upload"
    },
    {
     "title": "Dravya Drashti Prakash 20, Part 4, 16 Jul 2000",
@@ -24051,14 +24055,33 @@
     "views": 132,
     "uploaded": "2025-02-22",
     "scripture": "Shrimad Rajchandra Vachanamrut"
+   },
+   {
+    "title": "Shrimad Rajchandra Vachanamrut 247, Part 5, 28 Nov 2001",
+    "minutes": 56,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut",
+    "superseded_by": "uWgyANH5zB4",
+    "superseded_reason": "later upload"
    }
   ],
   "catalogued": [
    {
     "scripture": "Shrimad Rajchandra Vachanamrut",
     "reference": "Patrank 247",
-    "youtube_id": "9kY_7cabRnE",
+    "youtube_id": "uWgyANH5zB4",
     "location": "Hyderabad",
+    "series_id": "PLQqFhvWZLM82gJ_Y0N9HFM6XEZnhY4B7F",
+    "series": "Patrank 247, Shrimad Rajchandra Vachanamrut",
+    "source": "channel listing"
+   },
+   {
+    "scripture": "Shrimad Rajchandra Vachanamrut",
+    "reference": "",
+    "youtube_id": "9kY_7cabRnE",
+    "location": "",
+    "source": "displaced by the upload that carries this title",
     "series_id": "PLQqFhvWZLM82R5jDGjlrFrm8jHn20L3CV",
     "series": "Shrimad Rajchandra Patrank 247"
    }
@@ -25810,7 +25833,9 @@
     "minutes": 0,
     "views": 0,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash"
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "7mUAOPjBbuY",
+    "superseded_reason": "later upload"
    }
   ],
   "catalogued": [
@@ -25856,7 +25881,7 @@
   "published": [
    {
     "title": "Dravya Drashti Prakash-1, Patra 22, Part 2, 8 Feb 2002",
-    "minutes": 56,
+    "minutes": 57,
     "views": 160,
     "uploaded": "2025-01-13",
     "scripture": "Shri Dravya Drushti Prakash"
@@ -25866,17 +25891,29 @@
     "minutes": 0,
     "views": 0,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash"
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "bpVmnuRPf4M",
+    "superseded_reason": "later upload"
+   },
+   {
+    "title": "Dravya Drishti Prakash 22, Part 2, 8 Feb 2002",
+    "minutes": 57,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "bpVmnuRPf4M",
+    "superseded_reason": "later upload"
    }
   ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
-    "youtube_id": "llLof5OTF3s",
+    "youtube_id": "bpVmnuRPf4M",
     "location": "Hyderabad",
-    "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
-    "series": "Dravya Drushti Prakash"
+    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
+    "series": "Dravya Drashti Prakash Patra 22",
+    "source": "channel listing"
    },
    {
     "scripture": "Shri Dravya Drushti Prakash",
@@ -25884,6 +25921,15 @@
     "youtube_id": "qy1DljC5rMw",
     "location": "",
     "source": "channel listing"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "",
+    "youtube_id": "llLof5OTF3s",
+    "location": "",
+    "source": "displaced by the upload that carries this title",
+    "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
+    "series": "Dravya Drushti Prakash"
    }
   ],
   "processed": true,
@@ -25961,16 +26007,26 @@
     "views": 0,
     "uploaded": "",
     "scripture": "Shri Dravya Drushti Prakash"
+   },
+   {
+    "title": "Dravya Drushti Prakash 22, Part 3, 12 Feb 2002",
+    "minutes": 50,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "XNBFaupHZKs",
+    "superseded_reason": "later upload"
    }
   ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
-    "youtube_id": "_Rb7EWrqa6c",
+    "youtube_id": "XNBFaupHZKs",
     "location": "Hyderabad",
-    "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
-    "series": "Dravya Drushti Prakash"
+    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
+    "series": "Dravya Drashti Prakash Patra 22",
+    "source": "channel listing"
    },
    {
     "scripture": "Shri Dravya Drushti Prakash",
@@ -25978,6 +26034,15 @@
     "youtube_id": "KEZ3ynC_548",
     "location": "",
     "source": "channel listing"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "",
+    "youtube_id": "_Rb7EWrqa6c",
+    "location": "",
+    "source": "displaced by the upload that carries this title",
+    "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
+    "series": "Dravya Drushti Prakash"
    }
   ],
   "processed": true,
@@ -26009,16 +26074,26 @@
     "views": 0,
     "uploaded": "",
     "scripture": "Shri Dravya Drushti Prakash"
+   },
+   {
+    "title": "Dravyadrushti Prakash 22, Part 4, 13 feb 2002",
+    "minutes": 56,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "7LtLAZqsDXs",
+    "superseded_reason": "later upload"
    }
   ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
-    "youtube_id": "WoeYWhmZs-4",
+    "youtube_id": "7LtLAZqsDXs",
     "location": "Hyderabad",
-    "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
-    "series": "Dravya Drushti Prakash"
+    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
+    "series": "Dravya Drashti Prakash Patra 22",
+    "source": "channel listing"
    },
    {
     "scripture": "Shri Dravya Drushti Prakash",
@@ -26026,6 +26101,15 @@
     "youtube_id": "Nod_Ms2XkCI",
     "location": "",
     "source": "channel listing"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "",
+    "youtube_id": "WoeYWhmZs-4",
+    "location": "",
+    "source": "displaced by the upload that carries this title",
+    "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
+    "series": "Dravya Drushti Prakash"
    }
   ],
   "processed": true
@@ -26036,7 +26120,7 @@
    {
     "title": "Dravya Drashti Prakash–1, Patra 22, Part 5, 14 Feb 2002",
     "minutes": 51,
-    "views": 190,
+    "views": 191,
     "uploaded": "2025-01-19",
     "scripture": "Shri Dravya Drushti Prakash"
    },
@@ -26046,14 +26130,26 @@
     "views": 0,
     "uploaded": "",
     "scripture": "Shri Dravya Drushti Prakash"
+   },
+   {
+    "title": "Dravyadrushti Prakash, Patra 22, Part 5, 14 Feb 2002",
+    "minutes": 51,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "gYCuc1kJIAc",
+    "superseded_reason": "later upload"
    }
   ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
-    "youtube_id": "FydeJrnY7ig",
-    "location": "Hyderabad"
+    "youtube_id": "gYCuc1kJIAc",
+    "location": "Hyderabad",
+    "source": "channel listing",
+    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
+    "series": "Dravya Drashti Prakash Patra 22"
    },
    {
     "scripture": "Shri Dravya Drushti Prakash",
@@ -26061,6 +26157,13 @@
     "youtube_id": "__yxuUWp6co",
     "location": "",
     "source": "channel listing"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "Patra 22",
+    "youtube_id": "FydeJrnY7ig",
+    "location": "",
+    "source": "displaced by the upload that carries this title"
    }
   ],
   "processed": true,
@@ -28965,9 +29068,16 @@
   "published": [
    {
     "title": "Shri Samaysar, Gatha 6, 8 Jun 2002",
-    "minutes": 58,
+    "minutes": 59,
     "views": 284,
     "uploaded": "2020-08-31",
+    "scripture": "Shri Samaysar"
+   },
+   {
+    "title": "Sri Samaysar, Gatha 6, Part 3, 8 Jun 2002",
+    "minutes": 59,
+    "views": 0,
+    "uploaded": "",
     "scripture": "Shri Samaysar"
    }
   ],
@@ -28975,8 +29085,18 @@
    {
     "scripture": "Shri Samaysar",
     "reference": "Gatha 6",
+    "youtube_id": "WYmcn1LTMjw",
+    "location": "",
+    "series_id": "PLQqFhvWZLM83BtpCRSn2UCD_3RQxhvMyj",
+    "series": "Shri Samaysar par Pravachan",
+    "source": "channel listing"
+   },
+   {
+    "scripture": "Shri Samaysar",
+    "reference": "Gatha 6",
     "youtube_id": "w0GHgCsUbr0",
     "location": "",
+    "source": "displaced by the upload that carries this title",
     "series_id": "PLQqFhvWZLM80ofW8oboFno4O-3DqSzXIr",
     "series": "Shri Samaysar Gatha 5  6, Jun 2002"
    }
@@ -30525,14 +30645,33 @@
     "views": 165,
     "uploaded": "2024-12-06",
     "scripture": "Shri Dravya Drushti Prakash"
+   },
+   {
+    "title": "Dravya Drushti Prakash, 223, 4 Aug 2002",
+    "minutes": 56,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "Aq7JnigjRvk",
+    "superseded_reason": "later upload"
    }
   ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 223",
+    "youtube_id": "Aq7JnigjRvk",
+    "location": "",
+    "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
+    "series": "Dravya Drushti Prakash",
+    "source": "channel listing"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "",
     "youtube_id": "LlDJSXhMo6M",
     "location": "",
+    "source": "displaced by the upload that carries this title",
     "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
     "series": "Dravya Drushti Prakash"
    }

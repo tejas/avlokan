@@ -704,6 +704,35 @@ def fold_audio(index: list[dict]) -> list[tuple]:
     return moved
 
 
+# A reference stated in words, which is what tells a re-upload marker from a
+# real number: `Dravya Drashti Prakash–1, Patra 22` says which patra it is, so
+# the `–1` is not one.
+NAMES_ITS_REFERENCE = re.compile(
+    r"\b(?:Patra|Patrank|Gatha|Bol|Sloka|Adhikar|Q)\b\.?\s*\d{1,4}", re.I)
+
+# `Prakash–1,` — a dash and a number hanging off the end of the text's name.
+# The letter before the dash is what keeps `Bol 21–24,` out of this: that is a
+# range of bols, and dropping the 24 would lose one of them.
+VARIANT_MARKER = re.compile(r"(?<=[A-Za-z])\s*[-–—]\s*\d{1,2}\s*(?=,)")
+
+
+def without_variant_marker(title: str) -> str:
+    """Drop the `–1` the channel hangs off a text's name on a re-upload.
+
+    Five Patra 22 sittings were published in 2020 as whole recordings and
+    again in 2025, edited, under `Dravya Drashti Prakash–1, Patra 22, …`. The
+    `–1` distinguishes the upload, not the letter — but it read as a reference
+    number, so the two uploads signed differently, nothing was recognised as a
+    re-upload, and every one of those dates carried two sittings where he
+    taught once.
+
+    Only stripped from a title that names its reference in words, which is
+    what keeps `Sri Dravya Drushti Prakash - 28, Part 1` intact: there the 28
+    *is* the patra, and it is the only thing saying so.
+    """
+    return VARIANT_MARKER.sub("", title) if NAMES_ITS_REFERENCE.search(title) else title
+
+
 def signature(title: str) -> tuple:
     """What sitting a title names, ignoring how it was worded.
 
@@ -714,6 +743,7 @@ def signature(title: str) -> tuple:
     reference number. Segments are kept distinct — a sitting split into
     `segment 1` and `segment 2` is two videos, not a duplicate.
     """
+    title = without_variant_marker(title)
     part = re.search(r"\bpart\s*(\d{1,2})\b", title, re.I)
     seg = re.search(r"\bsegment\s*(\d{1,2})\b", title, re.I)
     body = re.sub(r"\b\d{1,2}\s*[a-z]{3,}\w*\.?,?\s*\d{4}\b", "", title, flags=re.I)
@@ -780,7 +810,8 @@ def fold_segments(index: list[dict]) -> list[tuple]:
     return folded
 
 
-def dedupe(index: list[dict], recency: dict[str, int]) -> list[tuple]:
+def dedupe(index: list[dict], recency: dict[str, int],
+           pending: set[str] | None = None) -> list[tuple]:
     """Mark re-uploads of a sitting that is already in the archive.
 
     He has been restoring the old recordings and re-uploading them, so a
@@ -789,8 +820,14 @@ def dedupe(index: list[dict], recency: dict[str, int]) -> list[tuple]:
     are marked `superseded_by` rather than deleted, so the page can still
     offer them and nothing that was ever published stops resolving.
 
-    `recency` ranks ids with 0 as the most recent.
+    `recency` ranks ids with 0 as the most recent. `pending` holds ids that
+    are on the channel but not yet watchable — scheduled premieres. A sitting
+    cannot be represented by a video nobody can play, so those lose to
+    anything watchable no matter how new they are. Once a premiere goes live
+    it gains a duration, leaves `pending`, and takes over on the next run
+    without anyone having to remember to do it.
     """
+    pending = pending or set()
     marked = []
     for entry in index:
         pubs = entry.get("published") or []
@@ -807,7 +844,8 @@ def dedupe(index: list[dict], recency: dict[str, int]) -> list[tuple]:
             ids = {i: (cats[i].get("youtube_id") if i < len(cats) else "") for i in idxs}
             if not any(ids.values()):
                 continue
-            best = min(idxs, key=lambda i: recency.get(ids[i] or "", 10 ** 6))
+            best = min(idxs, key=lambda i: (ids[i] in pending,
+                                            recency.get(ids[i] or "", 10 ** 6)))
             for i in idxs:
                 if i == best or not ids[best]:
                     pubs[i].pop("superseded_by", None)
@@ -949,6 +987,69 @@ def attach_id(entry: dict, i: int, row: dict[str, str]) -> int:
     return 1
 
 
+def repoint(entry: dict, i: int, row: dict[str, str],
+            channel: dict[str, str]) -> str:
+    """Give a listed sitting the video whose title it is actually carrying.
+
+    A re-upload arrives with a new id and the archive recognises the title, so
+    it says "already listed" and moves on. But the id already on that row is
+    the *older* upload — the channel gives it a different title entirely. The
+    page then claims to be the re-upload while playing the original.
+
+    That is how eight sittings ended up mislabelled. Five Patra 22 discourses
+    carried the 2025 edited titles over the 2020 whole-recording ids, and when
+    those recordings were re-transcribed against the edits, the transcripts
+    were eleven minutes out of step with the video actually on the page.
+
+    The row keeps the title it has and gains the id that belongs to it. The
+    displaced video is not discarded: it is added as an upload of the same
+    sitting under the name the channel gives it, so `dedupe` can rank the two
+    and keep the older one reachable as an alternate.
+
+    Returns the displaced id, or "" if there was nothing to correct.
+    """
+    cats = entry.setdefault("catalogued", [])
+    if i >= len(cats):
+        return ""
+    was = cats[i].get("youtube_id") or ""
+    older = channel.get(was)
+    # Only when the channel is sure the id is a different video. An id the
+    # channel does not recognise may simply be unlisted, and guessing at that
+    # would throw away the only link a sitting has.
+    if not was or not older:
+        return ""
+    if title_key(older) == title_key(row["title"]):
+        return ""
+    when, _ = title_date(older)
+    if when and when != entry["date"]:
+        # It belongs to another day; `realign` deals with that, not this.
+        return ""
+
+    cats[i]["youtube_id"] = row["id"]
+    cats[i]["source"] = "channel listing"
+    pub = entry["published"][i]
+    if row["duration"].isdigit():
+        pub["minutes"] = round(int(row["duration"]) / 60)
+    if row["views"].isdigit():
+        pub["views"] = int(row["views"])
+
+    entry["published"].append({
+        "title": older,
+        "minutes": pub.get("minutes", 0),
+        "views": 0,
+        "uploaded": "",
+        "scripture": classify(older) or pub.get("scripture", ""),
+    })
+    entry["catalogued"].append({
+        "scripture": classify(older) or pub.get("scripture", ""),
+        "reference": reference(older),
+        "youtube_id": was,
+        "location": "",
+        "source": "displaced by the upload that carries this title",
+    })
+    return was
+
+
 def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     # Titles are unique on the channel except for three, where two genuinely
     # different sittings were uploaded under the same name. Everywhere else a
@@ -1015,6 +1116,7 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
 
     added, skipped, new_days, enriched = 0, [], 0, 0
     relinked: list[str] = []
+    repointed: list[tuple] = []
     texts = Counter()
     for row in rows:
         if row["id"] in known:
@@ -1026,6 +1128,14 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
         if match:
             if attach_id(match[0], match[1], row):
                 enriched += 1
+                known.add(row["id"])
+                continue
+            # The title is listed, but under the id of a different video. The
+            # row is carrying this upload's name over the older upload's
+            # recording; give it the id that matches what it says it is.
+            displaced = repoint(match[0], match[1], row, channel)
+            if displaced:
+                repointed.append((match[0]["date"], row["title"], displaced, row["id"]))
                 known.add(row["id"])
                 continue
             if key not in shared:
@@ -1092,7 +1202,9 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     # the reference numbers, and only overrules them when the numbers are
     # unambiguous.
     crossed, resorted, ambiguous = align_by_number(list(by_date.values()))
-    superseded = dedupe(list(by_date.values()), upload_order(rows))
+    # yt-dlp reports no duration for a video that has not premiered yet.
+    pending = {r["id"] for r in rows if not r["duration"].isdigit()}
+    superseded = dedupe(list(by_date.values()), upload_order(rows), pending)
     superseded += fold_segments(list(by_date.values()))
     moved = sorted(set(moved) | set(again))
     stale.extend(more_stale)
@@ -1107,7 +1219,9 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
             "moved": moved, "stale": stale, "misfiled": misfiled,
             "superseded": superseded, "renamed": renamed,
             "audio_moved": audio_moved, "audio_named": audio_named, "same_day": same_day, "relocated": relocated, "in_series": in_series, "from_playlists": from_playlists,
-            "crossed": crossed, "resorted": resorted, "ambiguous": ambiguous}
+            "crossed": crossed, "resorted": resorted, "ambiguous": ambiguous,
+            "repointed": repointed,
+            "pending": [r for r in rows if r["id"] in pending]}
 
 
 def main() -> None:
@@ -1184,6 +1298,17 @@ def main() -> None:
               f"video gives for that sitting:")
         for was, now, text, part in result["audio_moved"]:
             print(f"   {was} -> {now}  {text} part {part}")
+    if result["repointed"]:
+        print(f"{len(result['repointed'])} sitting(s) were carrying a title over the "
+              f"wrong video; given the upload that matches what they say:")
+        for date, title, was, now in result["repointed"]:
+            print(f"   {date}  {title[:56]}")
+            print(f"             {was} -> {now}  (the displaced upload is kept)")
+    if result["pending"]:
+        print(f"{len(result['pending'])} scheduled premiere(s), not watchable yet — "
+              f"listed, but they do not take a sitting from a video that plays:")
+        for r in result["pending"]:
+            print(f"   {r['title'][:66]}")
     if result["superseded"]:
         print(f"{len(result['superseded'])} re-uploads marked as superseded by a "
               f"later, better upload of the same sitting:")
