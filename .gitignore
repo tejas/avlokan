@@ -3,12 +3,27 @@
 # raw material those were made from, a machine's working state, or a copy git
 # already keeps for us.
 
-# The recordings and everything derived from them. Hundreds of gigabytes, and
-# the originals belong on the drive, not in a repository.
+# The recordings themselves. Hundreds of gigabytes; the originals belong on
+# the drive, not in a repository.
 /originals/
-/outputs/
 /inbox/
 /work/
+
+# Of everything the pipeline writes beside a recording, two files are kept:
+# the timed transcript, which is what the site is built from and what a
+# correction actually changes, and the note of which recitations were restored.
+# Everything else there is either media — one job holds 4GB of it — or can be
+# produced again by re-running the pipeline. This way a correction is a diff
+# in the history rather than a silent overwrite, and the site can be built
+# from a clone with nothing else present.
+/outputs/*
+!/outputs/*/
+/outputs/*/*
+!/outputs/*/subtitles.vtt
+!/outputs/*/passage_matches.json
+
+# Pipeline test runs, not sittings.
+/outputs/GPtest*/
 
 # The transcription pipeline and its local app. Kept out for now so this
 # repository stays about the archive rather than the machine that made it.

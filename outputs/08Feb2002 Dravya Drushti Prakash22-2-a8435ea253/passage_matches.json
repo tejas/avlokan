@@ -1,0 +1,102 @@
+[
+  {
+    "passage_id": "samayasara-mangalacharana",
+    "title": "Samaysar mangalacharan",
+    "words": [
+      "nanah",
+      "sanayasaraya",
+      "svanubutya",
+      "cakasate",
+      "citsvabavaya",
+      "bavaya",
+      "sarvabavantaracide"
+    ],
+    "score": 0.843,
+    "start": 15,
+    "end": 101,
+    "original": "નમો સમયસારાય.\nસ્વાનુ વિદ્યા જખાસતે.\nચિત્ત સ્વભાવાય ભાવવાય.\nસર્વ ભાવવાંતરચ.\nમંગલમ ભગવાન",
+    "replacement": "नमः समयसाराय स्वानुभूत्या चकासते ।\nचित्स्वभावाय भावाय सर्वभावान्तरच्छिदे",
+    "segments": [
+      0
+    ],
+    "time_start": 0.0,
+    "time_end": 28.0
+  },
+  {
+    "passage_id": "mangalam-bhagavan-viro",
+    "title": "Mangalacharan — Mangalam Bhagavan Viro",
+    "words": [
+      "nangalan",
+      "bagavana",
+      "viro",
+      "nangalan",
+      "gotano",
+      "gani",
+      "nangalan",
+      "kundakundaryo",
+      "jenadarnostu",
+      "nangalan"
+    ],
+    "score": 0.8,
+    "start": 102,
+    "end": 180,
+    "original": "વીરો.\nમંગલમ ગૌતમ.\nमंगलम गौतमो ज्ञान।\nमंगलम कुन्दकुण्डाह्वय।\nजैन धर्मोस्तु मिय।",
+    "replacement": "मंगलं भगवान वीरो, मंगलं गौतमो गणी।\nमंगलं कुन्दकुन्दार्यो, जैनधर्मोऽस्तु मंगलम्॥",
+    "segments": [
+      0,
+      1
+    ],
+    "time_start": 0.0,
+    "time_end": 56.0
+  },
+  {
+    "passage_id": "sarva-mangala-mangalyam",
+    "title": "Mangalacharan — Sarva Mangala Mangalyam",
+    "words": [
+      "sarvanangalanangalyan",
+      "sarvakalyanakarakana",
+      "pradanan",
+      "sarvadarnanan",
+      "jenan",
+      "jayati",
+      "sasanana"
+    ],
+    "score": 0.951,
+    "start": 181,
+    "end": 257,
+    "original": "सर्व मंगल मांगल्यम।\nसर्व कल्याण कारकम।\nप्रधानम सर्व धर्माणम।\nजैनम जयतु शासम।",
+    "replacement": "सर्वमङ्गलमाङ्गल्यं सर्वकल्याणकारकम।\nप्रधानं सर्वधर्माणां जैनं जयति शासनम॥",
+    "segments": [
+      1
+    ],
+    "time_start": 28.0,
+    "time_end": 56.0
+  },
+  {
+    "passage_id": "omkara-bindu-samyuktam",
+    "title": "Omkar bindu sainyuktam",
+    "words": [
+      "onkarabindusanyuktan",
+      "nityan",
+      "dyayanti",
+      "yoginah",
+      "kanadan",
+      "noksadan",
+      "ceva",
+      "onkaraya",
+      "nano",
+      "nanah"
+    ],
+    "score": 0.837,
+    "start": 258,
+    "end": 349,
+    "original": "ओंकार बिंदु संयुक्तम।\nनित्य ध्याय।\nनित्यं ध्यायन्ति योगिनः।\nकाम्यं मोक्षं चैव।\nओंकारा।\nनमो।",
+    "replacement": "ॐकारबिन्दुसंयुक्तं नित्यं ध्यायन्ति योगिनः।\nकामदं मोक्षदं चैव ॐकाराय नमो नमः",
+    "segments": [
+      1,
+      2
+    ],
+    "time_start": 28.0,
+    "time_end": 84.0
+  }
+]

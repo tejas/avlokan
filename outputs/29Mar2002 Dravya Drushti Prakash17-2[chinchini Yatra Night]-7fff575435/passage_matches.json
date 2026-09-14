@@ -1,0 +1,102 @@
+[
+  {
+    "passage_id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "words": [
+      "nano",
+      "arihantanan",
+      "nano",
+      "sidanan",
+      "nano",
+      "ayariyanan",
+      "nano",
+      "uvajayanan",
+      "nano",
+      "loe",
+      "sava",
+      "sahunan"
+    ],
+    "score": 0.614,
+    "start": 0,
+    "end": 72,
+    "original": "नमो अदिताय नमो अदिताय।\nनमो वायदेवाय नमो वायदेवाय।\nनमो लोहेषो वसावते।\nनमो",
+    "replacement": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "segments": [
+      0
+    ],
+    "time_start": 56.0,
+    "time_end": 84.0
+  },
+  {
+    "passage_id": "samayasara-mangalacharana",
+    "title": "Samaysar mangalacharan",
+    "words": [
+      "nanah",
+      "sanayasaraya",
+      "svanubutya",
+      "cakasate",
+      "citsvabavaya",
+      "bavaya",
+      "sarvabavantaracide"
+    ],
+    "score": 0.844,
+    "start": 73,
+    "end": 153,
+    "original": "समयसाराय।\nस्वानुभत्या च भास्त्ये।\nचित्सभावाय भावाय।\nसर्वभावात् परस्य।\nनंगलं परं।",
+    "replacement": "नमः समयसाराय स्वानुभूत्या चकासते ।\nचित्स्वभावाय भावाय सर्वभावान्तरच्छिदे",
+    "segments": [
+      0
+    ],
+    "time_start": 56.0,
+    "time_end": 84.0
+  },
+  {
+    "passage_id": "mangalam-bhagavan-viro",
+    "title": "Mangalacharan — Mangalam Bhagavan Viro",
+    "words": [
+      "nangalan",
+      "bagavana",
+      "viro",
+      "nangalan",
+      "gotano",
+      "gani",
+      "nangalan",
+      "kundakundaryo",
+      "jenadarnostu",
+      "nangalan"
+    ],
+    "score": 0.859,
+    "start": 154,
+    "end": 226,
+    "original": "मंगलम भगवान शिव।\nमंगलम गौतम गण।\nमंगलम कुंद कुंदारे।\nजय धर्मोस्तु मंगलमय।",
+    "replacement": "मंगलं भगवान वीरो, मंगलं गौतमो गणी।\nमंगलं कुन्दकुन्दार्यो, जैनधर्मोऽस्तु मंगलम्॥",
+    "segments": [
+      1
+    ],
+    "time_start": 84.0,
+    "time_end": 112.0
+  },
+  {
+    "passage_id": "sarva-mangala-mangalyam",
+    "title": "Mangalacharan — Sarva Mangala Mangalyam",
+    "words": [
+      "sarvanangalanangalyan",
+      "sarvakalyanakarakana",
+      "pradanan",
+      "sarvadarnanan",
+      "jenan",
+      "jayati",
+      "sasanana"
+    ],
+    "score": 0.878,
+    "start": 227,
+    "end": 292,
+    "original": "सर्व मंगल मंगल।\nसर्व कल्याणकारक।\nप्रधानम सर्व धर्मान।\nजय नमः जैतम",
+    "replacement": "सर्वमङ्गलमाङ्गल्यं सर्वकल्याणकारकम।\nप्रधानं सर्वधर्माणां जैनं जयति शासनम॥",
+    "segments": [
+      1
+    ],
+    "time_start": 84.0,
+    "time_end": 112.0
+  }
+]

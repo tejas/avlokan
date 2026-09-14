@@ -1,0 +1,52 @@
+[
+  {
+    "passage_id": "mangalam-bhagavan-viro",
+    "title": "Mangalacharan — Mangalam Bhagavan Viro",
+    "words": [
+      "nangalan",
+      "bagavana",
+      "viro",
+      "nangalan",
+      "gotano",
+      "gani",
+      "nangalan",
+      "kundakundaryo",
+      "jenadarnostu",
+      "nangalan"
+    ],
+    "score": 0.648,
+    "start": 99,
+    "end": 172,
+    "original": "ભાવવાંતરેથી.\nનમો ભગવાન જીરો.\nમંગલમ ભગવાનજી.\nમંગલમ ગૌતમ ભગવાન.\nમંગલમ કુન્ત",
+    "replacement": "मंगलं भगवान वीरो, मंगलं गौतमो गणी।\nमंगलं कुन्दकुन्दार्यो, जैनधर्मोऽस्तु मंगलम्॥",
+    "segments": [
+      0,
+      1
+    ],
+    "time_start": 0.0,
+    "time_end": 56.0
+  },
+  {
+    "passage_id": "sarva-mangala-mangalyam",
+    "title": "Mangalacharan — Sarva Mangala Mangalyam",
+    "words": [
+      "sarvanangalanangalyan",
+      "sarvakalyanakarakana",
+      "pradanan",
+      "sarvadarnanan",
+      "jenan",
+      "jayati",
+      "sasanana"
+    ],
+    "score": 0.832,
+    "start": 200,
+    "end": 274,
+    "original": "સર્વ મંગલ માંગલમ.\nસર્વ કલ્યાણકાર્કમ.\nપ્રદાનમ સર્વ ભગવાન.\nદૈનમ દ્વૈતાત્પરમ.",
+    "replacement": "सर्वमङ्गलमाङ्गल्यं सर्वकल्याणकारकम।\nप्रधानं सर्वधर्माणां जैनं जयति शासनम॥",
+    "segments": [
+      1
+    ],
+    "time_start": 28.0,
+    "time_end": 56.0
+  }
+]

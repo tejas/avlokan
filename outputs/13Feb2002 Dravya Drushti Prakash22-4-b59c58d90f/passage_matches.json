@@ -1,0 +1,130 @@
+[
+  {
+    "passage_id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "words": [
+      "nano",
+      "arihantanan",
+      "nano",
+      "sidanan",
+      "nano",
+      "ayariyanan",
+      "nano",
+      "uvajayanan",
+      "nano",
+      "loe",
+      "sava",
+      "sahunan"
+    ],
+    "score": 0.763,
+    "start": 1090,
+    "end": 1171,
+    "original": "Namo Anantanum Namo Sitanam. Namo Ayadyanam Namo Vajra. Namo Noiva Samvasam. Namo",
+    "replacement": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "segments": [
+      7
+    ],
+    "time_start": 196.0,
+    "time_end": 224.0
+  },
+  {
+    "passage_id": "samayasara-mangalacharana",
+    "title": "Samaysar mangalacharan",
+    "words": [
+      "nanah",
+      "sanayasaraya",
+      "svanubutya",
+      "cakasate",
+      "citsvabavaya",
+      "bavaya",
+      "sarvabavantaracide"
+    ],
+    "score": 0.784,
+    "start": 1172,
+    "end": 1260,
+    "original": "Samaya Saram. Samanubhuta Jachakasya.\nप्रकाश्य।\nचित्स्वभावाय भावाय।\nसर्वभावान्तरचैतन्ये।",
+    "replacement": "नमः समयसाराय स्वानुभूत्या चकासते ।\nचित्स्वभावाय भावाय सर्वभावान्तरच्छिदे",
+    "segments": [
+      7,
+      8
+    ],
+    "time_start": 196.0,
+    "time_end": 252.0
+  },
+  {
+    "passage_id": "mangalam-bhagavan-viro",
+    "title": "Mangalacharan — Mangalam Bhagavan Viro",
+    "words": [
+      "nangalan",
+      "bagavana",
+      "viro",
+      "nangalan",
+      "gotano",
+      "gani",
+      "nangalan",
+      "kundakundaryo",
+      "jenadarnostu",
+      "nangalan"
+    ],
+    "score": 0.923,
+    "start": 1261,
+    "end": 1338,
+    "original": "मंगलं भगवान् वीरो।\nमंगलं गौतमोग्रिम्।\nमंगलं कुण्डकुण्डान।\nजैनधर्मोस्तु मंगलः।",
+    "replacement": "मंगलं भगवान वीरो, मंगलं गौतमो गणी।\nमंगलं कुन्दकुन्दार्यो, जैनधर्मोऽस्तु मंगलम्॥",
+    "segments": [
+      8
+    ],
+    "time_start": 224.0,
+    "time_end": 252.0
+  },
+  {
+    "passage_id": "sarva-mangala-mangalyam",
+    "title": "Mangalacharan — Sarva Mangala Mangalyam",
+    "words": [
+      "sarvanangalanangalyan",
+      "sarvakalyanakarakana",
+      "pradanan",
+      "sarvadarnanan",
+      "jenan",
+      "jayati",
+      "sasanana"
+    ],
+    "score": 0.969,
+    "start": 1339,
+    "end": 1413,
+    "original": "सर्वमंगलमांगल्यम्।\nसर्वकल्याणकारकम्।\nपदानं सर्वधर्माणां।\nजैनं जयतु शासनम्।",
+    "replacement": "सर्वमङ्गलमाङ्गल्यं सर्वकल्याणकारकम।\nप्रधानं सर्वधर्माणां जैनं जयति शासनम॥",
+    "segments": [
+      8,
+      9
+    ],
+    "time_start": 224.0,
+    "time_end": 280.0
+  },
+  {
+    "passage_id": "omkara-bindu-samyuktam",
+    "title": "Omkar bindu sainyuktam",
+    "words": [
+      "onkarabindusanyuktan",
+      "nityan",
+      "dyayanti",
+      "yoginah",
+      "kanadan",
+      "noksadan",
+      "ceva",
+      "onkaraya",
+      "nano",
+      "nanah"
+    ],
+    "score": 0.961,
+    "start": 1414,
+    "end": 1493,
+    "original": "ओंकारबिन्दुसंयुक्तं नित्यं ध्यायन्ति योगिनः।\nकामदं वक्षुदं चैव ओंकाराय नमो नमः।",
+    "replacement": "ॐकारबिन्दुसंयुक्तं नित्यं ध्यायन्ति योगिनः।\nकामदं मोक्षदं चैव ॐकाराय नमो नमः",
+    "segments": [
+      9
+    ],
+    "time_start": 252.0,
+    "time_end": 280.0
+  }
+]

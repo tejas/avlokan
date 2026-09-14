@@ -216,6 +216,21 @@ A sitting with no transcript still gets a page — title, date, reference and th
 recording. Those pages are worth publishing: they are what makes the archive
 findable while the transcription backlog is worked through.
 
+## The weekend run
+
+```bash
+./publish.sh              # look at what would change, publish after confirming
+./publish.sh --dry-run    # look only
+```
+
+It reads the channel, folds anything new into the archive, rebuilds, shows you
+what changed and publishes only if you say so. Every step is safe to repeat.
+
+The channel listing is written to a temporary file first and only moved into
+place once it is complete, because a half-finished list is worse than
+yesterday's — YouTube rate-limits this often enough to matter. If the read
+fails entirely it carries on with the previous list and says how old it is.
+
 ## Keeping the video list current
 
 The Studio CSV export stops at 500 rows, which is why the index once knew about
