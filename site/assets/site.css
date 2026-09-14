@@ -287,6 +287,35 @@ button.play:hover .play-mark,button.play:focus-visible .play-mark{background:var
  margin-top:var(--s-2)}
 .book-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-2)}
 
+/* ---------- the correction form ----------
+   Hidden until Shift+E or ?edit. Deliberately plain: it is a tool, not part
+   of the archive, and it should not look like something a reader was meant
+   to find. */
+.fix[hidden]{display:none}
+.fix{margin:var(--s-6) 0 0;padding:var(--s-5);background:var(--c-hover);
+ border:var(--border);border-radius:var(--radius)}
+.fix h2{margin:0 0 var(--s-2);font-size:var(--size-lg)}
+.fix .note{margin:0 0 var(--s-4)}
+.fix label{display:block;margin-bottom:var(--s-3);font-size:var(--size-sm);
+ letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--c-muted)}
+.fix input,.fix textarea{display:block;width:100%;margin-top:var(--s-1);
+ padding:var(--s-2) var(--s-3);font:inherit;font-size:var(--size-md);
+ text-transform:none;letter-spacing:normal;color:var(--c-ink);
+ background:var(--c-surface);border:var(--border);border-radius:var(--radius)}
+.fix textarea{line-height:var(--leading-body);resize:vertical}
+.fix input:focus,.fix textarea:focus{outline:2px solid var(--c-accent);
+ outline-offset:1px}
+.fix button{font:inherit;font-size:var(--size-md);padding:var(--s-2) var(--s-4);
+ border:var(--border);border-radius:var(--radius);background:var(--c-surface);
+ color:var(--c-ink);cursor:pointer}
+.fix button[type=submit]{background:var(--c-accent);border-color:var(--c-accent);
+ color:var(--c-accent-ink)}
+.fix .said{margin:var(--s-3) 0 0;font-size:var(--size-sm);color:var(--c-muted);
+ white-space:pre-wrap;word-break:break-word}
+/* A sitting whose record has been corrected by hand. */
+.corrected{font-size:var(--size-sm);color:var(--c-muted);margin-top:var(--s-4);
+ padding-left:var(--s-4);border-left:var(--rule) solid var(--c-unpublished)}
+
 @media (max-width:34rem){
   .block{flex-direction:column;gap:var(--s-1)}
   .block .t{width:auto;padding:0}

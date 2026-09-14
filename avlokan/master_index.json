@@ -10254,21 +10254,22 @@
   "processed": false,
   "audio": [
    {
-    "n": 380,
-    "subject": "Dravyadrushti Prakash 405",
-    "part": "Bandani",
-    "place": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "remarks": ""
-   },
-   {
     "n": 381,
     "subject": "Dravyadrushti Prakash 17",
     "part": "2 Bandani",
     "place": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "remarks": "",
+    "text_source": "matched by reference number"
+   },
+   {
+    "n": 380,
+    "subject": "Dravyadrushti Prakash 405",
+    "part": "Bandani",
+    "place": "",
     "scripture": "Drashti ke Nidhan",
     "remarks": "",
-    "text_source": "paired with the day's video"
+    "text_source": "matched by reference number"
    },
    {
     "n": 382,
@@ -12394,22 +12395,6 @@
   "processed": false,
   "audio": [
    {
-    "n": 447,
-    "subject": "Adhyatma Ganga 131",
-    "part": "Kulpak",
-    "place": "",
-    "scripture": "Adhyatma Ganga",
-    "remarks": ""
-   },
-   {
-    "n": 448,
-    "subject": "Adhyatma Ganga 189",
-    "part": "Kulpak",
-    "place": "",
-    "scripture": "Adhyatma Ganga",
-    "remarks": ""
-   },
-   {
     "n": 449,
     "subject": "Tatva Charcha",
     "part": "Kulpak",
@@ -12425,6 +12410,22 @@
     "scripture": "Adhyatma Ganga",
     "remarks": "",
     "text_source": "paired with the day's video"
+   },
+   {
+    "n": 448,
+    "subject": "Adhyatma Ganga 189",
+    "part": "Kulpak",
+    "place": "",
+    "scripture": "Adhyatma Ganga",
+    "remarks": ""
+   },
+   {
+    "n": 447,
+    "subject": "Adhyatma Ganga 131",
+    "part": "Kulpak",
+    "place": "",
+    "scripture": "Adhyatma Ganga",
+    "remarks": ""
    }
   ]
  },
@@ -13886,22 +13887,23 @@
   "processed": false,
   "audio": [
    {
-    "n": 503,
-    "subject": "Srimad Rajchandra 236 Mokshmarg Prakashak 4",
-    "part": "2",
-    "place": "Bangalore",
-    "scripture": "Moksh Marg Prakashak",
-    "remarks": ""
-   },
-   {
     "n": 502,
     "subject": "Mokshmarg Prakashak 4",
     "part": "3",
     "place": "Bangalore",
-    "scripture": "Shrimad Rajchandra Vachanamrut",
+    "scripture": "Moksh Marg Prakashak",
     "remarks": "",
     "moved_from": "2000-05-22",
-    "text_source": "paired with the day's video"
+    "text_source": "matched by reference number"
+   },
+   {
+    "n": 503,
+    "subject": "Srimad Rajchandra 236 Mokshmarg Prakashak 4",
+    "part": "2",
+    "place": "Bangalore",
+    "scripture": "Shrimad Rajchandra Vachanamrut",
+    "remarks": "",
+    "text_source": "matched by reference number"
    }
   ]
  },

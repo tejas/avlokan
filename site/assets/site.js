@@ -273,6 +273,89 @@
   var KEY = "avlokan:pos:" + page;
   var MARKS = "avlokan:marks:" + page;
 
+  /* ---- corrections -------------------------------------------------------
+     The form is on every discourse page and hidden on all of them. Shift+E
+     opens it; so does `?edit` on the address, which is the only way in from a
+     phone or a television.
+
+     Saving tries the local editor first. `./edit.sh` answers POST /correction
+     and writes the file; anywhere else that request fails and the same JSON
+     goes to the clipboard instead, to be pasted wherever it can be acted on.
+     Either way nothing is lost between noticing and recording. */
+  var fix = document.querySelector("form.fix");
+  if (fix) {
+    var said = fix.querySelector(".said");
+
+    function show() {
+      fix.hidden = false;
+      fix.scrollIntoView({ block: "center" });
+      var first = fix.querySelector("input, textarea");
+      if (first) first.focus();
+    }
+
+    /* `\b` doubled on purpose: these scripts live inside ordinary Python
+       strings, where a single backslash-b is a backspace character. It
+       compiled to /[?&]edit<BS>/, which matches nothing. */
+    if (/[?&]edit\b/.test(location.search)) show();
+
+    document.addEventListener("keydown", function (ev) {
+      var on = ev.target && ev.target.tagName || "";
+      if (/INPUT|TEXTAREA|SELECT/.test(on)) return;
+      if (ev.shiftKey && (ev.key === "E" || ev.key === "e")) { ev.preventDefault(); show(); }
+    });
+
+    fix.querySelector(".cancel").addEventListener("click", function () {
+      fix.hidden = true;
+    });
+
+    function tell(message) { said.textContent = message; }
+
+    fix.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      /* Only what actually differs. A correction that restates the current
+         value is noise in the history and, worse, reads later as a decision
+         somebody made on purpose. */
+      var body = { key: fix.dataset.key, was: fix.dataset.slug,
+                   date: fix.dataset.date };
+      var any = false;
+      ["scripture", "reference", "part_no"].forEach(function (name) {
+        var field = fix.elements[name];
+        if (!field) return;
+        var now = field.value.trim();
+        if (now === field.defaultValue.trim()) return;
+        body[name] = (name === "part_no")
+          ? (now === "" ? null : parseInt(now, 10)) : now;
+        any = true;
+      });
+      body.why = fix.elements.why.value.trim();
+      if (!any) { tell("Nothing is different from what the page already says."); return; }
+      if (!body.why) { tell("Say why, so a later reader can disagree with it."); return; }
+
+      tell("Saving…");
+      fetch("/correction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }).then(function (r) {
+        if (!r.ok) throw new Error("editor said " + r.status);
+        return r.json();
+      }).then(function (answer) {
+        tell(answer.message || "Saved. Rebuilding…");
+        if (answer.reload) setTimeout(function () { location.reload(); }, 900);
+      }).catch(function () {
+        var text = JSON.stringify(body, null, 1);
+        var copy = navigator.clipboard && navigator.clipboard.writeText(text);
+        if (copy) {
+          copy.then(function () {
+            tell("The editor is not running, so this is on your clipboard instead.");
+          }).catch(function () { tell(text); });
+        } else {
+          tell(text);
+        }
+      });
+    });
+  }
+
   if (!blocks.length) { bind(); return; }
 
   /* ---- 2. click a timestamp to jump there ---- */

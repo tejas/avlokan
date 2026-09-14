@@ -30,6 +30,7 @@ import sys
 from collections import Counter, defaultdict
 from difflib import SequenceMatcher
 from datetime import date as _date, datetime
+from itertools import permutations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -420,6 +421,11 @@ def reclassify(index: list[dict]) -> list[tuple]:
 # recurs in every letter he ever taught.
 AUDIO_WINDOW_DAYS = 7
 
+# Answers about which text an audio row belongs to that were reached by
+# looking at the day as a whole. Re-deriving them from the row's own subject
+# would undo the very thing they were made to fix.
+SETTLED = ("paired with the day's video", "matched by reference number")
+
 
 def as_date(iso: str) -> _date | None:
     try:
@@ -472,7 +478,7 @@ def reclassify_audio(index: list[dict]) -> list[tuple]:
             # A row already matched to the day's video keeps that answer.
             # Re-deriving it from the subject here would undo the pairing,
             # which would then redo it, and the merge would never settle.
-            if audio.get("text_source") == "paired with the day's video":
+            if audio.get("text_source") in SETTLED:
                 continue
             text = classify(audio.get("subject") or "")
             if text and text != audio.get("scripture"):
@@ -520,6 +526,131 @@ def pair_same_day(index: list[dict]) -> list[tuple]:
             audio["scripture"] = text
             audio["text_source"] = "paired with the day's video"
     return paired
+
+
+# A day with more sittings than this is not brute-forced. Six is already 720
+# arrangements, and he never taught seven times in a day.
+MAX_SITTINGS_A_DAY = 6
+
+_DATE_TAIL = re.compile(r",?\s*\d{1,2}\s*[A-Za-z]{3,9}\.?\s*\d{2,4}\s*$")
+_PART_WORDS = re.compile(r"\b(?:part|par)\s*\d{1,2}\b", re.I)
+
+
+def cited_number(text: str) -> str:
+    """The letter, gatha or bol a title or subject names, as a bare number.
+
+    Unlike `series_of` this does not require a keyword in front of the number.
+    The audio list writes `Dravyadrushti Prakash 405` and the video of the
+    same sitting is titled `Drashti ke Nidhan 405`; neither says "Patrank",
+    and the number is the only thing they agree on.
+
+    The trailing date and any "Part 3" come off first. Without that,
+    `Mokshmarg Prakashak, Adhikar 4, Part 3, 23 May 2000` would answer 4 only
+    by luck, and a title that led with its date would answer 23 — every
+    recording would appear to cite its own upload day.
+    """
+    plain = _PART_WORDS.sub("", _DATE_TAIL.sub("", str(text or "")))
+    hit = re.search(r"(\d{1,4})", plain)
+    return hit.group(1) if hit else ""
+
+
+def _as_built(pubs: list[dict], auds: list[dict]) -> list[tuple]:
+    """The pairing the site will make from this day: grouped by text, then
+    zipped in list order. Mirrors `build.sittings`, which is what we are
+    checking against."""
+    rows: dict[str, list] = defaultdict(list)
+    for audio in auds:
+        rows[audio.get("scripture") or ""].append(audio)
+    pairs = []
+    for pub in pubs:
+        here = rows[pub.get("scripture") or ""]
+        pairs.append((here.pop(0) if here else None, pub))
+    return pairs
+
+
+def _agreement(pairs: list[tuple]) -> int:
+    """How many of these pairs cite the same number on both sides."""
+    total = 0
+    for audio, pub in pairs:
+        if not audio:
+            continue
+        n = cited_number(audio.get("subject"))
+        if n and n == cited_number(pub.get("title")):
+            total += 1
+    return total
+
+
+def align_by_number(index: list[dict]) -> tuple[list, list, list]:
+    """Re-file a day's audio rows when the reference numbers say they crossed.
+
+    Everything before this decides which text an audio row belongs to by
+    reading its subject, and where that fails, by handing surplus rows to
+    whichever video is short. Both are blind to the one thing the two
+    catalogues reliably agree on: the number of the letter he was teaching.
+
+    On 14 January 2000 he taught three times. The audio list and the videos
+    name the same three sittings in different orders, so pairing them by
+    position put the Dravya Drushti Prakash 17 row under the Drashti ke Nidhan
+    405 video — Tejas found it on the page. On 23 May 2000 two sittings are
+    simply swapped.
+
+    So: try every arrangement of the day and keep the one where the most
+    numbers agree, but only when it beats the current pairing outright and
+    only when it is the single best answer. 19 May 2000 has an audio row
+    reading `Srimad Rajchandra 172 Samaysar Sloka 19`, which cites both of
+    that day's videos; two arrangements score equally and the day is reported
+    rather than guessed at.
+    """
+    fixed, resorted, ambiguous = [], [], []
+    for entry in index:
+        pubs = [p for p in entry.get("published") or [] if not p.get("superseded_by")]
+        auds = list(entry.get("audio") or [])
+        if not 2 <= len(pubs) <= MAX_SITTINGS_A_DAY:
+            continue
+        if not 2 <= len(auds) <= MAX_SITTINGS_A_DAY:
+            continue
+
+        now = _as_built(pubs, auds)
+        # Keyed by which rows are paired, not by the order the permutation
+        # happened to produce them in: when there are more audio rows than
+        # videos, many permutations describe the same pairing.
+        arrangements: dict[tuple, list] = {}
+        for perm in permutations(range(len(auds)), min(len(auds), len(pubs))):
+            cand = [(auds[j], pubs[i]) for i, j in enumerate(perm)]
+            arrangements.setdefault(
+                tuple(sorted((id(a), id(p)) for a, p in cand)), cand)
+        scored = {k: _agreement(v) for k, v in arrangements.items()}
+        best_score = max(scored.values())
+        if best_score <= _agreement(now):
+            continue
+        winners = [k for k, v in scored.items() if v == best_score]
+        if len(winners) > 1:
+            ambiguous.append((entry["date"], _agreement(now), best_score, len(winners)))
+            continue
+
+        best = arrangements[winners[0]]
+        where = {id(pub): i for i, pub in enumerate(pubs)}
+        rank: dict[int, int] = {}
+        for audio, pub in best:
+            rank[id(audio)] = where[id(pub)]
+            was, now_text = audio.get("scripture") or "", pub.get("scripture") or ""
+            if was == now_text:
+                continue
+            fixed.append((entry["date"], was, now_text,
+                          audio.get("subject") or "", pub.get("title") or ""))
+            audio["scripture"] = now_text
+            audio["text_source"] = "matched by reference number"
+        # Order matters as much as the label: two sittings from one text are
+        # paired off by position, so the rows have to end up in the same order
+        # as the videos they were matched to. On 8 April 2000 this is the
+        # whole repair — three Adhyatma Ganga bols, correctly filed, listed in
+        # an order the videos do not share.
+        entry["audio"] = sorted(
+            auds, key=lambda a: rank.get(id(a), len(pubs) + auds.index(a)))
+        if entry["audio"] != auds:
+            resorted.append((entry["date"],
+                             [a.get("subject") or "" for a in entry["audio"]]))
+    return fixed, resorted, ambiguous
 
 
 def fold_audio(index: list[dict]) -> list[tuple]:
@@ -957,6 +1088,10 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     audio_named = reclassify_audio(list(by_date.values()))
     audio_moved = fold_audio(list(by_date.values()))
     same_day = pair_same_day(list(by_date.values()))
+    # Last, because it checks the answer every earlier pass arrived at against
+    # the reference numbers, and only overrules them when the numbers are
+    # unambiguous.
+    crossed, resorted, ambiguous = align_by_number(list(by_date.values()))
     superseded = dedupe(list(by_date.values()), upload_order(rows))
     superseded += fold_segments(list(by_date.values()))
     moved = sorted(set(moved) | set(again))
@@ -971,7 +1106,8 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
             "enriched": enriched, "dropped": dropped, "relinked": relinked,
             "moved": moved, "stale": stale, "misfiled": misfiled,
             "superseded": superseded, "renamed": renamed,
-            "audio_moved": audio_moved, "audio_named": audio_named, "same_day": same_day, "relocated": relocated, "in_series": in_series, "from_playlists": from_playlists}
+            "audio_moved": audio_moved, "audio_named": audio_named, "same_day": same_day, "relocated": relocated, "in_series": in_series, "from_playlists": from_playlists,
+            "crossed": crossed, "resorted": resorted, "ambiguous": ambiguous}
 
 
 def main() -> None:
@@ -1029,6 +1165,20 @@ def main() -> None:
     if result["same_day"]:
         print(f"{len(result['same_day'])} audio entries paired with the day's video "
               f"that had none, across a disagreeing text name")
+    if result["crossed"]:
+        print(f"{len(result['crossed'])} audio entries re-filed because the "
+              f"reference numbers say the day's sittings were crossed:")
+        for date, was, now, subject, title in result["crossed"]:
+            print(f"   {date}  {was[:26]:26} -> {now}")
+            print(f"             {subject[:44]:44} with  {title[:48]}")
+    if result["resorted"]:
+        print(f"{len(result['resorted'])} days had their audio entries put back "
+              f"into the order the videos give:")
+        for date, subjects in result["resorted"]:
+            print(f"   {date}  {' | '.join(s[:24] for s in subjects)}")
+    for date, base, best, n in result["ambiguous"]:
+        print(f"   ? {date}: {n} arrangements agree on {best} numbers "
+              f"(currently {base}) — left as it is, decide it by hand")
     if result["audio_moved"]:
         print(f"{len(result['audio_moved'])} audio entries moved onto the day the "
               f"video gives for that sitting:")

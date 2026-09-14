@@ -383,6 +383,100 @@ def sittings(entry: dict[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
+CORRECTIONS_FILE = CONFIG / "sitting_corrections.json"
+
+# Fields a reader of the page can be sure about, and nothing else. What text
+# he was teaching, what it cites, and where it falls in the run: exactly the
+# three things the catalogues disagree about. The date is not here — moving a
+# sitting to another day rearranges that day's pairing too, and belongs in
+# `date_corrections.json` where it can be reasoned about in one place.
+CORRECTABLE = ("scripture", "reference", "part_no")
+
+
+def sitting_key(s: dict[str, Any]) -> str:
+    """A name for one sitting that survives being corrected.
+
+    Not the slug: the slug is built from the text name, which is the thing
+    most often wrong, so a correction keyed by slug would stop matching the
+    moment it was applied. The YouTube id never changes, and neither does an
+    audio row's number in the written list.
+    """
+    if s["youtube_id"]:
+        return f'yt:{s["youtube_id"]}'
+    n = (s["audio"] or {}).get("n")
+    if n is not None:
+        return f"audio:{n}"
+    return f'date:{s["date"]}#{s["part"]}'
+
+
+def renumber(same_day: list[dict[str, Any]]) -> None:
+    """Re-count which sitting of its text each one is, within its day.
+
+    A correction that moves a sitting to another text changes both the text it
+    left and the text it joined — "sitting 2 of 3" and the `-2` on the end of
+    the address are both counted per text, per day.
+    """
+    total = Counter(s["scripture"] for s in same_day)
+    seen: Counter = Counter()
+    for s in same_day:
+        seen[s["scripture"]] += 1
+        s["part"] = seen[s["scripture"]]
+        s["of"] = total[s["scripture"]]
+
+
+def apply_corrections(same_day: list[dict[str, Any]],
+                      fixes: dict[str, Any]) -> list[tuple[str, str]]:
+    """Lay hand corrections over what the catalogues said.
+
+    Applied here, to the assembled sittings, rather than written back into
+    `master_index.json`: the merge re-derives that file from the channel every
+    week and would quietly undo anything edited into it. A correction stated
+    separately outlives the data it corrects, and reads as a disagreement with
+    the source rather than a replacement of it — the same reason the wrong
+    dates and the OCR damage each have a file of their own.
+    """
+    moved, changed = [], False
+    for s in same_day:
+        fix = fixes.get(sitting_key(s))
+        if not fix:
+            continue
+        before = sitting_slug(s)
+        for field in CORRECTABLE:
+            if field not in fix:
+                continue
+            value = fix[field]
+            if field == "scripture" and value:
+                s["scripture"] = value
+                s["tokens"] = scripture_tokens(value)
+                changed = True
+            elif field == "reference":
+                s["reference"] = value
+            elif field == "part_no":
+                s["part_no"] = value
+        s["corrected"] = fix
+        s["was"] = before
+    if changed:
+        renumber(same_day)
+        for s in same_day:
+            if s.get("was") and s["was"] != sitting_slug(s):
+                moved.append((s["was"], sitting_slug(s)))
+    return moved
+
+
+def redirect_page(to: str) -> str:
+    """A stub left at an address a correction moved a sitting away from.
+
+    Cheap insurance. Someone has a link, or a search engine does, and a
+    correction should not turn it into a dead end.
+    """
+    return (f'<!doctype html>\n<html lang="hi">\n<head>\n<meta charset="utf-8">\n'
+            f'<meta http-equiv="refresh" content="0; url={e(to)}">\n'
+            f'<link rel="canonical" href="{e(to)}">\n'
+            f'<title>Moved</title>\n</head>\n<body>\n'
+            f'<p>This sitting is now at <a href="{e(to)}">{e(to)}</a>.</p>\n'
+            f'</body>\n</html>\n')
+
+
 def attach_jobs(all_sittings: list[dict[str, Any]],
                 jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Hang each transcript on the sitting it actually belongs to.
@@ -613,7 +707,7 @@ def sitting_slug(s: dict[str, Any]) -> str:
 
 def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int = 1) -> str:
     date, scripture = s["date"], s["scripture"]
-    reference, location = s["reference"], s["location"]
+    reference, location = shown_reference(s, s["scripture"]), s["location"]
     pub, aud, job = s["published"], s["audio"], s["job"]
     youtube = s["youtube_id"]
     title = sitting_title(s)
@@ -786,12 +880,65 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
             '<p class="note">Not transcribed yet. The recording is available above.</p></section>'
         )
 
+    # A correction says so on the page it corrects. Nothing about the archive
+    # is changed silently, and a reader who knows better than the catalogue
+    # should be able to see what was decided and on what grounds.
+    fixed = s.get("corrected")
+    if fixed and fixed.get("why"):
+        when = f' ({e(fixed["when"])})' if fixed.get("when") else ""
+        bits.append(f'<p class="corrected">Corrected by hand{when}: '
+                    f'{e(fixed["why"])}</p>')
+
+    bits.append(fix_form(s))
     bits.append("</article>")
     return shell(title, "\n".join(bits), depth=depth, wide=bool(blocks),
                  description=f"{scripture}. {pretty_date(date)}. {reference}".strip(),
                  trail=[("Avlokan", "../index.html"),
                         (scripture, f"../texts/{slug(scripture)}.html"),
                         (pretty_date(date), "")])
+
+
+KNOWN_TEXTS: list[str] = []
+
+
+def fix_form(s: dict[str, Any]) -> str:
+    """The correction form, on every discourse page and hidden on all of them.
+
+    Hidden rather than absent because the moment you notice an entry is wrong
+    is the moment you are reading it, and anything that makes you leave the
+    page to write the correction down somewhere else is a correction that does
+    not get made. Shift+E opens it, or `?edit` on the address for a phone.
+
+    It is never shown to a reader. Published, it is a few hundred bytes of
+    inert markup on a memorial site; locally, `./edit.sh` answers the form and
+    writes the correction to `avlokan/sitting_corrections.json`. Away from
+    that server it puts the same JSON on the clipboard instead, so a mistake
+    spotted on a television can still be captured where it was seen.
+    """
+    fix = s.get("corrected") or {}
+    part = s.get("part_no")
+    return f"""<form class="fix" hidden data-key="{e(sitting_key(s))}"
+      data-slug="{e(sitting_slug(s))}" data-date="{e(s["date"])}">
+<h2>Correct this entry</h2>
+<p class="note">What the catalogues say about this sitting. The recording is
+the authority; this is the record of it.</p>
+<label>Which text
+  <input name="scripture" list="known-texts" value="{e(s["scripture"])}"></label>
+<datalist id="known-texts">{"".join(f'<option value="{e(n)}">' for n in KNOWN_TEXTS)}</datalist>
+<label>What it cites
+  <input name="reference" value="{e(shown_reference(s, s["scripture"]))}"
+         placeholder="Patrank 466"></label>
+<label>Part of the series
+  <input name="part_no" type="number" min="1" max="200"
+         value="{part if part is not None else ""}"></label>
+<label>Why this is wrong
+  <textarea name="why" rows="3" required
+    placeholder="The video title says Drashti ke Nidhan; the audio list subject was paired with the wrong sitting."
+    >{e(fix.get("why", ""))}</textarea></label>
+<p class="links"><button type="submit">Save correction</button>
+  <button type="button" class="cancel">Close</button></p>
+<p class="said" role="status"></p>
+</form>"""
 
 
 def step_label(s: dict[str, Any]) -> str:
@@ -812,6 +959,30 @@ def says_nothing(reference: str, name: str) -> bool:
     if not a:
         return True
     return a == b or SequenceMatcher(None, a, b).ratio() > 0.85
+
+
+def shown_reference(s: dict[str, Any], name: str) -> str:
+    """What to print in the reference column, and what not to.
+
+    What a catalogue actually recorded is never overwritten, only ever
+    supplied where it said nothing. `reference_label` reads a single citation
+    off whichever source names one first, which is right for a row that cites
+    nothing and wrong for one that cites three: "Gatha 45, 46, 22" is a
+    sitting on three gathas, and rewriting it to "Gatha 45" would quietly
+    discard two of them. It also lets the video title's wording win over the
+    audio list's, which turns "Atma Khyati Shloka 3" into "Gatha 3" — a
+    contradiction of the source rather than a tidying of it.
+
+    So: keep the recorded reference whenever there is one, and fall back to
+    the derived label for the 232 sittings that would otherwise show an empty
+    column. Where the recorded wording is wrong rather than merely untidy,
+    that is a judgement about the text, and it belongs in the correction file
+    where it can carry a reason — see `apply_corrections`.
+    """
+    recorded = s["reference"] or ""
+    if not says_nothing(recorded, name):
+        return recorded[:52]
+    return reference_label(s)
 
 
 REFUSED: set[str] = set(read_json(CONFIG / "embed_refused.json", {}).get("ids", []))
@@ -910,9 +1081,7 @@ def sitting_row(s: dict[str, Any], name: str) -> str:
     if s["of"] > 1:
         when += f' <span class="muted">&middot; {s["part"]} of {s["of"]}</span>'
     part = f'{s["part_no"]}' if s["part_no"] is not None else ""
-    # The audio list uses the text's own name as the subject, which says
-    # nothing on a page already titled with it.
-    ref = "" if says_nothing(s["reference"], name) else s["reference"][:52]
+    ref = shown_reference(s, name)
     return (f'<tr><td class="pt">{e(part)}</td>'
             f'<td><a href="../d/{sitting_slug(s)}.html">{when}</a></td>'
             f'<td>{e(ref)}</td>'
@@ -1676,6 +1845,35 @@ button.play:hover .play-mark,button.play:focus-visible .play-mark{background:var
  margin-top:var(--s-2)}
 .book-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-2)}
 
+/* ---------- the correction form ----------
+   Hidden until Shift+E or ?edit. Deliberately plain: it is a tool, not part
+   of the archive, and it should not look like something a reader was meant
+   to find. */
+.fix[hidden]{display:none}
+.fix{margin:var(--s-6) 0 0;padding:var(--s-5);background:var(--c-hover);
+ border:var(--border);border-radius:var(--radius)}
+.fix h2{margin:0 0 var(--s-2);font-size:var(--size-lg)}
+.fix .note{margin:0 0 var(--s-4)}
+.fix label{display:block;margin-bottom:var(--s-3);font-size:var(--size-sm);
+ letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--c-muted)}
+.fix input,.fix textarea{display:block;width:100%;margin-top:var(--s-1);
+ padding:var(--s-2) var(--s-3);font:inherit;font-size:var(--size-md);
+ text-transform:none;letter-spacing:normal;color:var(--c-ink);
+ background:var(--c-surface);border:var(--border);border-radius:var(--radius)}
+.fix textarea{line-height:var(--leading-body);resize:vertical}
+.fix input:focus,.fix textarea:focus{outline:2px solid var(--c-accent);
+ outline-offset:1px}
+.fix button{font:inherit;font-size:var(--size-md);padding:var(--s-2) var(--s-4);
+ border:var(--border);border-radius:var(--radius);background:var(--c-surface);
+ color:var(--c-ink);cursor:pointer}
+.fix button[type=submit]{background:var(--c-accent);border-color:var(--c-accent);
+ color:var(--c-accent-ink)}
+.fix .said{margin:var(--s-3) 0 0;font-size:var(--size-sm);color:var(--c-muted);
+ white-space:pre-wrap;word-break:break-word}
+/* A sitting whose record has been corrected by hand. */
+.corrected{font-size:var(--size-sm);color:var(--c-muted);margin-top:var(--s-4);
+ padding-left:var(--s-4);border-left:var(--rule) solid var(--c-unpublished)}
+
 @media (max-width:34rem){
   .block{flex-direction:column;gap:var(--s-1)}
   .block .t{width:auto;padding:0}
@@ -1956,6 +2154,89 @@ JS = """/* Enhancement only. The page is complete without any of this.
 
   var KEY = "avlokan:pos:" + page;
   var MARKS = "avlokan:marks:" + page;
+
+  /* ---- corrections -------------------------------------------------------
+     The form is on every discourse page and hidden on all of them. Shift+E
+     opens it; so does `?edit` on the address, which is the only way in from a
+     phone or a television.
+
+     Saving tries the local editor first. `./edit.sh` answers POST /correction
+     and writes the file; anywhere else that request fails and the same JSON
+     goes to the clipboard instead, to be pasted wherever it can be acted on.
+     Either way nothing is lost between noticing and recording. */
+  var fix = document.querySelector("form.fix");
+  if (fix) {
+    var said = fix.querySelector(".said");
+
+    function show() {
+      fix.hidden = false;
+      fix.scrollIntoView({ block: "center" });
+      var first = fix.querySelector("input, textarea");
+      if (first) first.focus();
+    }
+
+    /* `\\b` doubled on purpose: these scripts live inside ordinary Python
+       strings, where a single backslash-b is a backspace character. It
+       compiled to /[?&]edit<BS>/, which matches nothing. */
+    if (/[?&]edit\\b/.test(location.search)) show();
+
+    document.addEventListener("keydown", function (ev) {
+      var on = ev.target && ev.target.tagName || "";
+      if (/INPUT|TEXTAREA|SELECT/.test(on)) return;
+      if (ev.shiftKey && (ev.key === "E" || ev.key === "e")) { ev.preventDefault(); show(); }
+    });
+
+    fix.querySelector(".cancel").addEventListener("click", function () {
+      fix.hidden = true;
+    });
+
+    function tell(message) { said.textContent = message; }
+
+    fix.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      /* Only what actually differs. A correction that restates the current
+         value is noise in the history and, worse, reads later as a decision
+         somebody made on purpose. */
+      var body = { key: fix.dataset.key, was: fix.dataset.slug,
+                   date: fix.dataset.date };
+      var any = false;
+      ["scripture", "reference", "part_no"].forEach(function (name) {
+        var field = fix.elements[name];
+        if (!field) return;
+        var now = field.value.trim();
+        if (now === field.defaultValue.trim()) return;
+        body[name] = (name === "part_no")
+          ? (now === "" ? null : parseInt(now, 10)) : now;
+        any = true;
+      });
+      body.why = fix.elements.why.value.trim();
+      if (!any) { tell("Nothing is different from what the page already says."); return; }
+      if (!body.why) { tell("Say why, so a later reader can disagree with it."); return; }
+
+      tell("Saving…");
+      fetch("/correction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }).then(function (r) {
+        if (!r.ok) throw new Error("editor said " + r.status);
+        return r.json();
+      }).then(function (answer) {
+        tell(answer.message || "Saved. Rebuilding…");
+        if (answer.reload) setTimeout(function () { location.reload(); }, 900);
+      }).catch(function () {
+        var text = JSON.stringify(body, null, 1);
+        var copy = navigator.clipboard && navigator.clipboard.writeText(text);
+        if (copy) {
+          copy.then(function () {
+            tell("The editor is not running, so this is on your clipboard instead.");
+          }).catch(function () { tell(text); });
+        } else {
+          tell(text);
+        }
+      });
+    });
+  }
 
   if (!blocks.length) { bind(); return; }
 
@@ -2361,12 +2642,15 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
     for sub in ("d", "texts", "assets"):
         (out_dir / sub).mkdir(parents=True, exist_ok=True)
 
+    fixes = read_json(CORRECTIONS_FILE, {})
     all_sittings: list[dict[str, Any]] = []
     day: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    moved: list[tuple[str, str]] = []
     for entry in master:
         if not re.match(r"\d{4}-\d{2}-\d{2}", entry.get("date", "")):
             continue
         same_day = sittings(entry)
+        moved.extend(apply_corrections(same_day, fixes))
         all_sittings.extend(same_day)
         day[entry["date"]] = same_day
 
@@ -2385,6 +2669,9 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for s in all_sittings:
         groups[s["scripture"]].append(s)
+    # So the correction form can offer the texts that already exist rather
+    # than inviting a fifth spelling of Dravya Drushti Prakash.
+    KNOWN_TEXTS[:] = sorted(groups)
 
     pages = 0
     for name, group in groups.items():
@@ -2395,6 +2682,36 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
             pages += 1
         (out_dir / "texts" / f"{slug(name)}.html").write_text(
             text_page(name, group), encoding="utf-8")
+
+    # Written after the real pages, and only where a real page did not take
+    # the address back: two sittings that swapped texts each leave an address
+    # the other one now occupies.
+    written = {sitting_slug(s) for s in all_sittings}
+    for was, now in moved:
+        if was in written:
+            continue
+        written.add(was)
+        (out_dir / "d" / f"{was}.html").write_text(
+            redirect_page(f"{now}.html"), encoding="utf-8")
+
+    # Sweep up pages that no longer correspond to anything. A sitting that
+    # changes text — because a merge reclassified it or a correction moved it
+    # — is written at its new address, and the old file simply stayed behind:
+    # 9 February 2002 sat under "Other discourses" for weeks after it became a
+    # Dravya Drushti Prakash sitting, as a full page, indexed and linkable.
+    # A correction leaves a redirect; everything else leaves nothing.
+    stale = 0
+    for page in (out_dir / "d").glob("*.html"):
+        if page.stem not in written:
+            page.unlink()
+            stale += 1
+    for page in (out_dir / "texts").glob("*.html"):
+        if page.stem not in {slug(name) for name in groups}:
+            page.unlink()
+            stale += 1
+    if stale:
+        print(f"  - {stale} page(s) removed: nothing in the archive is at "
+              f"that address any more")
 
     (out_dir / "index.html").write_text(index_page(groups), encoding="utf-8")
     about = about_page()
@@ -2418,6 +2735,23 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
             shutil.copy2(image, covers / image.name)
     (out_dir / "assets" / "site.css").write_text(CSS, encoding="utf-8")
     (out_dir / "assets" / "site.js").write_text(JS, encoding="utf-8")
+    # These scripts are written as ordinary Python strings, where `\b` is a
+    # backspace and `\n` is a newline. Both have shipped: a regex that
+    # compiled to /[?&]edit<BS>/ and matched nothing, and a join that emitted
+    # a real line break in the middle of a statement. Neither raises anything
+    # — the browser just quietly does the wrong thing — so the build checks.
+    for name in ("site.js", "search.js", "check-embeds.js", "site.css"):
+        asset = out_dir / "assets" / name
+        if not asset.exists():
+            continue
+        stray = [c for c in asset.read_text(encoding="utf-8")
+                 if ord(c) < 32 and c not in "\t\n\r"]
+        if stray:
+            raise SystemExit(
+                f"{name} contains {len(stray)} control character(s) "
+                f"({', '.join(sorted({hex(ord(c)) for c in stray}))}) — almost "
+                f"certainly a backslash escape in build.py that Python ate. "
+                f"Double the backslash.")
     (out_dir / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
     # GitHub Pages runs Jekyll over whatever it is given unless told not to,
     # which costs a minute a deploy and would quietly drop any file whose name

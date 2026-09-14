@@ -231,6 +231,43 @@ place once it is complete, because a half-finished list is worse than
 yesterday's — YouTube rate-limits this often enough to matter. If the read
 fails entirely it carries on with the previous list and says how old it is.
 
+## Correcting an entry
+
+```bash
+./edit.sh                 # the archive at 127.0.0.1:8799, correctable in place
+```
+
+Every discourse page carries a correction form, hidden on all of them. Shift+E
+opens it; so does `?edit` on the address, which is the only way in from a
+phone or a television. Three fields — which text, what it cites, where it
+falls in the series — and a reason, which is required.
+
+The moment you notice an entry is wrong is the moment you are reading it.
+Anything that makes you leave the page to write it down somewhere else is a
+correction that does not get made, which is why the form is on the page rather
+than in a spreadsheet.
+
+`./edit.sh` answers the form, writes to `avlokan/sitting_corrections.json`,
+rebuilds, and reloads the page showing the corrected record. Away from that
+server the same JSON goes to the clipboard instead, so something spotted on a
+television can still be captured where it was seen.
+
+**The corrections are not written back into `master_index.json`.** The merge
+rebuilds that file from the channel every week and would quietly undo anything
+edited into it. `apply_corrections` lays them over the assembled sittings at
+build time instead, which means a correction survives the merge, carries its
+reasoning onto the page that shows it, and reads as a disagreement with the
+catalogue rather than a replacement of it — the same reason the wrong dates
+and the OCR damage each have a file of their own.
+
+Correcting which text a sitting belongs to moves its page. The build leaves a
+redirect at the old address, unless another sitting has taken that address
+over — which happens when two sittings swap texts.
+
+The date is deliberately not correctable here: moving a sitting to another day
+rearranges that day's pairing too, and belongs in `date_corrections.json`
+where it can be reasoned about in one place.
+
 ## Keeping the video list current
 
 The Studio CSV export stops at 500 rows, which is why the index once knew about
@@ -335,6 +372,30 @@ he taught 43.
 letter number *and* part, within a seven-day window. All three are needed:
 every letter has its own Part 2, so `Patrank 548 Part 2` and `Patrank 550 Part
 2` are a week apart and quite different sittings.
+
+### The day's sittings can end up crossed
+
+On the days he taught more than once, the audio list and the video titles name
+the same sittings in different orders. Everything else pairs them by position,
+so on 14 January 2000 the `Dravyadrushti Prakash 17` row was stapled to the
+`Drashti ke Nidhan 405` video, and the page said one text and cited another.
+Tejas found it by reading the page.
+
+The two catalogues disagree about almost everything — spelling, which text,
+sometimes the date — but they agree about **the number of the letter**.
+`align_by_number` tries every arrangement of a day and keeps the one where the
+most numbers agree, on two conditions: it must beat the current pairing
+outright, and it must be the only arrangement that does.
+
+Both conditions earn their keep. Four days across the archive are re-filed by
+it. A fifth, 19 May 2000, has an audio row reading `Srimad Rajchandra 172
+Samaysar Sloka 19`, which cites both of that day's videos; two arrangements
+score equally, so the merge reports the day and changes nothing.
+
+Order is re-filed as well as text. On 8 April 2000 all four rows were already
+under the right texts — three Adhyatma Ganga bols listed in an order the
+videos did not share, which is enough to put every one of them on the wrong
+page.
 
 ### Duplicate recordings
 

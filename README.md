@@ -48,18 +48,34 @@ same, with every page present and the transcript sections saying so.
 | `catalogue.json` | the video sheet |
 | `book.json` | the book, 114 aphorisms, one record each, separately correctable |
 | `book_front.txt` | the book's title page, which precedes the first aphorism |
+| `sitting_corrections.json` | corrections made by hand, each with its reason |
 | `about.md` | the biographical note |
 | `images/` | scanned book covers and 14 photographs, from avlokan.org |
 
-Four files record deliberate changes to that data, each entry carrying its
+Five files record deliberate changes to that data, each entry carrying its
 reasoning so a later reader can disagree with it:
 
+- `sitting_corrections.json` — what a sitting is, where the catalogues are wrong
 - `date_corrections.json` — dates wrong at the source
 - `book_corrections.json` — typing errors in the book
 - `audio_corrections` (applied by `clean_audio.py`) — OCR damage in the list
 - `not_pravachan.json` — videos on the channel that are not discourses
 
-Nothing about the archive is corrected silently.
+Nothing about the archive is corrected silently. A correction appears on the
+page it corrects, saying what was decided and why.
+
+## Correcting something that is wrong
+
+```bash
+./edit.sh
+```
+
+Opens the archive at `127.0.0.1:8799`. On any discourse page press **Shift+E**
+— or put `?edit` on the address, which is how to do it from a phone. Say what
+is wrong and why; the correction is written to `sitting_corrections.json`, the
+site rebuilds, and the page reloads showing it. Away from that server the
+correction goes to the clipboard instead, so something spotted on a television
+is not lost before you get back to the desk.
 
 ## Keeping it current
 
