@@ -819,6 +819,74 @@ def fold_segments(index: list[dict]) -> list[tuple]:
     return folded
 
 
+def name_orphans(index: list[dict], by_id: dict[str, dict]) -> list[tuple]:
+    """Give a catalogued row that has a video but no published row its record.
+
+    `sittings()` pairs the two lists by position, so a catalogued row past the
+    end of `published` still becomes a sitting — but a nameless one, and
+    `dedupe` cannot see it at all because it works from published titles. That
+    is how 6 February 2002 kept a third page for the 2020 recording of a
+    sitting whose other two uploads had already been reconciled.
+
+    The channel knows what the id is. Writing that down is enough to let every
+    other pass treat it like any other upload.
+    """
+    named = []
+    for entry in index:
+        cats = entry.get("catalogued") or []
+        pubs = entry.setdefault("published", [])
+        for i in range(len(pubs), len(cats)):
+            row = by_id.get(cats[i].get("youtube_id") or "")
+            if not row:
+                continue
+            when, _ = title_date(row["title"])
+            if when and when != entry["date"]:
+                continue
+            pubs.append({
+                "title": row["title"],
+                "minutes": (round(int(row["duration"]) / 60)
+                            if row["duration"].isdigit() else 0),
+                "views": int(row["views"]) if row["views"].isdigit() else 0,
+                "uploaded": row["uploaded"] if row["uploaded"].isdigit() else "",
+                "scripture": classify(row["title"]) or cats[i].get("scripture", ""),
+            })
+            named.append((entry["date"], row["id"], row["title"]))
+    return named
+
+
+def merge_renumbered(groups: dict[tuple, list[int]], cats: list[dict],
+                     pending: set[str]) -> None:
+    """Fold a premiere in with the upload it replaces when the re-edit
+    renumbered the parts.
+
+    A sitting is identified by its text, the letter it teaches and which part
+    of that letter it is. The re-edited Patra 22 uploads keep the first two
+    and change the third: the 9 February cassette was found after the others
+    were published and inserted as Part 3, so everything from 12 February on
+    moved up by one. `Part 4, 12 Feb 2002` and `Part 3, 12 Feb 2002` are one
+    sitting recorded once.
+
+    Only a premiere is folded this way, only into a group that already exists
+    on the same day for the same text and the same letter, and only when
+    there is exactly one such group. A day where the letter genuinely ran to
+    two sittings offers two candidates and is left alone rather than guessed
+    at — the part number is the only thing that tells those apart, and this is
+    precisely the case where it cannot be trusted.
+    """
+    def is_premiere(i: int) -> bool:
+        vid = cats[i].get("youtube_id") if i < len(cats) else ""
+        return bool(vid) and vid in pending
+
+    for key in [k for k in groups if all(is_premiere(i) for i in groups[k])]:
+        text, nums = key[0], key[1]
+        hosts = [k for k in groups
+                 if k != key and k[0] == text and k[1] == nums
+                 and not all(is_premiere(i) for i in groups[k])]
+        if len(hosts) != 1:
+            continue
+        groups[hosts[0]].extend(groups.pop(key))
+
+
 def dedupe(index: list[dict], recency: dict[str, int],
            pending: set[str] | None = None) -> list[tuple]:
     """Mark re-uploads of a sitting that is already in the archive.
@@ -830,11 +898,10 @@ def dedupe(index: list[dict], recency: dict[str, int],
     offer them and nothing that was ever published stops resolving.
 
     `recency` ranks ids with 0 as the most recent. `pending` holds ids that
-    are on the channel but not yet watchable — scheduled premieres. A sitting
-    cannot be represented by a video nobody can play, so those lose to
-    anything watchable no matter how new they are. Once a premiere goes live
-    it gains a duration, leaves `pending`, and takes over on the next run
-    without anyone having to remember to do it.
+    are on the channel but not yet watchable — scheduled premieres. A premiere
+    still wins: it is the re-edit that replaces what came before, and Tejas
+    would rather a page carry the version he means to keep, with a countdown
+    on it for a few days, than the copy he has already replaced.
     """
     pending = pending or set()
     marked = []
@@ -847,29 +914,26 @@ def dedupe(index: list[dict], recency: dict[str, int],
         for i, pub in enumerate(pubs):
             if pub.get("title"):
                 groups[signature(pub["title"])].append(i)
+        merge_renumbered(groups, cats, pending)
         for idxs in groups.values():
             if len(idxs) < 2:
                 continue
             ids = {i: (cats[i].get("youtube_id") if i < len(cats) else "") for i in idxs}
             if not any(ids.values()):
                 continue
-            best = min(idxs, key=lambda i: (ids[i] in pending,
+            best = min(idxs, key=lambda i: (ids[i] not in pending,
                                             recency.get(ids[i] or "", 10 ** 6)))
             for i in idxs:
                 if i == best or not ids[best]:
                     pubs[i].pop("superseded_by", None)
                     pubs[i].pop("superseded_reason", None)
                     continue
-                reason = ("not yet premiered" if ids[i] in pending
-                          else "later upload")
+                reason = ("replaced by a scheduled premiere"
+                          if ids[best] in pending else "later upload")
                 if (pubs[i].get("superseded_by") == ids[best]
                         and pubs[i].get("superseded_reason") == reason):
                     continue
                 pubs[i]["superseded_by"] = ids[best]
-                # A premiere is not an older upload; it is the coming one,
-                # set aside only until it airs. Recorded distinctly so the
-                # page does not call it "the earlier one" and so `retire`
-                # never mistakes it for something to throw away.
                 pubs[i]["superseded_reason"] = reason
                 marked.append((entry["date"], pubs[i].get("title", ""),
                                pubs[best].get("title", "")))
@@ -1032,8 +1096,9 @@ def retire(index: list[dict], pending: set[str]) -> list[dict]:
         drop = set()
         for i, pub in enumerate(pubs):
             vid = (cats[i].get("youtube_id") or "") if i < len(cats) else ""
+            why = pub.get("superseded_reason")
             if (pub.get("superseded_by")
-                    and pub.get("superseded_reason") == "later upload"
+                    and why in ("later upload", "replaced by a scheduled premiere")
                     and vid not in pending):
                 drop.add(i)
                 dropped.append({
@@ -1041,7 +1106,9 @@ def retire(index: list[dict], pending: set[str]) -> list[dict]:
                     "date": entry["date"],
                     "title": pub.get("title", ""),
                     "replaced_by": pub["superseded_by"],
-                    "why": "a later upload of the same sitting replaced it",
+                    "why": ("a re-edited upload replaced it, premiering shortly"
+                            if why == "replaced by a scheduled premiere"
+                            else "a later upload of the same sitting replaced it"),
                 })
         if not drop:
             continue
@@ -1287,6 +1354,9 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     crossed, resorted, ambiguous = align_by_number(list(by_date.values()))
     # yt-dlp reports no duration for a video that has not premiered yet.
     pending = {r["id"] for r in rows if not r["duration"].isdigit()}
+    # Before deduping: a catalogued row with a video but no published row is
+    # invisible to dedupe, and becomes a nameless extra page.
+    orphans = name_orphans(list(by_date.values()), {r["id"]: r for r in rows})
     superseded = dedupe(list(by_date.values()), upload_order(rows), pending)
     superseded += fold_segments(list(by_date.values()))
     # Last: dedupe has to have decided what replaces what before anything is
@@ -1307,7 +1377,7 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
             "superseded": superseded, "renamed": renamed,
             "audio_moved": audio_moved, "audio_named": audio_named, "same_day": same_day, "relocated": relocated, "in_series": in_series, "from_playlists": from_playlists,
             "crossed": crossed, "resorted": resorted, "ambiguous": ambiguous,
-            "repointed": repointed, "retired": retired,
+            "repointed": repointed, "retired": retired, "orphans": orphans,
             "pending": [r for r in rows if r["id"] in pending]}
 
 
@@ -1385,6 +1455,11 @@ def main() -> None:
               f"video gives for that sitting:")
         for was, now, text, part in result["audio_moved"]:
             print(f"   {was} -> {now}  {text} part {part}")
+    if result["orphans"]:
+        print(f"{len(result['orphans'])} video(s) had a catalogue row but no record "
+              f"of what they are; taken from the channel:")
+        for date, vid, title in result["orphans"]:
+            print(f"   {date}  {vid}  {title[:52]}")
     if result["retired"]:
         print(f"{len(result['retired'])} older upload(s) removed from the archive, "
               f"replaced by a better one of the same sitting:")
@@ -1397,8 +1472,8 @@ def main() -> None:
             print(f"   {date}  {title[:56]}")
             print(f"             {was} -> {now}  (the displaced upload is kept)")
     if result["pending"]:
-        print(f"{len(result['pending'])} scheduled premiere(s), not watchable yet — "
-              f"listed, but they do not take a sitting from a video that plays:")
+        print(f"{len(result['pending'])} scheduled premiere(s) — each takes its "
+              f"sitting now; the page carries a countdown until it airs:")
         for r in result["pending"]:
             print(f"   {r['title'][:66]}")
     if result["superseded"]:

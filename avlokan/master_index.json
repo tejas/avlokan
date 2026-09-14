@@ -23618,7 +23618,15 @@
  },
  {
   "date": "2001-11-12",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Parmagamsar, 187, 252, 12 Nov 2001",
+    "minutes": 52,
+    "views": 48,
+    "uploaded": "",
+    "scripture": "Shri Parmagamsar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Parmagamsar",
@@ -25064,7 +25072,15 @@
  },
  {
   "date": "2002-01-15",
-  "published": [],
+  "published": [
+   {
+    "title": "Swanubhuti Darshan, 328, 15 Jan 2002",
+    "minutes": 60,
+    "views": 59,
+    "uploaded": "",
+    "scripture": "Swanubhuti Darshan"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Swanubhuti Darshan",
@@ -25095,7 +25111,22 @@
  },
  {
   "date": "2002-01-16",
-  "published": [],
+  "published": [
+   {
+    "title": "Shrimad Rajchandra Vachanamrut, 212, 16 Jan 2002",
+    "minutes": 61,
+    "views": 63,
+    "uploaded": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   },
+   {
+    "title": "Shrimad Rajchandra Vachanamrut, 751, 16 Jan 2002",
+    "minutes": 55,
+    "views": 71,
+    "uploaded": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shrimad Rajchandra Vachanamrut",
@@ -25164,7 +25195,15 @@
  },
  {
   "date": "2002-01-18",
-  "published": [],
+  "published": [
+   {
+    "title": "Adhyatma Ganga, 196, 18 Jan 2002",
+    "minutes": 62,
+    "views": 52,
+    "uploaded": "",
+    "scripture": "Adhyatma Ganga"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Adhyatma Ganga",
@@ -25264,7 +25303,15 @@
  },
  {
   "date": "2002-01-23",
-  "published": [],
+  "published": [
+   {
+    "title": "Dravya Drishti Prakash 19, Part 1, 23 Jan 2002",
+    "minutes": 55,
+    "views": 111,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
@@ -25660,46 +25707,20 @@
   "date": "2002-02-06",
   "published": [
    {
-    "title": "Dravya Drashti Prakash-1, Patra 22, Part 1, 6 Feb 2002",
-    "minutes": 58,
-    "views": 123,
-    "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
     "title": "Dravya Drashti Prakash Patra 22, Part 1, 6 Feb 2002",
     "minutes": 0,
     "views": 0,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "superseded_by": "7mUAOPjBbuY",
-    "superseded_reason": "not yet premiered"
+    "scripture": "Shri Dravya Drushti Prakash"
    }
   ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
-    "youtube_id": "7mUAOPjBbuY",
-    "location": "",
-    "source": "channel listing",
-    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
-    "series": "Dravya Drashti Prakash Patra 22"
-   },
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 22",
     "youtube_id": "LNFL5SAid08",
     "location": "",
     "source": "channel listing"
-   },
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 22",
-    "youtube_id": "66ttxBwwuek",
-    "location": "Hyderabad",
-    "series_id": "PLQqFhvWZLM81hKn8RfUcWGqOg-JAkWyAx",
-    "series": "Dravya Drushti Prakash"
    }
   ],
   "processed": true,
@@ -25718,32 +25739,14 @@
   "date": "2002-02-08",
   "published": [
    {
-    "title": "Dravya Drashti Prakash-1, Patra 22, Part 2, 8 Feb 2002",
-    "minutes": 57,
-    "views": 160,
-    "uploaded": "2025-01-13",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
     "title": "Dravya Drashti Prakash Patra 22, Part 2, 8 Feb 2002",
     "minutes": 0,
     "views": 0,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "superseded_by": "bpVmnuRPf4M",
-    "superseded_reason": "not yet premiered"
+    "scripture": "Shri Dravya Drushti Prakash"
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 22",
-    "youtube_id": "bpVmnuRPf4M",
-    "location": "Hyderabad",
-    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
-    "series": "Dravya Drashti Prakash Patra 22",
-    "source": "channel listing"
-   },
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
@@ -25815,13 +25818,6 @@
   "date": "2002-02-12",
   "published": [
    {
-    "title": "Dravya Drashti Prakash–1, Patra 22, Part 3, 12 Feb 2002",
-    "minutes": 50,
-    "views": 138,
-    "uploaded": "2025-01-17",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
     "title": "Dravya Drashti Prakash Patra 22, Part 4, 12 Feb 2002",
     "minutes": 0,
     "views": 0,
@@ -25830,15 +25826,6 @@
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 22",
-    "youtube_id": "XNBFaupHZKs",
-    "location": "Hyderabad",
-    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
-    "series": "Dravya Drashti Prakash Patra 22",
-    "source": "channel listing"
-   },
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
@@ -25864,13 +25851,6 @@
   "date": "2002-02-13",
   "published": [
    {
-    "title": "Dravya Drashti Prakash–1, Patra 22, Part 4, 13 Feb 2002",
-    "minutes": 56,
-    "views": 169,
-    "uploaded": "2025-01-18",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
     "title": "Dravya Drashti Prakash Patra 22, Part 5, 13 Feb 2002",
     "minutes": 0,
     "views": 0,
@@ -25879,15 +25859,6 @@
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 22",
-    "youtube_id": "7LtLAZqsDXs",
-    "location": "Hyderabad",
-    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
-    "series": "Dravya Drashti Prakash Patra 22",
-    "source": "channel listing"
-   },
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
@@ -25902,13 +25873,6 @@
   "date": "2002-02-14",
   "published": [
    {
-    "title": "Dravya Drashti Prakash–1, Patra 22, Part 5, 14 Feb 2002",
-    "minutes": 51,
-    "views": 191,
-    "uploaded": "2025-01-19",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
     "title": "Dravya Drashti Prakash Patra 22, Part 6, 14 Feb 2002",
     "minutes": 0,
     "views": 0,
@@ -25917,15 +25881,6 @@
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 22",
-    "youtube_id": "gYCuc1kJIAc",
-    "location": "Hyderabad",
-    "source": "channel listing",
-    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
-    "series": "Dravya Drashti Prakash Patra 22"
-   },
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 22",
@@ -26075,7 +26030,15 @@
  },
  {
   "date": "2002-02-21",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Dravya Drushti Prakash - 28, Part 4, 21 Feb 2002",
+    "minutes": 55,
+    "views": 31,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
@@ -26442,7 +26405,15 @@
  },
  {
   "date": "2002-03-09",
-  "published": [],
+  "published": [
+   {
+    "title": "Tatva Charcha, 9 Mar 2002",
+    "minutes": 42,
+    "views": 92,
+    "uploaded": "",
+    "scripture": "Tatva Charcha"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Tatva Charcha",
@@ -26729,7 +26700,15 @@
  },
  {
   "date": "2002-03-17",
-  "published": [],
+  "published": [
+   {
+    "title": "Tatva Charcha, 17 Mar 2002",
+    "minutes": 58,
+    "views": 101,
+    "uploaded": "",
+    "scripture": "Tatva Charcha"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Tatva Charcha",
@@ -27409,7 +27388,15 @@
  },
  {
   "date": "2002-04-04",
-  "published": [],
+  "published": [
+   {
+    "title": "Apoorva Avsar par Pravachan, Part 21, 4 Apr 2002",
+    "minutes": 59,
+    "views": 114,
+    "uploaded": "",
+    "scripture": "Apoorva Avasar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Apoorva Avasar",
@@ -27434,7 +27421,15 @@
  },
  {
   "date": "2002-04-05",
-  "published": [],
+  "published": [
+   {
+    "title": "Apoorva Avsar par Pravachan, Part 22, 5 Apr 2002",
+    "minutes": 45,
+    "views": 101,
+    "uploaded": "",
+    "scripture": "Apoorva Avasar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Apoorva Avasar",
@@ -27544,7 +27539,15 @@
  },
  {
   "date": "2002-04-09",
-  "published": [],
+  "published": [
+   {
+    "title": "Apoorva Avsar, part 23, 9 Apr 2002,  अपूर्व अवसर पर प्रवचन, भाग २३ , ९ अप्रैल २००२",
+    "minutes": 51,
+    "views": 97,
+    "uploaded": "",
+    "scripture": "Apoorva Avasar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Apoorva Avasar",
@@ -27569,7 +27572,15 @@
  },
  {
   "date": "2002-04-10",
-  "published": [],
+  "published": [
+   {
+    "title": "Apoorva Avsar, part 24, 10 Apr 2002 -- अपूर्व अवसर पर प्रवचन, भाग २४, १० अप्रैल २००२",
+    "minutes": 54,
+    "views": 91,
+    "uploaded": "",
+    "scripture": "Apoorva Avasar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Apoorva Avasar",
@@ -27617,7 +27628,15 @@
  },
  {
   "date": "2002-04-12",
-  "published": [],
+  "published": [
+   {
+    "title": "Apoorva Avsar, part 26, 12 Apr 2002 -- अपूर्व अवसर पर प्रवचन, भाग २६ , १२ अप्रैल २००२",
+    "minutes": 44,
+    "views": 82,
+    "uploaded": "",
+    "scripture": "Apoorva Avasar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Apoorva Avasar",
@@ -27695,7 +27714,15 @@
  },
  {
   "date": "2002-04-15",
-  "published": [],
+  "published": [
+   {
+    "title": "Apoorva Avasar, Pad 19, 20, part 28, 15 April 2002",
+    "minutes": 58,
+    "views": 111,
+    "uploaded": "",
+    "scripture": "Apoorva Avasar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Apoorva Avasar",
@@ -27720,7 +27747,15 @@
  },
  {
   "date": "2002-04-16",
-  "published": [],
+  "published": [
+   {
+    "title": "Apoorva Avasar Pad 20, part 29 16 April 2002",
+    "minutes": 54,
+    "views": 104,
+    "uploaded": "",
+    "scripture": "Apoorva Avasar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Apoorva Avasar",
@@ -27855,7 +27890,15 @@
  },
  {
   "date": "2002-04-23",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Gyangoshti, 532, 23 Apr 2002",
+    "minutes": 59,
+    "views": 113,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -27946,7 +27989,15 @@
  },
  {
   "date": "2002-04-27",
-  "published": [],
+  "published": [
+   {
+    "title": "Gyan Goshti, 27 Apr 2002, ज्ञान गोष्टी",
+    "minutes": 41,
+    "views": 103,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -27971,7 +28022,15 @@
  },
  {
   "date": "2002-05-04",
-  "published": [],
+  "published": [
+   {
+    "title": "Gyan goshti 535, 536, 537, May 4, 2002, ज्ञान गोष्टी",
+    "minutes": 57,
+    "views": 103,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -27996,7 +28055,15 @@
  },
  {
   "date": "2002-05-05",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Gyangoshti, 540, 5 May 2002",
+    "minutes": 59,
+    "views": 67,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -28052,7 +28119,15 @@
  },
  {
   "date": "2002-05-07",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Gyangoshti, 542, part 1, 7 May 2002",
+    "minutes": 22,
+    "views": 81,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -28077,7 +28152,15 @@
  },
  {
   "date": "2002-05-08",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Gyangoshti, 542, part 2, 8 May 2002",
+    "minutes": 54,
+    "views": 81,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -28102,7 +28185,15 @@
  },
  {
   "date": "2002-05-09",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Gyangoshti, 547, 9 may 2002",
+    "minutes": 64,
+    "views": 80,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -28127,7 +28218,15 @@
  },
  {
   "date": "2002-05-10",
-  "published": [],
+  "published": [
+   {
+    "title": "Gyan Goshti 548, 10 May 2002, ज्ञान गोष्टी 548",
+    "minutes": 47,
+    "views": 93,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -28152,7 +28251,15 @@
  },
  {
   "date": "2002-05-11",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Gyangoshti, 544, 11 May 2002",
+    "minutes": 53,
+    "views": 64,
+    "uploaded": "",
+    "scripture": "Gyangoshti"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Gyangoshti",
@@ -28357,7 +28464,15 @@
  },
  {
   "date": "2002-05-21",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Atma khyati (Shloka 3 ka arth), 21 May 2002",
+    "minutes": 62,
+    "views": 112,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28372,7 +28487,15 @@
  },
  {
   "date": "2002-05-22",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 1, 22 May 2002",
+    "minutes": 58,
+    "views": 111,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28387,7 +28510,15 @@
  },
  {
   "date": "2002-05-23",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 1, Part 3, 23 May 2002",
+    "minutes": 57,
+    "views": 97,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28412,7 +28543,15 @@
  },
  {
   "date": "2002-05-24",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 1, Part 4, 24 May 2002",
+    "minutes": 58,
+    "views": 81,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28437,7 +28576,15 @@
  },
  {
   "date": "2002-05-25",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 1, Part 5, 25 May 2002",
+    "minutes": 57,
+    "views": 86,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28462,7 +28609,15 @@
  },
  {
   "date": "2002-05-26",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 2, Part 1, 26 May 2002",
+    "minutes": 47,
+    "views": 97,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28510,7 +28665,15 @@
  },
  {
   "date": "2002-05-28",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 2, part 2, 28 May 2002",
+    "minutes": 46,
+    "views": 98,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28535,7 +28698,15 @@
  },
  {
   "date": "2002-05-29",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 2 & Gatha 3, 29 May 2002",
+    "minutes": 48,
+    "views": 81,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28560,7 +28731,15 @@
  },
  {
   "date": "2002-05-30",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 3, 30 May 2002",
+    "minutes": 48,
+    "views": 72,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28617,7 +28796,15 @@
  },
  {
   "date": "2002-06-01",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 4(2), 1 Jun 2002",
+    "minutes": 45,
+    "views": 83,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28675,7 +28862,15 @@
  },
  {
   "date": "2002-06-03",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 5, Part 2, 3 Jun 2002",
+    "minutes": 59,
+    "views": 93,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28700,7 +28895,15 @@
  },
  {
   "date": "2002-06-04",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 5, Part 3, 4 Jun 2002",
+    "minutes": 50,
+    "views": 82,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28725,7 +28928,15 @@
  },
  {
   "date": "2002-06-05",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar, Gatha 5, Part 4, 5 Jun 2002",
+    "minutes": 62,
+    "views": 87,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -28965,7 +29176,15 @@
  },
  {
   "date": "2002-06-12",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 6 Bhaavarth, श्री समयसार गाथा ६ भावार्थ, 12 Jun 2002",
+    "minutes": 56,
+    "views": 110,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -29023,7 +29242,15 @@
  },
  {
   "date": "2002-06-14",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 6 Bhaavarth, श्री समयसार गाथा ६ भावार्थ, 14 Jun 2002",
+    "minutes": 54,
+    "views": 111,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -29048,7 +29275,15 @@
  },
  {
   "date": "2002-06-15",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 6 Bhaavarth, श्री समयसार गाथा ६ भावार्थ, 15 Jun 2002",
+    "minutes": 58,
+    "views": 85,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -29106,7 +29341,15 @@
  },
  {
   "date": "2002-06-17",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 6 Bhaavarth, श्री समयसार गाथा ६ भावार्थ, 17 Jun 2002",
+    "minutes": 58,
+    "views": 116,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -29131,7 +29374,15 @@
  },
  {
   "date": "2002-06-18",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 6 Bhaavarth, श्री समयसार गाथा ६ भावार्थ, 18 Jun 2002",
+    "minutes": 33,
+    "views": 88,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -29283,7 +29534,22 @@
  },
  {
   "date": "2002-06-24",
-  "published": [],
+  "published": [
+   {
+    "title": "Srimad Rajchandra Patrank 522, 416, 212, 24 Jun 2002",
+    "minutes": 25,
+    "views": 95,
+    "uploaded": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   },
+   {
+    "title": "Srimad Rajchandra Patrank 254, last, 24 Jun 2002",
+    "minutes": 60,
+    "views": 85,
+    "uploaded": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shrimad Rajchandra Vachanamrut",
@@ -29386,7 +29652,15 @@
  },
  {
   "date": "2002-06-28",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Dravya Drashti Prakash 39, Part 3, 28 Jun 2002",
+    "minutes": 53,
+    "views": 68,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Dravya Drushti Prakash",
@@ -29427,7 +29701,15 @@
  },
  {
   "date": "2002-07-03",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 7,  Part 1, 3 Jul 2002",
+    "minutes": 42,
+    "views": 124,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -29452,7 +29734,15 @@
  },
  {
   "date": "2002-07-04",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 7, part 2, श्री समयसार गाथा 7 (2), 4 Jul 2002",
+    "minutes": 49,
+    "views": 57,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -29477,7 +29767,15 @@
  },
  {
   "date": "2002-07-05",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 7 part 3, श्री समयसार गाथा 7 (3), 5 Jul 2002",
+    "minutes": 55,
+    "views": 90,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -29781,6 +30079,13 @@
     "views": 71,
     "uploaded": "",
     "scripture": "Shri Dravya Drushti Prakash"
+   },
+   {
+    "title": "Dravya Drusti Prakash, 250, Part 3, 11 Jul 2002",
+    "minutes": 63,
+    "views": 121,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash"
    }
   ],
   "catalogued": [
@@ -29885,6 +30190,13 @@
     "views": 145,
     "uploaded": "2017-08-23",
     "scripture": "Shri Samaysar"
+   },
+   {
+    "title": "Sri Samaysar Sloka 14, श्री समयसार गाथा 14, 13 Jul 2002 (Night)",
+    "minutes": 63,
+    "views": 72,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
    }
   ],
   "catalogued": [
@@ -29927,7 +30239,15 @@
  },
  {
   "date": "2002-07-14",
-  "published": [],
+  "published": [
+   {
+    "title": "Sri Samaysar Gatha 14, 15, part 2, 14 Jul 2002",
+    "minutes": 63,
+    "views": 66,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -30138,6 +30458,13 @@
     "views": 445,
     "uploaded": "2017-08-23",
     "scripture": "Benshri ke Vachanamrut"
+   },
+   {
+    "title": "Aatmasiddhi Guruvinay Kulpakji, 28 Jul 2002",
+    "minutes": 58,
+    "views": 93,
+    "uploaded": "",
+    "scripture": "Guru Vinay"
    }
   ],
   "catalogued": [
@@ -30249,7 +30576,15 @@
  },
  {
   "date": "2002-08-01",
-  "published": [],
+  "published": [
+   {
+    "title": "Srimad Rajchandra Patrank 416-522, 1 Aug 2002",
+    "minutes": 60,
+    "views": 120,
+    "uploaded": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shrimad Rajchandra Vachanamrut",
@@ -30704,7 +31039,15 @@
  },
  {
   "date": "2002-08-17",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar  Gatha 8, Part 2, 17 Aug 2002",
+    "minutes": 48,
+    "views": 97,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -30729,7 +31072,15 @@
  },
  {
   "date": "2002-08-18",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gatha 9 & 10, Part 1, 18 Aug 2002",
+    "minutes": 51,
+    "views": 104,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -30754,7 +31105,15 @@
  },
  {
   "date": "2002-08-19",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gatha 9 & 10, Part 2, 19 Aug 2002",
+    "minutes": 51,
+    "views": 96,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -30769,7 +31128,15 @@
  },
  {
   "date": "2002-08-20",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gatha 9 & 10, Part 3, 20 Aug 2002",
+    "minutes": 55,
+    "views": 76,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -30784,7 +31151,15 @@
  },
  {
   "date": "2002-08-21",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gatha 9 & 10, Part 4, 21 Aug 2002 (Bhavarth)",
+    "minutes": 55,
+    "views": 93,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -31236,7 +31611,15 @@
  },
  {
   "date": "2002-09-06",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gatha 11, part 3, 6 Sep 2002",
+    "minutes": 58,
+    "views": 117,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -31261,7 +31644,15 @@
  },
  {
   "date": "2002-09-07",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gatha 11, Part 4, 7 Sep 2002",
+    "minutes": 53,
+    "views": 114,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -31286,7 +31677,15 @@
  },
  {
   "date": "2002-09-09",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gatha 11, part 5, 9 Sep 2002",
+    "minutes": 58,
+    "views": 64,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -31311,7 +31710,15 @@
  },
  {
   "date": "2002-09-10",
-  "published": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gatha 11, Part 6, 10 Sep 2002",
+    "minutes": 60,
+    "views": 76,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
@@ -31553,6 +31960,13 @@
     "views": 55,
     "uploaded": "",
     "scripture": "Daslakshan Dharma"
+   },
+   {
+    "title": "Samaysar Gatha 12, part 5, Uttam Sayam Dharma, 16 Sep 2002",
+    "minutes": 50,
+    "views": 111,
+    "uploaded": "",
+    "scripture": "Daslakshan Dharma"
    }
   ],
   "catalogued": [
@@ -31722,6 +32136,13 @@
     "views": 123,
     "uploaded": "",
     "scripture": "Daslakshan Dharma"
+   },
+   {
+    "title": "Uttam Bhramacharya, 20 Sep 2002",
+    "minutes": 59,
+    "views": 119,
+    "uploaded": "",
+    "scripture": "Daslakshan Dharma"
    }
   ],
   "catalogued": [
@@ -31758,7 +32179,15 @@
  },
  {
   "date": "2002-09-21",
-  "published": [],
+  "published": [
+   {
+    "title": "Ambalalbhai Shamapana patra, 21 Sep 2002, अंबालालभाई क्षमापना पत्र",
+    "minutes": 57,
+    "views": 88,
+    "uploaded": "",
+    "scripture": "Tatkalmoksha"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Tatkalmoksha",
@@ -31828,7 +32257,15 @@
  },
  {
   "date": "2002-09-25",
-  "published": [],
+  "published": [
+   {
+    "title": "Samaysar Atmakhyati tika Kalash 4, part 3, 25 Sep 2002",
+    "minutes": 46,
+    "views": 104,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
   "catalogued": [
    {
     "scripture": "Shri Samaysar",
