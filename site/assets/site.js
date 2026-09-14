@@ -197,7 +197,13 @@
   function samePage(href) {
     try {
       var url = new URL(href, location.href);
-      return url.origin === location.origin && /\.html$/.test(url.pathname);
+      if (url.origin !== location.origin || !/\.html$/.test(url.pathname)) return false;
+      /* A link to somewhere on the page you are already on is the browser's
+         own job. Taking it over replaces <main> and scrolls to the top, which
+         is the opposite of what was clicked: it broke every entry in the
+         book's index the moment that page began loading this script. */
+      if (url.hash && url.pathname === location.pathname) return false;
+      return true;
     } catch (err) { return false; }
   }
 
@@ -212,6 +218,7 @@
         here.replaceWith(fresh);
         document.title = doc.title;
         if (push) history.pushState({}, "", url);
+        atPath = location.pathname;
         window.scrollTo(0, 0);
         bind();
         /* The recording carries over. On any other page it floats; come back
@@ -235,7 +242,18 @@
     swap(a.href, true).catch(function () { location.href = a.href; });
   });
 
+  /* Which page we are on, as distinct from where we are in it. */
+  var atPath = location.pathname;
+
   window.addEventListener("popstate", function () {
+    /* Going to a fragment is a history entry too, and some browsers deliver
+       it here as a popstate rather than only as a hashchange. Rebuilding the
+       page for it replaces <main> and scrolls to the top — which is how every
+       link in the book's index came to do nothing at all: you arrived at the
+       aphorism and were pulled straight back up. Only a change of page is a
+       change of page; moving within one is the browser's own business. */
+    if (location.pathname === atPath) return;
+    atPath = location.pathname;
     swap(location.href, false).catch(function () { location.reload(); });
   });
 
@@ -302,11 +320,24 @@
       current = want;
       if (!current) return;
       current.setAttribute("aria-current", "true");
-      /* Only when it has gone out of the column's own view; scrolling the
-         index on every aphorism would fight the reader's own scrolling. */
-      var box = index.getBoundingClientRect(), at = current.getBoundingClientRect();
-      if (at.top < box.top || at.bottom > box.bottom) {
-        current.scrollIntoView({ block: "nearest" });
+      keepInView(current);
+    }
+
+    /* Scroll the index, and only the index. `scrollIntoView` walks up the
+       ancestors until the element is visible, and below the sidebar
+       breakpoint the index is a strip stuck to the top of the document — so
+       bringing an entry into view there meant scrolling the *page* to the
+       top. Every link in the book's index appeared to do nothing: you landed
+       on the aphorism and were pulled straight back up. */
+    function keepInView(link) {
+      var box = index.getBoundingClientRect(), at = link.getBoundingClientRect();
+      if (index.scrollHeight > index.clientHeight) {
+        if (at.top < box.top) index.scrollTop -= box.top - at.top;
+        else if (at.bottom > box.bottom) index.scrollTop += at.bottom - box.bottom;
+      }
+      if (index.scrollWidth > index.clientWidth) {
+        if (at.left < box.left) index.scrollLeft -= box.left - at.left;
+        else if (at.right > box.right) index.scrollLeft += at.right - box.right;
       }
     }
 

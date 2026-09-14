@@ -242,6 +242,10 @@ more strokes in the same square than Latin does and hang matras above and
 below the line; set at the Latin size they read smaller than it and the
 conjuncts close up.
 
+**The transcripts are bigger too**, at `--size-indic`, a step below the book's
+own size — a transcript is read beside its recording rather than on its own.
+Search results use the same step.
+
 **There is an index.** Every aphorism, with its opening words — a column of
 bare numbers is a table of contents for nobody. It is written into every page
 of the book as real links, not built by script, because it is the only way
@@ -255,6 +259,21 @@ marked the way markdown does, so `### વિકાસક્રમ` was printed w
 And a single line break inside a paragraph was dropped, which ran the nine
 numbered stages of aphorism 64 into one unreadable line. Blank lines separate
 paragraphs; a line break inside one is now a line break.
+
+Two ways the index came to do nothing at all, both introduced by giving the
+book a script it never had before:
+
+- The click handler took over every link whose path ends in `.html`, which a
+  same-page `#a64` does. It replaced `<main>` and scrolled to the top.
+  `samePage` now leaves a link alone when only the fragment differs.
+- Going to a fragment is a history entry, and some browsers deliver it as a
+  `popstate` and not only a `hashchange`. The handler rebuilt the page for it,
+  which again replaced `<main>` and scrolled to the top. It now ignores a
+  popstate where the path has not changed.
+
+Either one alone was enough to make every entry look broken while the address
+bar showed the right anchor, which is what made it confusing to chase: the
+link worked, and something undid it a moment later.
 
 One CSS note worth keeping. The layout grid needs `minmax(0,1fr)` and not
 `1fr`: a track's default minimum is its content's own width, and on a phone
