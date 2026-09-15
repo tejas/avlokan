@@ -898,10 +898,13 @@ def dedupe(index: list[dict], recency: dict[str, int],
     offer them and nothing that was ever published stops resolving.
 
     `recency` ranks ids with 0 as the most recent. `pending` holds ids that
-    are on the channel but not yet watchable — scheduled premieres. A premiere
-    still wins: it is the re-edit that replaces what came before, and Tejas
-    would rather a page carry the version he means to keep, with a countdown
-    on it for a few days, than the copy he has already replaced.
+    are on the channel but not yet watchable — scheduled premieres.
+
+    A premiere loses to anything that plays. It is the version that will
+    replace the rest, and it takes over of its own accord the moment it airs
+    and gains a duration; until then a page that carries it has nothing on it
+    to listen to. Six discourses went dark for up to five days when it was the
+    other way round.
     """
     pending = pending or set()
     marked = []
@@ -921,15 +924,15 @@ def dedupe(index: list[dict], recency: dict[str, int],
             ids = {i: (cats[i].get("youtube_id") if i < len(cats) else "") for i in idxs}
             if not any(ids.values()):
                 continue
-            best = min(idxs, key=lambda i: (ids[i] not in pending,
+            best = min(idxs, key=lambda i: (ids[i] in pending,
                                             recency.get(ids[i] or "", 10 ** 6)))
             for i in idxs:
                 if i == best or not ids[best]:
                     pubs[i].pop("superseded_by", None)
                     pubs[i].pop("superseded_reason", None)
                     continue
-                reason = ("replaced by a scheduled premiere"
-                          if ids[best] in pending else "later upload")
+                reason = ("not yet premiered" if ids[i] in pending
+                          else "later upload")
                 if (pubs[i].get("superseded_by") == ids[best]
                         and pubs[i].get("superseded_reason") == reason):
                     continue
@@ -1097,8 +1100,11 @@ def retire(index: list[dict], pending: set[str]) -> list[dict]:
         for i, pub in enumerate(pubs):
             vid = (cats[i].get("youtube_id") or "") if i < len(cats) else ""
             why = pub.get("superseded_reason")
+            # "not yet premiered" is never retired: the upload that displaced
+            # it cannot be played, so this is still the only way to hear the
+            # sitting. It is retired on the run after the premiere airs.
             if (pub.get("superseded_by")
-                    and why in ("later upload", "replaced by a scheduled premiere")
+                    and why == "later upload"
                     and vid not in pending):
                 drop.add(i)
                 dropped.append({
@@ -1472,8 +1478,8 @@ def main() -> None:
             print(f"   {date}  {title[:56]}")
             print(f"             {was} -> {now}  (the displaced upload is kept)")
     if result["pending"]:
-        print(f"{len(result['pending'])} scheduled premiere(s) — each takes its "
-              f"sitting now; the page carries a countdown until it airs:")
+        print(f"{len(result['pending'])} scheduled premiere(s), not watchable yet — "
+              f"listed, but a video that plays keeps the sitting until each airs:")
         for r in result["pending"]:
             print(f"   {r['title'][:66]}")
     if result["superseded"]:

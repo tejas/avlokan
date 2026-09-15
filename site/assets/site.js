@@ -216,6 +216,15 @@
         var here = document.querySelector("main");
         if (!fresh || !here) return Promise.reject("no main");
         here.replaceWith(fresh);
+        /* The masthead sits outside <main> and its links are relative to the
+           page they were written for. Leaving it alone meant that after
+           moving to a sitting the "The book" link still read
+           `book/index.html`, which from inside /d/ resolves to
+           /d/book/index.html and is nothing at all. Every link up there was
+           wrong by one directory for as long as you stayed on the site. */
+        var head = doc.querySelector("header.masthead");
+        var oldHead = document.querySelector("header.masthead");
+        if (head && oldHead) oldHead.replaceWith(head);
         document.title = doc.title;
         if (push) history.pushState({}, "", url);
         atPath = location.pathname;
