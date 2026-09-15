@@ -106,8 +106,12 @@
     "part": 1,
     "title_card": null,
     "crop_top": 0,
-    "start": 57.0,
-    "end": 3594.0
+    "start": 55.25,
+    "end": 3594.09,
+    "card_seconds": 11.845,
+    "cuts": [],
+    "timecodes": "measured against the finished export, 17 part 1.mp3; his stated 1:06;06 / 1:00:05;13 decoded 0.9s and 0.5s earlier",
+    "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
   },
   "29Mar2002 Dravya Drushti Prakash17-2[chinchini Yatra Night]-7fff575435": {
     "label": "Patra 17 Part 2 — 29 Mar 2002 (night)",
@@ -115,8 +119,12 @@
     "part": 2,
     "title_card": null,
     "crop_top": 0,
-    "start": 53.0,
-    "end": 3462.0
+    "start": 55.45,
+    "end": 3460.39,
+    "card_seconds": 8.5,
+    "cuts": [],
+    "timecodes": "measured against the finished export, 17 part 2.mp3; source = export + 46.95",
+    "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
   },
   "30Mar202 Dravya Drushti Prakash17-3[chinchini yatra morning]-a772bddcfe": {
     "label": "Patra 17 Part 3 — 30 Mar 2002 (morning)",
@@ -125,7 +133,8 @@
     "title_card": null,
     "crop_top": 0,
     "start": 66.0,
-    "end": null
+    "end": null,
+    "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
   },
   "30Mar2002 Dravya Drushti Prakash17-4[chinchini yatra noon]-068ea35961": {
     "label": "Patra 17 Part 4 — 30 Mar 2002 (noon)",
@@ -134,7 +143,8 @@
     "title_card": null,
     "crop_top": 0,
     "start": 57.0,
-    "end": 3447.0
+    "end": 3447.0,
+    "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
   },
   "30Mar2002 Dravya Drushti Prakash17-5[chinchin yatra morning]-d90538e39e": {
     "label": "Patra 17 Part 5 — 30 Mar 2002",
@@ -143,6 +153,7 @@
     "title_card": null,
     "crop_top": 0,
     "start": 56.0,
-    "end": null
+    "end": null,
+    "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
   }
 }

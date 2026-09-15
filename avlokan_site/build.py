@@ -37,6 +37,7 @@ OUTPUTS_DEFAULT = ROOT / "outputs"
 WORK = ROOT / "work"
 
 SITE_TITLE = "Avlokan"
+SITE_DOMAIN = "avlokan.org"
 SITE_TAGLINE = "Discourses of Shri Devchand bhai Shah"
 SITE_DESC = (
     "An archive of spiritual discourses on Shrimad Rajchandra's Vachanamrut, "
@@ -3122,6 +3123,13 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
     # which costs a minute a deploy and would quietly drop any file whose name
     # began with an underscore.
     (out_dir / ".nojekyll").write_text("", encoding="utf-8")
+    # The domain, written into the site itself and not only into a setting on
+    # the repository. A workflow deploy uploads this directory as the whole of
+    # the site, and GitHub reads the custom domain back out of it: without
+    # this file a later deploy can quietly drop the domain and the archive
+    # goes back to answering only at github.io. It is also the one place a
+    # reader of this repository can see where the site is supposed to live.
+    (out_dir / "CNAME").write_text(f"{SITE_DOMAIN}\n", encoding="utf-8")
 
     return {"discourses": pages, "texts": len(groups), "aphorisms": aphorisms,
             "transcribed": sum(1 for g in groups.values() for s in g if s["job"]),
