@@ -25711,15 +25711,6 @@
     "minutes": 0,
     "views": 0,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "superseded_by": "7mUAOPjBbuY",
-    "superseded_reason": "not yet premiered"
-   },
-   {
-    "title": "Dravya Drashti Prakash-1, Patra 22, Part 1, 6 Feb 2002",
-    "minutes": 58,
-    "views": 123,
-    "uploaded": "",
     "scripture": "Shri Dravya Drushti Prakash"
    }
   ],
@@ -25730,15 +25721,6 @@
     "youtube_id": "LNFL5SAid08",
     "location": "",
     "source": "channel listing"
-   },
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 22",
-    "youtube_id": "7mUAOPjBbuY",
-    "location": "",
-    "source": "channel listing",
-    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
-    "series": "Dravya Drashti Prakash Patra 22"
    }
   ],
   "processed": true,
@@ -25761,15 +25743,6 @@
     "minutes": 0,
     "views": 0,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "superseded_by": "bpVmnuRPf4M",
-    "superseded_reason": "not yet premiered"
-   },
-   {
-    "title": "Dravya Drashti Prakash-1, Patra 22, Part 2, 8 Feb 2002",
-    "minutes": 57,
-    "views": 160,
-    "uploaded": "",
     "scripture": "Shri Dravya Drushti Prakash"
    }
   ],
@@ -25780,15 +25753,6 @@
     "youtube_id": "qy1DljC5rMw",
     "location": "",
     "source": "channel listing"
-   },
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 22",
-    "youtube_id": "bpVmnuRPf4M",
-    "location": "",
-    "source": "channel listing",
-    "series_id": "PLQqFhvWZLM8221dbssMf6fRkxPWdFfxpF",
-    "series": "Dravya Drashti Prakash Patra 22"
    }
   ],
   "processed": true,
@@ -27339,6 +27303,24 @@
     "views": 144,
     "uploaded": "2017-08-21",
     "scripture": "Apoorva Avasar"
+   },
+   {
+    "title": "Dravya Drashti Prakash Patra 17, Part 2, 29 Mar 2002 evening, Chinchani yatra",
+    "minutes": 0,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "rQaWRAAhPpY",
+    "superseded_reason": "not yet premiered"
+   },
+   {
+    "title": "Dravya Drashti Prakash Patra 17, Part 1, 29 Mar 2002, Chinchani Yatra",
+    "minutes": 0,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "qhRZLdnlgRQ",
+    "superseded_reason": "not yet premiered"
    }
   ],
   "catalogued": [
@@ -27365,6 +27347,20 @@
     "location": "Chinchani",
     "series_id": "PLQqFhvWZLM83MYtJ6E7UaQiNl0cheY7U0",
     "series": "Apoorva Avsar, Pravachan by Sri Devchand Bhai on Apoorva Avsar written by Shrimad Rajchandra"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "Patra 17",
+    "youtube_id": "lRoAMUvV9NY",
+    "location": "",
+    "source": "channel listing"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "Patra 17",
+    "youtube_id": "Z4PDeLqInp0",
+    "location": "",
+    "source": "channel listing"
    }
   ],
   "processed": true,
