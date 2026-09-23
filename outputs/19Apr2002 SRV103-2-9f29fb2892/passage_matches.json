@@ -1,0 +1,165 @@
+[
+  {
+    "passage_id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "words": [
+      "nano",
+      "arihantanan",
+      "nano",
+      "sidanan",
+      "nano",
+      "ayariyanan",
+      "nano",
+      "uvajayanan",
+      "nano",
+      "loe",
+      "sava",
+      "sahunan"
+    ],
+    "score": 0.662,
+    "start": 0,
+    "end": 83,
+    "original": "नमो अरिष्टनाशिने।\nनमो अरिष्टनाशिने।\nनमो अरिष्टनाशिने।\nनमो अघनाशने।\nनमो अघनाशने।\nनमो",
+    "replacement": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "segments": [
+      0
+    ],
+    "time_start": 0.0,
+    "time_end": 28.0
+  },
+  {
+    "passage_id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "words": [
+      "nano",
+      "arihantanan",
+      "nano",
+      "sidanan",
+      "nano",
+      "ayariyanan",
+      "nano",
+      "uvajayanan",
+      "nano",
+      "loe",
+      "sava",
+      "sahunan"
+    ],
+    "score": 0.624,
+    "start": 102,
+    "end": 164,
+    "original": "नमो अरिष्टनाशिने।\nनमो अरिष्टनाशिने।\nनमो अरिष्टनाशिने, अघनाशने,",
+    "replacement": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "segments": [
+      0
+    ],
+    "time_start": 0.0,
+    "time_end": 28.0
+  },
+  {
+    "passage_id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "words": [
+      "nano",
+      "arihantanan",
+      "nano",
+      "sidanan",
+      "nano",
+      "ayariyanan",
+      "nano",
+      "uvajayanan",
+      "nano",
+      "loe",
+      "sava",
+      "sahunan"
+    ],
+    "score": 0.624,
+    "start": 174,
+    "end": 236,
+    "original": "नमो अरिष्टनाशिने।\nनमो अरिष्टनाशिने।\nनमो अरिष्टनाशिने, अघनाशने,",
+    "replacement": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "segments": [
+      0
+    ],
+    "time_start": 0.0,
+    "time_end": 28.0
+  },
+  {
+    "passage_id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "words": [
+      "nano",
+      "arihantanan",
+      "nano",
+      "sidanan",
+      "nano",
+      "ayariyanan",
+      "nano",
+      "uvajayanan",
+      "nano",
+      "loe",
+      "sava",
+      "sahunan"
+    ],
+    "score": 0.618,
+    "start": 246,
+    "end": 353,
+    "original": "नमो अरिष्टनाशिने।\nनमो अरिष्टनाशिने।\nनमो अरिष्टनाशिनी।\nनमो अरिष्टनाशिनी।\nनमो अरिष्टनाशिनी। नमो अरिष्टनाशिनी,",
+    "replacement": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "segments": [
+      0
+    ],
+    "time_start": 0.0,
+    "time_end": 28.0
+  },
+  {
+    "passage_id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "words": [
+      "nano",
+      "arihantanan",
+      "nano",
+      "sidanan",
+      "nano",
+      "ayariyanan",
+      "nano",
+      "uvajayanan",
+      "nano",
+      "loe",
+      "sava",
+      "sahunan"
+    ],
+    "score": 0.632,
+    "start": 354,
+    "end": 454,
+    "original": "अरिष्टनाशिनी।\nनमो अरिष्टनाशिनी।\nनमो अरिष्टनाशिनी।\nनमो अरिष्टनाशने।\nनमो अरिष्टनाशने।\nनमो अरिष्टनाशने।",
+    "replacement": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "segments": [
+      0
+    ],
+    "time_start": 0.0,
+    "time_end": 28.0
+  },
+  {
+    "passage_id": "sarva-mangala-mangalyam",
+    "title": "Mangalacharan — Sarva Mangala Mangalyam",
+    "words": [
+      "sarvanangalanangalyan",
+      "sarvakalyanakarakana",
+      "pradanan",
+      "sarvadarnanan",
+      "jenan",
+      "jayati",
+      "sasanana"
+    ],
+    "score": 0.779,
+    "start": 523,
+    "end": 595,
+    "original": "सर्व मंगल मांगल्ये सर्व कल्याण कारिणे।\nदानं सर्वधर्मार्थं धर्मं च यत्परं",
+    "replacement": "सर्वमङ्गलमाङ्गल्यं सर्वकल्याणकारकम।\nप्रधानं सर्वधर्माणां जैनं जयति शासनम॥",
+    "segments": [
+      1
+    ],
+    "time_start": 28.0,
+    "time_end": 56.0
+  }
+]

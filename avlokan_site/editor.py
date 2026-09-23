@@ -78,9 +78,53 @@ def record(payload: dict) -> tuple[bool, str]:
     return True, "Saved. Rebuilding…"
 
 
+BOOK = ROOT / "avlokan" / "book.json"
+
+
 class Editor(SimpleHTTPRequestHandler):
+    def aphorism(self) -> None:
+        """Take one corrected English rendering from the review page.
+
+        Written straight into book.json rather than into a corrections file
+        beside it. The other corrections in this archive disagree with a
+        catalogue that is rebuilt from the channel every week, so they have to
+        be kept separately or the merge erases them. Nothing rebuilds the
+        book: it was read off the printed pages once. So the book is the place
+        the correction belongs, and git is what remembers the version before.
+        """
+        try:
+            size = int(self.headers.get("Content-Length") or 0)
+            payload = json.loads(self.rfile.read(size) or b"{}")
+            n = int(payload["n"])
+            english = str(payload.get("english") or "").strip()
+        except (ValueError, KeyError, json.JSONDecodeError):
+            self.answer(400, {"message": "Could not read that."})
+            return
+
+        book = json.loads(BOOK.read_text(encoding="utf-8"))
+        item = next((i for i in book if i.get("n") == n), None)
+        if item is None:
+            self.answer(200, {"message": f"No aphorism {n}."})
+            return
+        item["english"] = english
+        item["english_by"] = f"Tejas, {date.today().isoformat()}"
+        item.pop("partial", None)
+        BOOK.write_text(json.dumps(book, indent=1, ensure_ascii=False), encoding="utf-8")
+
+        try:
+            builder.build(SITE, builder.OUTPUTS_DEFAULT)
+        except Exception as err:
+            self.answer(200, {"message": f"Saved, but the rebuild failed: {err}"})
+            return
+        done = sum(1 for i in book if i.get("english"))
+        self.answer(200, {"message": "Saved.", "tally": f"{done} of {len(book)}"})
+
     def do_POST(self) -> None:  # noqa: N802  (http.server's spelling)
-        if self.path.rstrip("/") != "/correction":
+        where = self.path.rstrip("/")
+        if where == "/aphorism":
+            self.aphorism()
+            return
+        if where != "/correction":
             self.send_error(404)
             return
         try:

@@ -1,0 +1,344 @@
+{
+ "_about": [
+  "How each technical term in Avlokan is rendered in English, decided once and",
+  "applied to all 114 aphorisms.",
+  "",
+  "This file exists because it is the only part of the translation that can",
+  "actually be checked. Nobody is going to audit a hundred and fourteen English",
+  "renderings against the Gujarati; anyone who knows the tradition can read this",
+  "in an hour and say where it is wrong. Correct a term here and every aphorism",
+  "that uses it is known, by the `used` list the build writes.",
+  "",
+  "Three rules govern the renderings themselves:",
+  "  1. A technical term is kept, not replaced. `paryay` is not 'phase'.",
+  "     Substituting an ordinary English word for a precise one loses the",
+  "     precision and reads as though he were speaking loosely.",
+  "  2. The gloss explains, it does not stand in. The Gujarati is the text; the",
+  "     English is a door into it.",
+  "  3. Romanisation follows the house style already settled in glossary.json,",
+  "     which writes the conjunct as Gy — Gyayak, Gyani, Samyak Gyan — so this",
+  "     file writes Bhedgyan and Agyan rather than Bhedjnan and Ajnan."
+ ],
+ "_romanisation": "Follows avlokan/glossary.json where the two overlap. That file is regenerated from the glossary sheet and is not edited here.",
+ "_status": "First pass. Every entry needs a reader who knows the tradition; the ones marked check:true are where a wrong choice would change the doctrine rather than the wording.",
+ "terms": [
+  {
+   "gujarati": "અવલોકન",
+   "roman": "Avlokan",
+   "english": "observation",
+   "gloss": "Watching one's own states as they occur, without stepping in to change them.",
+   "note": "The book's title and its method — it appears in 74 of the 114 aphorisms. Deliberately not 'introspection', which suggests analysing oneself, nor 'mindfulness', which carries a different tradition's freight. He means looking at what is presently happening in oneself, as a knower rather than a doer.",
+   "check": true
+  },
+  {
+   "gujarati": "ભેદજ્ઞાન",
+   "roman": "Bhedgyan",
+   "english": "discriminative knowing",
+   "gloss": "Knowing the self as separate from the states that pass through it.",
+   "note": "Not 'discrimination' alone, which in English means something else entirely. The bhed is the cut between the knower and what is known.",
+   "check": true
+  },
+  {
+   "gujarati": "જ્ઞાયક",
+   "roman": "Gyayak",
+   "english": "the knower",
+   "gloss": "The soul in its character as that which knows, as against what it knows.",
+   "note": "Romanisation from glossary.json.",
+   "check": false
+  },
+  {
+   "gujarati": "જ્ઞેય",
+   "roman": "Gyey",
+   "english": "the known",
+   "gloss": "Whatever is being known — including one's own states.",
+   "note": "Romanisation from glossary.json. Gyayak and Gyey are a pair and should always be rendered as a pair.",
+   "check": false
+  },
+  {
+   "gujarati": "પરિણામ",
+   "roman": "parinam",
+   "english": "state",
+   "gloss": "The condition the soul is actually in at a given moment.",
+   "note": "Almost always plural in the book — parinamo, the states as they run on. 'Result' and 'consequence' are both wrong: he means the present condition, not its outcome.",
+   "check": true
+  },
+  {
+   "gujarati": "પર્યાય",
+   "roman": "paryay",
+   "english": "mode",
+   "gloss": "The momentary form the substance takes, as against the substance itself.",
+   "note": "The standard English of the Jain philosophical literature is 'mode' or 'modification'. It is the counterpart of dravya. Never 'phase' or 'stage', which imply a sequence going somewhere.",
+   "check": true
+  },
+  {
+   "gujarati": "દ્રવ્યદૃષ્ટિ",
+   "roman": "Dravyadrishti",
+   "english": "the view from the substance",
+   "gloss": "Seeing oneself as the eternal substance rather than as the passing mode.",
+   "note": "The title of one of the texts he taught from, so it should read as a term and not be dissolved into description.",
+   "check": true
+  },
+  {
+   "gujarati": "ત્રિકાળી",
+   "roman": "trikali",
+   "english": "eternal",
+   "gloss": "What stands through all three times — past, present and future.",
+   "note": "'Eternal' loses the three-times sense that the Gujarati carries plainly. Consider keeping the term and glossing it where it is set against the momentary.",
+   "check": true
+  },
+  {
+   "gujarati": "દર્શનમોહ",
+   "roman": "darshanmoha",
+   "english": "the deluding of insight",
+   "gloss": "What makes the soul take itself to be what it is not.",
+   "note": "Not 'delusion' loosely: it is specifically the moha that clouds darshan, the seeing. It is the root the book keeps returning to — the cause of the kashays.",
+   "check": true
+  },
+  {
+   "gujarati": "કષાય",
+   "roman": "kashay",
+   "english": "passion",
+   "gloss": "Anger, pride, deceit and greed — the four that stain the soul's states.",
+   "note": "'Passion' is the settled English in the Jain literature. 'Emotion' is far too broad.",
+   "check": false
+  },
+  {
+   "gujarati": "પુરૂષાર્થ",
+   "roman": "purushartha",
+   "english": "self-effort",
+   "gloss": "The soul's own exertion, as against anything done for it.",
+   "note": "Central to the book's argument that nothing external accomplishes this. Not 'effort' alone — the purusha is the point.",
+   "check": true
+  },
+  {
+   "gujarati": "સ્વાનુભવ",
+   "roman": "swanubhav",
+   "english": "direct experience of the self",
+   "gloss": "Knowing the self by experience rather than by inference or belief.",
+   "check": true
+  },
+  {
+   "gujarati": "સ્વાનુભૂતિ",
+   "roman": "swanubhuti",
+   "english": "realisation of the self",
+   "gloss": "The same experience spoken of as an accomplished state.",
+   "note": "He uses both words; the translation should not flatten them into one.",
+   "check": true
+  },
+  {
+   "gujarati": "સમ્યગ્દર્શન",
+   "roman": "Samyak Darshan",
+   "english": "right insight",
+   "gloss": "Seeing the nature of the self as it truly is.",
+   "note": "Romanisation from glossary.json. 'Right faith' is the commoner English but imports a Christian sense of belief; darshan is seeing.",
+   "check": true
+  },
+  {
+   "gujarati": "સમકિત",
+   "roman": "samkit",
+   "english": "right insight",
+   "gloss": "The everyday Gujarati word for Samyak Darshan.",
+   "note": "Same referent, plainer register. Keep the distinction in the English if it can be done without strain.",
+   "check": true
+  },
+  {
+   "gujarati": "મુમુક્ષુ",
+   "roman": "mumukshu",
+   "english": "one who seeks liberation",
+   "gloss": "Someone in whom the wish for liberation has become the governing wish.",
+   "check": false
+  },
+  {
+   "gujarati": "અજ્ઞાન",
+   "roman": "agyan",
+   "english": "not-knowing",
+   "gloss": "Not ignorance of facts, but the soul not knowing its own nature.",
+   "note": "'Ignorance' in English suggests something a person could be informed out of. He means something structural.",
+   "check": true
+  },
+  {
+   "gujarati": "વિકલ્પ",
+   "roman": "vikalp",
+   "english": "thought-construct",
+   "gloss": "A movement of thought that divides and settles on something.",
+   "note": "Term already settled in glossary.json.",
+   "check": false
+  },
+  {
+   "gujarati": "નિર્વિકલ્પ",
+   "roman": "nirvikalp",
+   "english": "free of thought-constructs",
+   "gloss": "The state in which no vikalp arises.",
+   "check": false
+  },
+  {
+   "gujarati": "ભાવભાસન",
+   "roman": "bhavbhasan",
+   "english": "inner appearing",
+   "gloss": "When a truth ceases to be something held and becomes something that shows itself.",
+   "note": "Hard, and important. Not 'understanding' and not 'realisation' — it sits between them. Worth a reader's attention.",
+   "check": true
+  },
+  {
+   "gujarati": "પાત્રતા",
+   "roman": "patrata",
+   "english": "fitness to receive",
+   "gloss": "The condition that makes a soul able to take in what is given.",
+   "note": "The metaphor is a vessel. 'Worthiness' implies desert, which is not the sense.",
+   "check": true
+  },
+  {
+   "gujarati": "સ્વચ્છંદ",
+   "roman": "swachhand",
+   "english": "self-will",
+   "gloss": "Going by one's own notion in place of the Guru's instruction.",
+   "note": "A fault word, not a neutral one. Not 'independence', which reads as a virtue in English.",
+   "check": true
+  },
+  {
+   "gujarati": "ઉદાસીનતા",
+   "roman": "udasinata",
+   "english": "dispassion",
+   "gloss": "Standing apart from what arises, neither drawn to it nor against it.",
+   "note": "Never 'sadness', which is what the cognate suggests to a Hindi or Gujarati ear used to the colloquial sense.",
+   "check": true
+  },
+  {
+   "gujarati": "અંતર્મુખ",
+   "roman": "antarmukh",
+   "english": "turned inward",
+   "gloss": "Attention facing the self rather than what is outside it.",
+   "check": false
+  },
+  {
+   "gujarati": "ધારાવાહી",
+   "roman": "dharavahi",
+   "english": "unbroken",
+   "gloss": "Running on as a stream does, without interruption.",
+   "check": false
+  },
+  {
+   "gujarati": "વેદન",
+   "roman": "vedan",
+   "english": "felt experience",
+   "gloss": "What is actually undergone, as against what is thought about it.",
+   "note": "Not 'sensation' and not 'pain', though vedana carries pain elsewhere. In these discourses it is most often the felt sweetness of the self.",
+   "check": true
+  },
+  {
+   "gujarati": "લીનતા",
+   "roman": "linata",
+   "english": "absorption",
+   "gloss": "Settling into the self and staying there.",
+   "check": true
+  },
+  {
+   "gujarati": "સ્થિરતા",
+   "roman": "sthirata",
+   "english": "steadiness",
+   "gloss": "Remaining, rather than seeing and slipping away again.",
+   "check": false
+  },
+  {
+   "gujarati": "ઉપાદાન",
+   "roman": "upadan",
+   "english": "the substantial cause",
+   "gloss": "The thing that itself becomes the effect — the soul, in its own transformation.",
+   "note": "Paired with nimitt. The pair is doctrinally load-bearing and must be rendered consistently wherever it appears.",
+   "check": true
+  },
+  {
+   "gujarati": "નિમિત્ત",
+   "roman": "nimitt",
+   "english": "the instrumental cause",
+   "gloss": "What is present and assists, but does not itself become the effect.",
+   "check": true
+  },
+  {
+   "gujarati": "સત્સંગ",
+   "roman": "satsang",
+   "english": "the company of the true",
+   "gloss": "Keeping company with those who know, and with what they say.",
+   "check": false
+  },
+  {
+   "gujarati": "સત્પુરૂષ",
+   "roman": "satpurush",
+   "english": "the true person",
+   "gloss": "One who has realised the self and can point another to it.",
+   "check": false
+  },
+  {
+   "gujarati": "શ્રીગુરૂ",
+   "roman": "Shriguru",
+   "english": "Shriguru",
+   "gloss": "The Guru, addressed with reverence.",
+   "note": "Romanisation from glossary.json. Left untranslated.",
+   "check": false
+  },
+  {
+   "gujarati": "આજ્ઞા",
+   "roman": "agna",
+   "english": "the instruction",
+   "gloss": "What the Guru directs; to be carried out rather than weighed.",
+   "note": "'Command' is too martial, 'advice' too weak.",
+   "check": true
+  },
+  {
+   "gujarati": "ચારિત્ર",
+   "roman": "Charitra",
+   "english": "conduct",
+   "gloss": "The third of the three jewels, following right insight and right knowing.",
+   "note": "Romanisation from glossary.json.",
+   "check": false
+  },
+  {
+   "gujarati": "યથાર્થ",
+   "roman": "yathartha",
+   "english": "as it truly is",
+   "gloss": "Answering to the thing itself rather than to one's idea of it.",
+   "check": false
+  },
+  {
+   "gujarati": "ભાવના",
+   "roman": "bhavna",
+   "english": "contemplation",
+   "gloss": "A disposition held and dwelt in until it colours the states.",
+   "check": false
+  },
+  {
+   "gujarati": "દોષ",
+   "roman": "dosh",
+   "english": "fault",
+   "gloss": "A flaw in one's own states, seen in observation.",
+   "note": "'Sin' is wrong — there is no offence against anyone in it.",
+   "check": true
+  },
+  {
+   "gujarati": "વર્તમાન",
+   "roman": "vartman",
+   "english": "the present",
+   "gloss": "The moment actually occurring, which is the only place observation happens.",
+   "check": false
+  },
+  {
+   "gujarati": "પરમાત્મદશા",
+   "roman": "Paramatma-dasha",
+   "english": "the state of the Paramatma",
+   "gloss": "The soul's own full condition, realised.",
+   "check": false
+  },
+  {
+   "gujarati": "મોક્ષમાર્ગ",
+   "roman": "mokshamarg",
+   "english": "the path of liberation",
+   "check": false
+  },
+  {
+   "gujarati": "ભવભ્રમણ",
+   "roman": "bhavbhraman",
+   "english": "the wandering through births",
+   "check": false
+  }
+ ]
+}

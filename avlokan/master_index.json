@@ -27284,20 +27284,6 @@
   "date": "2002-03-29",
   "published": [
    {
-    "title": "Dravya Drishti Prakash 17, Part 1, Chinchani Yatra, 29 Mar 2002",
-    "minutes": 60,
-    "views": 470,
-    "uploaded": "2020-06-15",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
-    "title": "Dravya Drishti Prakash 17, Part 2, Chinchani Yatra, 29 Mar 2002",
-    "minutes": 58,
-    "views": 261,
-    "uploaded": "2020-06-15",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
     "title": "Apoorva Avasar 20, 29 Mar 2002",
     "minutes": 61,
     "views": 144,
@@ -27309,37 +27295,17 @@
     "minutes": 0,
     "views": 0,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "superseded_by": "rQaWRAAhPpY",
-    "superseded_reason": "not yet premiered"
+    "scripture": "Shri Dravya Drushti Prakash"
    },
    {
     "title": "Dravya Drashti Prakash Patra 17, Part 1, 29 Mar 2002, Chinchani Yatra",
     "minutes": 0,
     "views": 0,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "superseded_by": "qhRZLdnlgRQ",
-    "superseded_reason": "not yet premiered"
+    "scripture": "Shri Dravya Drushti Prakash"
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 17",
-    "youtube_id": "qhRZLdnlgRQ",
-    "location": "Chinchani",
-    "series_id": "PLQqFhvWZLM82PoAROveSpBzTFgq_zWOJE",
-    "series": "Dravya Drushti Prakash, Patra 17"
-   },
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 17",
-    "youtube_id": "rQaWRAAhPpY",
-    "location": "Chinchani",
-    "series_id": "PLQqFhvWZLM82PoAROveSpBzTFgq_zWOJE",
-    "series": "Dravya Drushti Prakash, Patra 17"
-   },
    {
     "scripture": "Apoorva Avasar",
     "reference": "",
@@ -27402,11 +27368,20 @@
     "scripture": "Shri Dravya Drushti Prakash"
    },
    {
-    "title": "Dravya Drishti Prakash 17, Part 3, Chinchani Yatra, 30 Mar 2002",
+    "title": "Dravya Drashti Prakash Patra 17, Part 3, 30 Mar 2002",
     "minutes": 62,
-    "views": 239,
-    "uploaded": "2020-06-15",
+    "views": 66,
+    "uploaded": "",
     "scripture": "Shri Dravya Drushti Prakash"
+   },
+   {
+    "title": "Dravya Drashti Prakash Patra 17, Part 4, 30 Mar 2002 Noon",
+    "minutes": 0,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "I5dXy4QGFOg",
+    "superseded_reason": "not yet premiered"
    }
   ],
   "catalogued": [
@@ -27421,10 +27396,16 @@
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 17",
-    "youtube_id": "1e7gNHTzSyg",
+    "youtube_id": "CuQZ2E-ngoA",
     "location": "",
-    "series_id": "PLQqFhvWZLM82PoAROveSpBzTFgq_zWOJE",
-    "series": "Dravya Drushti Prakash, Patra 17"
+    "source": "channel listing"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "Patra 17",
+    "youtube_id": "rCfEqH9Kfnc",
+    "location": "",
+    "source": "channel listing"
    }
   ],
   "processed": true,
@@ -27448,6 +27429,15 @@
     "views": 207,
     "uploaded": "2020-06-15",
     "scripture": "Shri Dravya Drushti Prakash"
+   },
+   {
+    "title": "Dravya Drashti Prakash Patra 17, Part 5, 31 Mar 2002",
+    "minutes": 0,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "superseded_by": "4zq34C9f5h0",
+    "superseded_reason": "not yet premiered"
    }
   ],
   "catalogued": [
@@ -27458,6 +27448,13 @@
     "location": "",
     "series_id": "PLQqFhvWZLM82PoAROveSpBzTFgq_zWOJE",
     "series": "Dravya Drushti Prakash, Patra 17"
+   },
+   {
+    "scripture": "Shri Dravya Drushti Prakash",
+    "reference": "Patra 17",
+    "youtube_id": "5R-Dk4g7QvU",
+    "location": "",
+    "source": "channel listing"
    }
   ],
   "processed": false,

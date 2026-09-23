@@ -1,0 +1,107 @@
+[
+  {
+    "passage_id": "namokar-mantra",
+    "title": "Namokar mantra",
+    "words": [
+      "nano",
+      "arihantanan",
+      "nano",
+      "sidanan",
+      "nano",
+      "ayariyanan",
+      "nano",
+      "uvajayanan",
+      "nano",
+      "loe",
+      "sava",
+      "sahunan"
+    ],
+    "score": 0.758,
+    "start": 0,
+    "end": 61,
+    "original": "नमो अनित्ताय नमो सत्ताय।\nनमो आयर्या नमो जय।\nनमो वेष उपसा।\nनमो",
+    "replacement": "णमो अरिहंताणं\nणमो सिद्धाणं\nणमो आयरियाणं\nणमो उवज्झायाणं\nणमो लोए सव्व साहूणं",
+    "segments": [
+      0
+    ],
+    "time_start": 0.0,
+    "time_end": 28.0
+  },
+  {
+    "passage_id": "samayasara-mangalacharana",
+    "title": "Samaysar mangalacharan",
+    "words": [
+      "nanah",
+      "sanayasaraya",
+      "svanubutya",
+      "cakasate",
+      "citsvabavaya",
+      "bavaya",
+      "sarvabavantaracide"
+    ],
+    "score": 0.868,
+    "start": 62,
+    "end": 125,
+    "original": "समय साराय।\nस्वं कृत्या चकासते।\nचित् स्वभावया भावाय।\nसर्व भावान्",
+    "replacement": "नमः समयसाराय स्वानुभूत्या चकासते ।\nचित्स्वभावाय भावाय सर्वभावान्तरच्छिदे",
+    "segments": [
+      0
+    ],
+    "time_start": 0.0,
+    "time_end": 28.0
+  },
+  {
+    "passage_id": "mangalam-bhagavan-viro",
+    "title": "Mangalacharan — Mangalam Bhagavan Viro",
+    "words": [
+      "nangalan",
+      "bagavana",
+      "viro",
+      "nangalan",
+      "gotano",
+      "gani",
+      "nangalan",
+      "kundakundaryo",
+      "jenadarnostu",
+      "nangalan"
+    ],
+    "score": 0.918,
+    "start": 137,
+    "end": 227,
+    "original": "मंगलं भगवान् वीरो।\nमंगलम भगवान वीरो।\nमंगलम गौतम गण।\nमंगलम कुंद कुंदारी।\nजैन धर्मस्तु मंगल।",
+    "replacement": "मंगलं भगवान वीरो, मंगलं गौतमो गणी।\nमंगलं कुन्दकुन्दार्यो, जैनधर्मोऽस्तु मंगलम्॥",
+    "segments": [
+      0,
+      1
+    ],
+    "time_start": 0.0,
+    "time_end": 56.0
+  },
+  {
+    "passage_id": "omkara-bindu-samyuktam",
+    "title": "Omkar bindu sainyuktam",
+    "words": [
+      "onkarabindusanyuktan",
+      "nityan",
+      "dyayanti",
+      "yoginah",
+      "kanadan",
+      "noksadan",
+      "ceva",
+      "onkaraya",
+      "nano",
+      "nanah"
+    ],
+    "score": 0.718,
+    "start": 300,
+    "end": 402,
+    "original": "पशूनाम्।\nओंकार बिंद समिध।\nइति ध्यायेत्।\nएक तो ध्यायंती येते।\nआमगन लोक सब वचन।\nओंकाराय नमो नमः।\nश्रीमद्",
+    "replacement": "ॐकारबिन्दुसंयुक्तं नित्यं ध्यायन्ति योगिनः।\nकामदं मोक्षदं चैव ॐकाराय नमो नमः",
+    "segments": [
+      1,
+      2
+    ],
+    "time_start": 28.0,
+    "time_end": 84.0
+  }
+]

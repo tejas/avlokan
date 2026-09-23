@@ -132,8 +132,12 @@
     "part": 3,
     "title_card": null,
     "crop_top": 0,
-    "start": 66.0,
-    "end": null,
+    "start": 58.692,
+    "end": 3749.179,
+    "card_seconds": 11.845,
+    "cuts": [],
+    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card. His 1:10;16 and 1:02:41;00 decoded straight, not yet measured against an export.",
+    "note": "The recording's Namokar came back from the engine as Latin gibberish (\"Namo Avyantah Purushottama\"), so the three opening cues were rewritten to the standard text used in the other parts.",
     "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
   },
   "30Mar2002 Dravya Drushti Prakash17-4[chinchini yatra noon]-068ea35961": {
@@ -142,18 +146,25 @@
     "part": 4,
     "title_card": null,
     "crop_top": 0,
-    "start": 57.0,
-    "end": 3447.0,
+    "start": 57.09,
+    "end": 3429.293,
+    "card_seconds": 11.845,
+    "cuts": [],
+    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card. His 1:08;28 and 57:21;05 decoded straight; the export is 3425.67s, which is the card plus this cut plus 41.6s of stuti, the same tail as Part 3.",
     "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
   },
   "30Mar2002 Dravya Drushti Prakash17-5[chinchin yatra morning]-d90538e39e": {
-    "label": "Patra 17 Part 5 — 30 Mar 2002",
-    "date": "2002-03-30",
+    "label": "Patra 17 Part 5 — 31 Mar 2002 (morning)",
+    "date": "2002-03-31",
     "part": 5,
+    "dating": "The 31st, confirmed by Tejas. Parts 3 and 4 are the 30th's morning and noon, so the yatra's sittings run 29 to 31 March. The job id and the FCP folder still read 30Mar because they were named from the source file before this was settled.",
     "title_card": null,
     "crop_top": 0,
-    "start": 56.0,
-    "end": null,
+    "start": 54.354,
+    "end": 3846.109,
+    "card_seconds": 11.845,
+    "cuts": [],
+    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card. His 1:06;06 and 1:04:17;29 decoded straight, not yet measured against an export.",
     "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
   }
 }

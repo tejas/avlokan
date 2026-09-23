@@ -721,7 +721,8 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
     # extra request and keeps working if the catalogue is ever reorganised.
     bits = [f'<article class="discourse" data-slug="{e(sitting_slug(s))}" '
             f'data-text="{e(scripture)}" data-when="{e(pretty_date(date))}" '
-            f'data-ref="{e(reference)}">',
+            f'data-ref="{e(reference)}" '
+            f'data-minutes="{pub.get("minutes") or 0}">',
             f'<h1>{e(scripture)}</h1>',
             '<p class="meta">']
     line = [pretty_date(date)]
@@ -1580,6 +1581,69 @@ def book_index(items: list[dict[str, Any]], here: int | None = None) -> str:
             f'<ol>{"".join(rows)}</ol></nav>')
 
 
+def book_review_page(items: list[dict[str, Any]]) -> str:
+    """The whole book laid out for reading and correcting, Gujarati beside English.
+
+    Not part of the published site in any meaningful sense: linked from
+    nowhere, marked noindex, and inert without the local editor answering it.
+    It exists because a hundred and fourteen renderings have to be read
+    against their Gujarati by the one person who can read both, and doing that
+    through a hundred and fourteen separate pages — or, worse, through a
+    spreadsheet — is how a review gets abandoned at aphorism thirty.
+
+    Everything is on one page, in the book's own order, so a session's work is
+    visible as progress down a single column.
+    """
+    glossary = read_json(CONFIG / "book_glossary.json", {}).get("terms", [])
+    terms = "".join(
+        f'<tr><td lang="gu">{e(t["gujarati"])}</td><td><em>{e(t["roman"])}</em></td>'
+        f'<td>{e(t["english"])}</td><td class="muted">{e(t.get("gloss", ""))}</td></tr>'
+        for t in glossary)
+
+    done = sum(1 for i in items if i.get("english"))
+    seen = sum(1 for i in items if (i.get("english_by") or "").startswith("Tejas"))
+
+    rows = []
+    for item in items:
+        n = item["n"]
+        english = item.get("english") or ""
+        by = item.get("english_by") or ""
+        state = ("yours" if by.startswith("Tejas")
+                 else "draft" if english else "none")
+        rows.append(
+            f'<section class="review" id="r{n}" data-n="{n}" data-state="{state}">'
+            f'<h2>Aphorism {n} <span class="state">{state}</span></h2>'
+            f'<div class="pair">'
+            f'<div class="guj" lang="gu">{render_gujarati(item["gujarati"])}</div>'
+            f'<div class="edit">'
+            f'<textarea spellcheck="false" aria-label="English for aphorism {n}">'
+            f'{e(english)}</textarea>'
+            f'<p class="links"><button type="button" class="save">Save</button>'
+            f'<span class="said" role="status"></span></p>'
+            f'</div></div></section>')
+
+    body = (
+        '<div class="review-head">'
+        f'<h1>The book, for review</h1>'
+        f'<p class="meta"><strong id="tally">{done} of {len(items)}</strong> have English; '
+        f'<strong>{seen}</strong> you have been through. '
+        'Edit the English and save. Saving writes to <code>avlokan/book.json</code> '
+        'and marks the aphorism as yours.</p>'
+        '<p class="note">The Gujarati is the text and is not editable here. '
+        'This page is not part of the published site: it is linked from nowhere, '
+        'and Save does nothing unless <code>./edit.sh</code> is answering it.</p>'
+        '<details class="glossary"><summary>The 42 terms, and how each is rendered</summary>'
+        '<table><thead><tr><th>Gujarati</th><th>as</th><th>English</th><th>meaning</th></tr>'
+        f'</thead><tbody>{terms}</tbody></table></details>'
+        '</div>'
+        + "\n".join(rows))
+    return shell("The book, for review", body, depth=1, reading=True,
+                 head_extra='<meta name="robots" content="noindex,nofollow">',
+                 description="Local review of the English renderings.",
+                 trail=[("Avlokan", "../index.html"), ("The book", "index.html"),
+                        ("Review", "")])
+
+
 def book_pages(out_dir: Path) -> int:
     items = read_json(CONFIG / "book.json", [])
     if not items:
@@ -1621,6 +1685,9 @@ def book_pages(out_dir: Path) -> int:
               description="Avlokan — the unique art of self-observation, by Shri Devchand bhai Shah.",
               trail=[("Avlokan", "../index.html"), ("The book", "")]),
         encoding="utf-8")
+
+    (out_dir / "book" / "review.html").write_text(
+        book_review_page(items), encoding="utf-8")
 
     for idx, item in enumerate(items):
         nav = []
@@ -2003,6 +2070,27 @@ main.reading{max-width:var(--measure-book)}
 }
 .aphorism:target{scroll-margin-top:var(--h-sticky)}
 
+/* ---------- heard ----------
+   Quiet by design. The point is to see at a glance which of forty sittings
+   are behind you, not to decorate the ones that are. A tick in the margin
+   and the row stepping back a shade; nothing that competes with the text. */
+tr.is-heard td,li.is-heard{color:var(--c-muted)}
+/* The tick is the character itself, not a CSS unicode escape. This file is
+   an ordinary Python string, where such an escape starts with a backslash
+   and a zero — which Python reads as a null byte and writes into the CSS.
+   The build refuses that. It refused this comment, when the comment first
+   tried to explain it by example. */
+tr.is-heard td:first-child::before,li.is-heard::before{content:"✓ ";
+ color:var(--c-have);font-weight:var(--weight-bold)}
+tr.is-heard a,li.is-heard a{color:var(--c-muted)}
+tr.is-heard a:hover,li.is-heard a:hover{color:var(--c-accent)}
+.heard-toggle{margin-left:var(--s-3);font:inherit;font-size:var(--size-sm);
+ padding:var(--s-1) var(--s-3);color:var(--c-muted);background:none;
+ border:var(--border);border-radius:var(--radius);cursor:pointer}
+.heard-toggle:hover{color:var(--c-ink);background:var(--c-surface)}
+.heard-toggle[aria-pressed=true]{color:var(--c-have);border-color:var(--c-have)}
+.heard-toggle[aria-pressed=true]::before{content:"✓ "}
+
 /* ---------- where you left off ----------
    Quiet on purpose. It sits above the texts and must not compete with them:
    a way back in for someone who was already listening, not an invitation. */
@@ -2032,6 +2120,41 @@ main.reading{max-width:var(--measure-book)}
 @media (max-width:34rem){
   .recent .at{margin-left:0;width:100%}
 }
+
+/* ---------- the book, for review ----------
+   A working surface, not a page of the archive. Wide, plain, and arranged so
+   that a long session reading Gujarati against English stays legible. */
+.review-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-5)}
+.review-head .note{font-size:var(--size-sm)}
+.glossary{margin-top:var(--s-4);font-size:var(--size-sm)}
+.glossary summary{cursor:pointer;color:var(--c-accent)}
+.glossary table{width:100%;border-collapse:collapse;margin-top:var(--s-3)}
+.glossary th{text-align:left;font-size:var(--size-xs);letter-spacing:var(--track-caps);
+ text-transform:uppercase;color:var(--c-muted);padding:var(--s-1) var(--s-2);
+ border-bottom:var(--border)}
+.glossary td{padding:var(--s-2);border-bottom:var(--border);vertical-align:top}
+.glossary td[lang=gu]{font-family:var(--font-indic);white-space:nowrap}
+.review{padding:var(--s-5) 0;border-bottom:var(--border)}
+.review h2{font-size:var(--size-md);letter-spacing:var(--track-caps);
+ text-transform:uppercase;color:var(--c-muted);margin:0 0 var(--s-3)}
+.review .state{font-size:var(--size-xs);padding:0 var(--s-2);border-radius:var(--radius);
+ background:var(--c-hover);color:var(--c-muted);text-transform:none;letter-spacing:normal}
+.review[data-state=yours] .state{background:var(--c-have);color:var(--c-accent-ink)}
+.review[data-state=none] .state{background:var(--c-unpublished);color:var(--c-accent-ink)}
+.review .pair{display:grid;gap:var(--s-5);align-items:start}
+@media (min-width:62rem){ .review .pair{grid-template-columns:1fr 1fr} }
+.review .guj{font-family:var(--font-indic);font-size:var(--size-indic);
+ line-height:var(--leading-indic)}
+.review .guj p{margin:0 0 var(--s-3)}
+.review textarea{width:100%;min-height:16rem;padding:var(--s-3);font:inherit;
+ font-size:var(--size-md);line-height:var(--leading-body);color:var(--c-ink);
+ background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+ resize:vertical}
+.review textarea:focus{outline:2px solid var(--c-accent);outline-offset:1px}
+.review button{font:inherit;font-size:var(--size-md);padding:var(--s-2) var(--s-4);
+ border:var(--border);border-radius:var(--radius);background:var(--c-accent);
+ border-color:var(--c-accent);color:var(--c-accent-ink);cursor:pointer}
+.review .said{margin-left:var(--s-3);font-size:var(--size-sm);color:var(--c-muted)}
 
 /* ---------- the correction form ----------
    Hidden until Shift+E or ?edit. Deliberately plain: it is a tool, not part
@@ -2427,6 +2550,72 @@ JS = """/* Enhancement only. The page is complete without any of this.
     marks.forEach(function (m) { watcher.observe(m); });
   })();
 
+  /* ---- heard and not heard ------------------------------------------------
+     A text can run to three hundred and fifty sittings. Working through one
+     over weeks, the only question that matters on its page is which ones are
+     already behind you, and until now the only thing answering it was memory.
+
+     A sitting counts as heard when the recording reaches nine tenths of its
+     length — the last minutes are the closing stuti, and waiting for the very
+     end would mean almost nothing ever counted. It can also be set by hand,
+     for the ones listened to on YouTube or on a tape thirty years ago. */
+  var PLAYED = "avlokan:played";
+  var NEARLY_ALL = 0.9;
+
+  function heard() {
+    try { return JSON.parse(localStorage.getItem(PLAYED) || "{}") || {}; }
+    catch (err) { return {}; }
+  }
+
+  function setHeard(slug, yes) {
+    var all = heard();
+    if (yes) all[slug] = 1; else delete all[slug];
+    try { localStorage.setItem(PLAYED, JSON.stringify(all)); } catch (err) {}
+    mark();
+  }
+
+  /* The listings are plain HTML built long before anyone played anything, so
+     the marks are put on here, from the address each row already links to. */
+  function mark() {
+    var all = heard();
+    [].forEach.call(document.querySelectorAll('a[href*="/d/"], a[href^="d/"]'), function (a) {
+      var hit = /([^/]+)\.html/.exec(a.getAttribute("href") || "");
+      if (!hit) return;
+      var row = a.closest("tr") || a.closest("li") || a;
+      row.classList.toggle("is-heard", !!all[hit[1]]);
+    });
+    var here = document.querySelector("article.discourse[data-slug]");
+    var toggle = document.querySelector(".heard-toggle");
+    if (here && toggle) {
+      var on = !!all[here.dataset.slug];
+      toggle.setAttribute("aria-pressed", on ? "true" : "false");
+      toggle.textContent = on ? "Heard" : "Mark as heard";
+    }
+  }
+
+  function watchProgress(seconds) {
+    var here = document.querySelector("article.discourse[data-slug]");
+    if (!here) return;
+    var mins = parseInt(here.dataset.minutes || "0", 10);
+    if (mins > 0 && seconds > mins * 60 * NEARLY_ALL && !heard()[here.dataset.slug]) {
+      setHeard(here.dataset.slug, true);
+    }
+  }
+
+  (function () {
+    var here = document.querySelector("article.discourse[data-slug]");
+    if (!here) { mark(); return; }
+    var bar = here.querySelector(".links");
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "heard-toggle";
+    button.addEventListener("click", function () {
+      setHeard(here.dataset.slug, !heard()[here.dataset.slug]);
+    });
+    (bar || here).appendChild(button);
+    mark();
+  })();
+
   /* ---- where you left off -------------------------------------------------
      The position of a recording was already being kept, under the page's own
      address, so that "Resume at 12:34" could appear on the sitting itself.
@@ -2497,9 +2686,45 @@ JS = """/* Enhancement only. The page is complete without any of this.
   }
   resumeFromHash();
 
+  /* Positions saved before this list existed, or on a visit too short to be
+     recorded in it. The page has the address but not the name, so it asks:
+     the lookup is fetched only when there is something in it to look up. */
+  function resolveOrphans() {
+    var known = {}, orphans = [];
+    recent().forEach(function (x) { if (x && x.slug) known[x.slug] = 1; });
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (!key || key.indexOf("avlokan:pos:") !== 0) continue;
+      var hit = /([^/]+)\.html$/.exec(key);
+      if (!hit || known[hit[1]]) continue;
+      var at = parseInt(localStorage.getItem(key) || "0", 10) || 0;
+      if (at > WORTH_KEEPING) orphans.push({ slug: hit[1], t: at });
+    }
+    if (!orphans.length) return Promise.resolve([]);
+    return fetch("assets/sittings.json").then(function (r) { return r.json(); })
+      .then(function (all) {
+        return orphans.map(function (o) {
+          var row = all[o.slug];
+          return row ? { slug: o.slug, text: row[0], when: row[1], ref: row[2],
+                         t: o.t, at: 0 } : null;
+        }).filter(Boolean);
+      }).catch(function () { return []; });
+  }
+
   (function () {
     var panel = document.getElementById("recent");
     if (!panel) return;
+    resolveOrphans().then(function (found) {
+      if (found.length) {
+        var merged = recent().concat(found);
+        merged.sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
+        try { localStorage.setItem(RECENT, JSON.stringify(merged.slice(0, KEEP))); }
+        catch (err) {}
+      }
+      show();
+    });
+
+    function show() {
     var items = recent().filter(function (x) { return x && x.slug && x.t; });
     if (!items.length) return;
     var list = panel.querySelector("ol");
@@ -2524,7 +2749,39 @@ JS = """/* Enhancement only. The page is complete without any of this.
       try { localStorage.removeItem(RECENT); } catch (err) {}
       panel.hidden = true;
     });
+    }
   })();
+
+  /* ---- the book, for review ------------------------------------------------
+     Only ever on review.html, and only ever useful while ./edit.sh is
+     answering. Each aphorism saves on its own: a hundred and fourteen of them
+     behind one Save at the bottom is a page you cannot leave half-done. */
+  [].forEach.call(document.querySelectorAll(".review[data-n]"), function (block) {
+    var area = block.querySelector("textarea");
+    var said = block.querySelector(".said");
+    var was = area.value;
+    block.querySelector(".save").addEventListener("click", function () {
+      if (area.value.trim() === was.trim()) { said.textContent = "Unchanged."; return; }
+      said.textContent = "Saving…";
+      fetch("/aphorism", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ n: parseInt(block.dataset.n, 10), english: area.value })
+      }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      }).then(function (answer) {
+        was = area.value;
+        said.textContent = answer.message || "Saved.";
+        block.dataset.state = "yours";
+        block.querySelector(".state").textContent = "yours";
+        var tally = document.getElementById("tally");
+        if (tally && answer.tally) tally.textContent = answer.tally;
+      }).catch(function () {
+        said.textContent = "Not saved — is ./edit.sh running?";
+      });
+    });
+  });
 
   /* ---- corrections -------------------------------------------------------
      The form is on every discourse page and hidden on all of them. Shift+E
@@ -2661,7 +2918,7 @@ JS = """/* Enhancement only. The page is complete without any of this.
       try { localStorage.setItem(KEY, String(Math.floor(t))); } catch (err) {}
       /* The front-page list is rewritten whole each time, so it is kept to
          once every few seconds rather than every tick. */
-      if (++ticks % 5 === 0) remember(t);
+      if (++ticks % 5 === 0) { remember(t); watchProgress(t); }
     }, 1000);
   }
 
@@ -3095,6 +3352,20 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
     shots = gallery_page()
     if shots:
         (out_dir / "photographs.html").write_text(shots, encoding="utf-8")
+    # Every sitting, small: slug -> text, date, reference, length. The front
+    # page keeps what you were listening to under the page's own address, and
+    # an address is not a title — so anyone whose positions were saved before
+    # that list existed has history the page cannot name. This lets it ask.
+    # Fetched only when there is something to resolve; 12 KB over the wire,
+    # and nothing at all for a first-time reader.
+    (out_dir / "assets" / "sittings.json").write_text(
+        json.dumps({sitting_slug(s): [s["scripture"], pretty_date(s["date"]),
+                                      reference_label(s) or "",
+                                      s["published"].get("minutes") or 0]
+                    for s in all_sittings},
+                   ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8")
+
     counts = search_index(all_sittings, out_dir)
     (out_dir / "search.html").write_text(search_page(), encoding="utf-8")
     (out_dir / "assets" / "search.js").write_text(SEARCH_JS, encoding="utf-8")

@@ -357,6 +357,72 @@
     marks.forEach(function (m) { watcher.observe(m); });
   })();
 
+  /* ---- heard and not heard ------------------------------------------------
+     A text can run to three hundred and fifty sittings. Working through one
+     over weeks, the only question that matters on its page is which ones are
+     already behind you, and until now the only thing answering it was memory.
+
+     A sitting counts as heard when the recording reaches nine tenths of its
+     length — the last minutes are the closing stuti, and waiting for the very
+     end would mean almost nothing ever counted. It can also be set by hand,
+     for the ones listened to on YouTube or on a tape thirty years ago. */
+  var PLAYED = "avlokan:played";
+  var NEARLY_ALL = 0.9;
+
+  function heard() {
+    try { return JSON.parse(localStorage.getItem(PLAYED) || "{}") || {}; }
+    catch (err) { return {}; }
+  }
+
+  function setHeard(slug, yes) {
+    var all = heard();
+    if (yes) all[slug] = 1; else delete all[slug];
+    try { localStorage.setItem(PLAYED, JSON.stringify(all)); } catch (err) {}
+    mark();
+  }
+
+  /* The listings are plain HTML built long before anyone played anything, so
+     the marks are put on here, from the address each row already links to. */
+  function mark() {
+    var all = heard();
+    [].forEach.call(document.querySelectorAll('a[href*="/d/"], a[href^="d/"]'), function (a) {
+      var hit = /([^/]+)\.html/.exec(a.getAttribute("href") || "");
+      if (!hit) return;
+      var row = a.closest("tr") || a.closest("li") || a;
+      row.classList.toggle("is-heard", !!all[hit[1]]);
+    });
+    var here = document.querySelector("article.discourse[data-slug]");
+    var toggle = document.querySelector(".heard-toggle");
+    if (here && toggle) {
+      var on = !!all[here.dataset.slug];
+      toggle.setAttribute("aria-pressed", on ? "true" : "false");
+      toggle.textContent = on ? "Heard" : "Mark as heard";
+    }
+  }
+
+  function watchProgress(seconds) {
+    var here = document.querySelector("article.discourse[data-slug]");
+    if (!here) return;
+    var mins = parseInt(here.dataset.minutes || "0", 10);
+    if (mins > 0 && seconds > mins * 60 * NEARLY_ALL && !heard()[here.dataset.slug]) {
+      setHeard(here.dataset.slug, true);
+    }
+  }
+
+  (function () {
+    var here = document.querySelector("article.discourse[data-slug]");
+    if (!here) { mark(); return; }
+    var bar = here.querySelector(".links");
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "heard-toggle";
+    button.addEventListener("click", function () {
+      setHeard(here.dataset.slug, !heard()[here.dataset.slug]);
+    });
+    (bar || here).appendChild(button);
+    mark();
+  })();
+
   /* ---- where you left off -------------------------------------------------
      The position of a recording was already being kept, under the page's own
      address, so that "Resume at 12:34" could appear on the sitting itself.
@@ -427,9 +493,45 @@
   }
   resumeFromHash();
 
+  /* Positions saved before this list existed, or on a visit too short to be
+     recorded in it. The page has the address but not the name, so it asks:
+     the lookup is fetched only when there is something in it to look up. */
+  function resolveOrphans() {
+    var known = {}, orphans = [];
+    recent().forEach(function (x) { if (x && x.slug) known[x.slug] = 1; });
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (!key || key.indexOf("avlokan:pos:") !== 0) continue;
+      var hit = /([^/]+)\.html$/.exec(key);
+      if (!hit || known[hit[1]]) continue;
+      var at = parseInt(localStorage.getItem(key) || "0", 10) || 0;
+      if (at > WORTH_KEEPING) orphans.push({ slug: hit[1], t: at });
+    }
+    if (!orphans.length) return Promise.resolve([]);
+    return fetch("assets/sittings.json").then(function (r) { return r.json(); })
+      .then(function (all) {
+        return orphans.map(function (o) {
+          var row = all[o.slug];
+          return row ? { slug: o.slug, text: row[0], when: row[1], ref: row[2],
+                         t: o.t, at: 0 } : null;
+        }).filter(Boolean);
+      }).catch(function () { return []; });
+  }
+
   (function () {
     var panel = document.getElementById("recent");
     if (!panel) return;
+    resolveOrphans().then(function (found) {
+      if (found.length) {
+        var merged = recent().concat(found);
+        merged.sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
+        try { localStorage.setItem(RECENT, JSON.stringify(merged.slice(0, KEEP))); }
+        catch (err) {}
+      }
+      show();
+    });
+
+    function show() {
     var items = recent().filter(function (x) { return x && x.slug && x.t; });
     if (!items.length) return;
     var list = panel.querySelector("ol");
@@ -454,7 +556,39 @@
       try { localStorage.removeItem(RECENT); } catch (err) {}
       panel.hidden = true;
     });
+    }
   })();
+
+  /* ---- the book, for review ------------------------------------------------
+     Only ever on review.html, and only ever useful while ./edit.sh is
+     answering. Each aphorism saves on its own: a hundred and fourteen of them
+     behind one Save at the bottom is a page you cannot leave half-done. */
+  [].forEach.call(document.querySelectorAll(".review[data-n]"), function (block) {
+    var area = block.querySelector("textarea");
+    var said = block.querySelector(".said");
+    var was = area.value;
+    block.querySelector(".save").addEventListener("click", function () {
+      if (area.value.trim() === was.trim()) { said.textContent = "Unchanged."; return; }
+      said.textContent = "Saving…";
+      fetch("/aphorism", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ n: parseInt(block.dataset.n, 10), english: area.value })
+      }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      }).then(function (answer) {
+        was = area.value;
+        said.textContent = answer.message || "Saved.";
+        block.dataset.state = "yours";
+        block.querySelector(".state").textContent = "yours";
+        var tally = document.getElementById("tally");
+        if (tally && answer.tally) tally.textContent = answer.tally;
+      }).catch(function () {
+        said.textContent = "Not saved — is ./edit.sh running?";
+      });
+    });
+  });
 
   /* ---- corrections -------------------------------------------------------
      The form is on every discourse page and hidden on all of them. Shift+E
@@ -591,7 +725,7 @@
       try { localStorage.setItem(KEY, String(Math.floor(t))); } catch (err) {}
       /* The front-page list is rewritten whole each time, so it is kept to
          once every few seconds rather than every tick. */
-      if (++ticks % 5 === 0) remember(t);
+      if (++ticks % 5 === 0) { remember(t); watchProgress(t); }
     }, 1000);
   }
 

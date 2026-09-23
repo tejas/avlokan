@@ -61,9 +61,20 @@ if [ -z "$(git status --porcelain)" ]; then
   printf '   Nothing. The archive already matches the channel.\n'
   exit 0
 fi
-git status --short | sed 's/^/   /' | head -30
-total=$(git status --porcelain | wc -l | tr -d ' ')
-[ "$total" -gt 30 ] && printf '   … and %s more\n' "$((total - 30))"
+# Listed with awk rather than `| head -30`, which is what this used to do.
+# `head` closes the pipe as soon as it has its thirty lines; git status is
+# still writing, takes SIGPIPE, and under `set -euo pipefail` that killed the
+# whole script — silently, after printing the changes, before committing any
+# of them. It only happened when there was a lot to publish: a handful of
+# files finishes writing before head closes, a thousand does not. So the
+# weekly runs worked and the big one did nothing, while looking identical.
+# awk reads to the end.
+changed=$(git status --porcelain)
+total=$(printf '%s\n' "$changed" | wc -l | tr -d ' ')
+printf '%s\n' "$changed" | awk 'NR<=30 { print "   " $0 }'
+if [ "$total" -gt 30 ]; then
+  printf '   … and %s more\n' "$((total - 30))"
+fi
 
 if [ $dry -eq 1 ]; then
   printf '\n   Dry run — nothing written, nothing published.\n'

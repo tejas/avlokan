@@ -355,6 +355,27 @@ main.reading{max-width:var(--measure-book)}
 }
 .aphorism:target{scroll-margin-top:var(--h-sticky)}
 
+/* ---------- heard ----------
+   Quiet by design. The point is to see at a glance which of forty sittings
+   are behind you, not to decorate the ones that are. A tick in the margin
+   and the row stepping back a shade; nothing that competes with the text. */
+tr.is-heard td,li.is-heard{color:var(--c-muted)}
+/* The tick is the character itself, not a CSS unicode escape. This file is
+   an ordinary Python string, where such an escape starts with a backslash
+   and a zero — which Python reads as a null byte and writes into the CSS.
+   The build refuses that. It refused this comment, when the comment first
+   tried to explain it by example. */
+tr.is-heard td:first-child::before,li.is-heard::before{content:"✓ ";
+ color:var(--c-have);font-weight:var(--weight-bold)}
+tr.is-heard a,li.is-heard a{color:var(--c-muted)}
+tr.is-heard a:hover,li.is-heard a:hover{color:var(--c-accent)}
+.heard-toggle{margin-left:var(--s-3);font:inherit;font-size:var(--size-sm);
+ padding:var(--s-1) var(--s-3);color:var(--c-muted);background:none;
+ border:var(--border);border-radius:var(--radius);cursor:pointer}
+.heard-toggle:hover{color:var(--c-ink);background:var(--c-surface)}
+.heard-toggle[aria-pressed=true]{color:var(--c-have);border-color:var(--c-have)}
+.heard-toggle[aria-pressed=true]::before{content:"✓ "}
+
 /* ---------- where you left off ----------
    Quiet on purpose. It sits above the texts and must not compete with them:
    a way back in for someone who was already listening, not an invitation. */
@@ -384,6 +405,41 @@ main.reading{max-width:var(--measure-book)}
 @media (max-width:34rem){
   .recent .at{margin-left:0;width:100%}
 }
+
+/* ---------- the book, for review ----------
+   A working surface, not a page of the archive. Wide, plain, and arranged so
+   that a long session reading Gujarati against English stays legible. */
+.review-head{border-bottom:var(--border);padding-bottom:var(--s-4);margin-bottom:var(--s-5)}
+.review-head .note{font-size:var(--size-sm)}
+.glossary{margin-top:var(--s-4);font-size:var(--size-sm)}
+.glossary summary{cursor:pointer;color:var(--c-accent)}
+.glossary table{width:100%;border-collapse:collapse;margin-top:var(--s-3)}
+.glossary th{text-align:left;font-size:var(--size-xs);letter-spacing:var(--track-caps);
+ text-transform:uppercase;color:var(--c-muted);padding:var(--s-1) var(--s-2);
+ border-bottom:var(--border)}
+.glossary td{padding:var(--s-2);border-bottom:var(--border);vertical-align:top}
+.glossary td[lang=gu]{font-family:var(--font-indic);white-space:nowrap}
+.review{padding:var(--s-5) 0;border-bottom:var(--border)}
+.review h2{font-size:var(--size-md);letter-spacing:var(--track-caps);
+ text-transform:uppercase;color:var(--c-muted);margin:0 0 var(--s-3)}
+.review .state{font-size:var(--size-xs);padding:0 var(--s-2);border-radius:var(--radius);
+ background:var(--c-hover);color:var(--c-muted);text-transform:none;letter-spacing:normal}
+.review[data-state=yours] .state{background:var(--c-have);color:var(--c-accent-ink)}
+.review[data-state=none] .state{background:var(--c-unpublished);color:var(--c-accent-ink)}
+.review .pair{display:grid;gap:var(--s-5);align-items:start}
+@media (min-width:62rem){ .review .pair{grid-template-columns:1fr 1fr} }
+.review .guj{font-family:var(--font-indic);font-size:var(--size-indic);
+ line-height:var(--leading-indic)}
+.review .guj p{margin:0 0 var(--s-3)}
+.review textarea{width:100%;min-height:16rem;padding:var(--s-3);font:inherit;
+ font-size:var(--size-md);line-height:var(--leading-body);color:var(--c-ink);
+ background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+ resize:vertical}
+.review textarea:focus{outline:2px solid var(--c-accent);outline-offset:1px}
+.review button{font:inherit;font-size:var(--size-md);padding:var(--s-2) var(--s-4);
+ border:var(--border);border-radius:var(--radius);background:var(--c-accent);
+ border-color:var(--c-accent);color:var(--c-accent-ink);cursor:pointer}
+.review .said{margin-left:var(--s-3);font-size:var(--size-sm);color:var(--c-muted)}
 
 /* ---------- the correction form ----------
    Hidden until Shift+E or ?edit. Deliberately plain: it is a tool, not part
