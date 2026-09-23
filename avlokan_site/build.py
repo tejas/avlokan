@@ -2483,8 +2483,10 @@ JS = """/* Enhancement only. The page is complete without any of this.
        so anything that decorated the old content has to be run again over the
        new. The heard ticks were applied once, at load, and so disappeared the
        moment you moved through a series the way anyone would — by clicking
-       Part 2 from Part 1. Third time this has caught something: the masthead
-       links and the resume-from-hash were the others. */
+       Part 2 from Part 1. Fourth time this has caught something: the
+       masthead's links, resume-from-hash and the heard toggle were the
+       others. Anything that decorates or adds to the page belongs here. */
+    addHeardToggle();
     mark();
   }
 
@@ -2635,9 +2637,14 @@ JS = """/* Enhancement only. The page is complete without any of this.
     }
   }
 
-  (function () {
+  /* Built in `bind`, not once at load. Following a link replaces everything
+     inside <main> with markup that has never had a button added to it, so a
+     control created at load exists only on the first page you open — this one
+     vanished on every sitting reached by clicking, which is most of them. The
+     play button has always been made this way; so is this now. */
+  function addHeardToggle() {
     var here = document.querySelector("article.discourse[data-slug]");
-    if (!here) { mark(); return; }
+    if (!here || here.querySelector(".heard-toggle")) return;
     var bar = here.querySelector(".links");
     var button = document.createElement("button");
     button.type = "button";
@@ -2646,8 +2653,10 @@ JS = """/* Enhancement only. The page is complete without any of this.
       setHeard(here.dataset.slug, !heard()[here.dataset.slug]);
     });
     (bar || here).appendChild(button);
-    mark();
-  })();
+  }
+
+  addHeardToggle();
+  mark();
 
   /* ---- where you left off -------------------------------------------------
      The position of a recording was already being kept, under the page's own
