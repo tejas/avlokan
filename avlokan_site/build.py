@@ -2479,6 +2479,13 @@ JS = """/* Enhancement only. The page is complete without any of this.
     bindTranscript();
     place();
     resumeFromHash();
+    /* Following a link swaps what is in <main> and leaves the script running,
+       so anything that decorated the old content has to be run again over the
+       new. The heard ticks were applied once, at load, and so disappeared the
+       moment you moved through a series the way anyone would — by clicking
+       Part 2 from Part 1. Third time this has caught something: the masthead
+       links and the resume-from-hash were the others. */
+    mark();
   }
 
   function addPlayButton() {
@@ -2588,12 +2595,28 @@ JS = """/* Enhancement only. The page is complete without any of this.
      the marks are put on here, from the address each row already links to. */
   function mark() {
     var all = heard();
-    [].forEach.call(document.querySelectorAll('a[href*="/d/"], a[href^="d/"]'), function (a) {
-      var hit = /([^/]+)\.html/.exec(a.getAttribute("href") || "");
+    [].forEach.call(document.querySelectorAll('a[href$=".html"]'), function (a) {
+      /* The resolved path, not the attribute as written. One sitting is
+         linked as ../d/x.html from a text page, as d/x.html from the front
+         page, and as plain x.html from a sitting standing beside it in its
+         own series — and that last form is the series list, which matched
+         neither pattern and so was never marked at all. */
+      var path = a.pathname || "";
+      if (path.indexOf("/d/") === -1) return;
+      var hit = /([^/]+)\.html$/.exec(path);
       if (!hit) return;
       var row = a.closest("tr") || a.closest("li") || a;
       row.classList.toggle("is-heard", !!all[hit[1]]);
     });
+    /* The sitting you are reading appears in its own series list as plain
+       text rather than a link, so nothing above reaches it. */
+    var mine = document.querySelector("article.discourse[data-slug]");
+    if (mine) {
+      [].forEach.call(document.querySelectorAll(".run li > strong"), function (el) {
+        var li = el.parentNode;
+        if (li) li.classList.toggle("is-heard", !!all[mine.dataset.slug]);
+      });
+    }
     var here = document.querySelector("article.discourse[data-slug]");
     var toggle = document.querySelector(".heard-toggle");
     if (here && toggle) {
