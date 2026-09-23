@@ -444,6 +444,36 @@
     } catch (err) { return []; }
   }
 
+  /* A play mark, ringed by how much of the recording is behind you. The ring
+     is the informative half: eight rows of identical triangles would say only
+     that these are recordings, which the page already says. An entry from
+     before lengths were remembered has no fraction to draw, so it gets the
+     mark alone rather than a ring pretending to be at zero. */
+  var RING = 2 * Math.PI * 9;
+
+  function resumeMark(x) {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "resume-mark");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    function circle(cls, dash) {
+      var c = document.createElementNS(svg.namespaceURI, "circle");
+      c.setAttribute("cx", "12"); c.setAttribute("cy", "12"); c.setAttribute("r", "9");
+      c.setAttribute("class", cls);
+      if (dash) { c.setAttribute("stroke-dasharray", RING);
+                  c.setAttribute("stroke-dashoffset", dash); }
+      return c;
+    }
+    var whole = x.mins > 0 ? Math.min(x.t / (x.mins * 60), 1) : 0;
+    svg.appendChild(circle("ring"));
+    if (whole > 0) svg.appendChild(circle("ring-done", RING * (1 - whole)));
+    var play = document.createElementNS(svg.namespaceURI, "path");
+    play.setAttribute("class", "play-mark");
+    play.setAttribute("d", "M10 8.5l5.5 3.5-5.5 3.5z");
+    svg.appendChild(play);
+    return svg;
+  }
+
   function clock(seconds) {
     var s = Math.max(0, Math.floor(seconds));
     var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
@@ -462,6 +492,7 @@
     var kept = recent().filter(function (x) { return x && x.slug !== art.dataset.slug; });
     kept.unshift({ slug: art.dataset.slug, text: art.dataset.text,
                    when: art.dataset.when, ref: art.dataset.ref,
+                   mins: parseInt(art.dataset.minutes || "0", 10) || 0,
                    t: Math.floor(seconds), at: Date.now() });
     try { localStorage.setItem(RECENT, JSON.stringify(kept.slice(0, KEEP))); } catch (err) {}
   }
@@ -540,6 +571,7 @@
       var li = document.createElement("li");
       var a = document.createElement("a");
       a.href = "d/" + x.slug + ".html#at" + x.t;
+      a.appendChild(resumeMark(x));
       a.appendChild(document.createElement("strong")).textContent = x.text || x.slug;
       var sub = document.createElement("span");
       sub.className = "muted";

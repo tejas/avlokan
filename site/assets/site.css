@@ -388,8 +388,17 @@ tr.is-heard a:hover,li.is-heard a:hover{color:var(--c-accent)}
 .recent ol{list-style:none;margin:0;padding:0}
 .recent li{border-bottom:var(--border)}
 .recent li:last-child{border-bottom:0}
-.recent a{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--s-2);
+.recent a{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2);
  padding:var(--s-3) 0;text-decoration:none;color:var(--c-ink)}
+/* The ring starts at twelve o'clock rather than three, so a part-heard
+   sitting reads the way a clock face does. */
+.resume-mark{flex:none;width:1.5rem;height:1.5rem;transform:rotate(-90deg)}
+.resume-mark .ring{fill:none;stroke:var(--c-line);stroke-width:2}
+.resume-mark .ring-done{fill:none;stroke:var(--c-accent);stroke-width:2;
+ stroke-linecap:round}
+.resume-mark .play-mark{fill:var(--c-muted);transform:rotate(90deg);
+ transform-origin:12px 12px}
+.recent a:hover .play-mark{fill:var(--c-accent)}
 .recent a:hover{background:var(--c-hover)}
 .recent a strong{font-weight:var(--weight-medium)}
 .recent a:hover strong{color:var(--c-accent);
