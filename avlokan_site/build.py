@@ -2339,6 +2339,7 @@ JS = """/* Enhancement only. The page is complete without any of this.
     frame.allow = "accelerometer; autoplay; encrypted-media; picture-in-picture";
     frame.allowFullscreen = true;
     shell.appendChild(frame);
+    if (autoplay) watchByClock(seconds || 0);
     return frame;
   }
 
@@ -2908,17 +2909,45 @@ JS = """/* Enhancement only. The page is complete without any of this.
     }
   }
 
+  function noteTime(t, ticks) {
+    highlight(t);
+    try { localStorage.setItem(KEY, String(Math.floor(t))); } catch (err) {}
+    /* The front-page list is rewritten whole each time, so it is kept to
+       once every few seconds rather than every tick. */
+    if (ticks % 5 === 0) { remember(t); watchProgress(t); }
+  }
+
   function watch() {
     clearInterval(timer);
     var ticks = 0;
     timer = setInterval(function () {
       if (!player || !player.getCurrentTime) return;
-      var t = player.getCurrentTime();
-      highlight(t);
-      try { localStorage.setItem(KEY, String(Math.floor(t))); } catch (err) {}
-      /* The front-page list is rewritten whole each time, so it is kept to
-         once every few seconds rather than every tick. */
-      if (++ticks % 5 === 0) { remember(t); watchProgress(t); }
+      noteTime(player.getCurrentTime(), ++ticks);
+    }, 1000);
+  }
+
+  /* ---- keeping time without the API ------------------------------------------
+     Everything above depends on YouTube's iframe API, which is a script from
+     youtube.com and is therefore one of the first things an ad blocker stops.
+     When it does not arrive, `play` falls back to a plain iframe — the
+     recording plays perfectly and there is no handle on it, so nothing was
+     recorded at all: no position, no resume, no marking a sitting heard. The
+     archive looked, to anyone running a blocker, as though the feature simply
+     did not exist. It is also what a reader on a strict network gets.
+
+     So when there is no player to ask, the clock is used instead. It cannot
+     see a pause taken inside the iframe, so it can run ahead of the recording;
+     it is capped at the sitting's own length, and a resume that lands a little
+     early is a far smaller failure than no resume at all. */
+  function watchByClock(from) {
+    clearInterval(timer);
+    var began = Date.now(), ticks = 0;
+    var here = document.querySelector("article.discourse[data-minutes]");
+    var limit = here ? parseInt(here.dataset.minutes || "0", 10) * 60 : 0;
+    timer = setInterval(function () {
+      var t = (from || 0) + (Date.now() - began) / 1000;
+      if (limit && t > limit) { clearInterval(timer); return; }
+      noteTime(t, ++ticks);
     }, 1000);
   }
 
