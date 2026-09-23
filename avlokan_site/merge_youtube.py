@@ -819,6 +819,40 @@ def fold_segments(index: list[dict]) -> list[tuple]:
     return folded
 
 
+def refresh_lengths(index: list[dict], by_id: dict[str, dict]) -> list[tuple]:
+    """Take each video's length from the channel, for videos already listed.
+
+    The merge skips a row whose id it already knows — that is what makes it
+    idempotent. But it means a video's length is recorded once, when it is
+    first added, and never looked at again. A scheduled premiere is added
+    while the channel still reports no duration at all, so it is stored as
+    zero minutes and stays zero after it airs: the Patra 22 sittings showed a
+    blank length column for a week, and nothing could work out that a
+    recording had been heard to the end, because nine tenths of zero is
+    nothing.
+
+    The channel is the recording itself, so it wins here as it already does
+    when a video is first attached. Most of what this corrects is a minute of
+    rounding; a few are the zeros.
+    """
+    fixed = []
+    for entry in index:
+        cats = entry.get("catalogued") or []
+        for i, pub in enumerate(entry.get("published") or []):
+            vid = (cats[i].get("youtube_id") or "") if i < len(cats) else ""
+            row = by_id.get(vid)
+            if not row or not row["duration"].isdigit():
+                continue
+            real = round(int(row["duration"]) / 60)
+            if real == (pub.get("minutes") or 0):
+                continue
+            fixed.append((entry["date"], vid, pub.get("minutes") or 0, real))
+            pub["minutes"] = real
+            if row["views"].isdigit():
+                pub["views"] = int(row["views"])
+    return fixed
+
+
 def name_orphans(index: list[dict], by_id: dict[str, dict]) -> list[tuple]:
     """Give a catalogued row that has a video but no published row its record.
 
@@ -855,7 +889,7 @@ def name_orphans(index: list[dict], by_id: dict[str, dict]) -> list[tuple]:
 
 
 def merge_renumbered(groups: dict[tuple, list[int]], cats: list[dict],
-                     pending: set[str]) -> None:
+                     pending: set[str], pubs_of: list[dict]) -> None:
     """Fold a premiere in with the upload it replaces when the re-edit
     renumbered the parts.
 
@@ -884,6 +918,17 @@ def merge_renumbered(groups: dict[tuple, list[int]], cats: list[dict],
                  and not all(is_premiere(i) for i in groups[k])]
         if len(hosts) != 1:
             continue
+        # Written down, because this only holds while the upload is still a
+        # premiere. Once it airs it is an ordinary video with a part number
+        # one higher than its neighbour's, nothing groups the two again, and
+        # the premiere stays marked superseded by the very upload it was
+        # meant to replace — which is what kept 12, 13 and 14 February on
+        # their old edits for a week after the new ones went live.
+        anchor = next((cats[i].get("youtube_id") for i in groups[hosts[0]]
+                       if i < len(cats) and cats[i].get("youtube_id")), "")
+        if anchor:
+            for i in groups[key]:
+                pubs_of[i]["sitting_of"] = anchor
         groups[hosts[0]].extend(groups.pop(key))
 
 
@@ -914,10 +959,24 @@ def dedupe(index: list[dict], recency: dict[str, int],
         if len(pubs) < 2:
             continue
         groups: dict[tuple, list[int]] = defaultdict(list)
+        where = {(cats[i].get("youtube_id") or ""): i for i in range(len(cats))}
         for i, pub in enumerate(pubs):
-            if pub.get("title"):
+            if not pub.get("title"):
+                continue
+            # A judgement an earlier run already made that these two uploads
+            # are one sitting — either the fold written while one of them was
+            # still a premiere, or the supersede that fold produced. Read back
+            # so it survives: once a premiere airs, its part number no longer
+            # matches its neighbour's and nothing else would group them, so
+            # the premiere would sit marked superseded by the very upload it
+            # was published to replace.
+            anchor = pub.get("sitting_of") or pub.get("superseded_by")
+            host = where.get(anchor) if anchor else None
+            if host is not None and host < len(pubs) and pubs[host].get("title"):
+                groups[signature(pubs[host]["title"])].append(i)
+            else:
                 groups[signature(pub["title"])].append(i)
-        merge_renumbered(groups, cats, pending)
+        merge_renumbered(groups, cats, pending, pubs)
         for idxs in groups.values():
             if len(idxs) < 2:
                 continue
@@ -1362,7 +1421,11 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     pending = {r["id"] for r in rows if not r["duration"].isdigit()}
     # Before deduping: a catalogued row with a video but no published row is
     # invisible to dedupe, and becomes a nameless extra page.
-    orphans = name_orphans(list(by_date.values()), {r["id"]: r for r in rows})
+    by_id = {r["id"]: r for r in rows}
+    orphans = name_orphans(list(by_date.values()), by_id)
+    # Before dedupe: `fold_segments` compares the length of a whole recording
+    # against the lengths of its pieces, and a stale length breaks that sum.
+    relengthed = refresh_lengths(list(by_date.values()), by_id)
     superseded = dedupe(list(by_date.values()), upload_order(rows), pending)
     superseded += fold_segments(list(by_date.values()))
     # Last: dedupe has to have decided what replaces what before anything is
@@ -1384,6 +1447,7 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
             "audio_moved": audio_moved, "audio_named": audio_named, "same_day": same_day, "relocated": relocated, "in_series": in_series, "from_playlists": from_playlists,
             "crossed": crossed, "resorted": resorted, "ambiguous": ambiguous,
             "repointed": repointed, "retired": retired, "orphans": orphans,
+            "relengthed": relengthed,
             "pending": [r for r in rows if r["id"] in pending]}
 
 
@@ -1461,6 +1525,12 @@ def main() -> None:
               f"video gives for that sitting:")
         for was, now, text, part in result["audio_moved"]:
             print(f"   {was} -> {now}  {text} part {part}")
+    if result["relengthed"]:
+        zeros = [r for r in result["relengthed"] if r[2] == 0]
+        print(f"{len(result['relengthed'])} video length(s) taken from the channel "
+              f"({len(zeros)} that had none at all):")
+        for date, vid, was, now in zeros:
+            print(f"   {date}  {vid}  {was} -> {now} min")
     if result["orphans"]:
         print(f"{len(result['orphans'])} video(s) had a catalogue row but no record "
               f"of what they are; taken from the channel:")
