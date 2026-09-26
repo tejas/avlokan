@@ -14,5 +14,17 @@
   "from": "1999-09-23",
   "to": "1999-09-20",
   "why": "The video title is wrong; Tejas confirmed the sitting is 20 September 1999 and is correcting the title on YouTube. Audio catalogue entry #296 records part 32 on 20 September, and the series is otherwise continuous: part 31 on the 19th, part 33 on the 23rd. Keyed by video id as well as title so it still applies once the title is fixed."
+ },
+ "Patrank 371, Part 1, Shrimad Rajchandra Vachanamrut": {
+  "youtube_id": "yy8m_ZdRpRc",
+  "from": "",
+  "to": "2000-11-02",
+  "why": "The title carries no date at all, so the video was on the channel but not in the archive. Audio catalogue entry #643 records Srimad Rajchandra 371 part 1 on 2 November 2000, and the two sittings after it — #644 and #645 — are the 3rd and the 4th, which is exactly where the published parts 2 and 3 already sit. Keyed by video id as well, so it holds once the title gains its date."
+ },
+ "Shrimad Rajchandra Vachanamrut, Patrank 548, Part 1": {
+  "youtube_id": "9RJh5Z7Ovnk",
+  "from": "",
+  "to": "1999-10-13",
+  "why": "Undated in the title, and the catalogue shows why: entry #312 has an empty date column because the date was typed into the subject field instead, as \"13-0ct-1999 Srimad Rajchandra 548\" — with a zero where the O of Oct belongs. That is the sitting's date. Parts 2 and 3 follow it at #313 and #314 on 14 and 15 October 1999, matching the two that are already published."
  }
 }

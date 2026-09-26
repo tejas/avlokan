@@ -141,6 +141,17 @@ RETIRED_FILE = ROOT / "avlokan" / "superseded_uploads.json"
 RETIRED: dict = json.loads(RETIRED_FILE.read_text(encoding="utf-8")) \
     if RETIRED_FILE.exists() else {}
 
+# What `classify` calls the devotional singing.
+BHAKTI = "Bhakti"
+
+# Where a recording goes when it has no date and never will. Not a date, so
+# every pass that walks the index by date steps over it — which is the point:
+# the archive is organised by the day he taught, and a bhajan has no such day.
+# The older import parked its undated rows under `?pub<upload date>` keys, and
+# those are left where they are; this is for the ones arriving now, which have
+# no upload date either since the channel listing does not report one.
+UNDATED = "?undated"
+
 
 def title_date(title: str) -> tuple[str | None, str]:
     """The recording date from the title, or a reason it could not be read."""
@@ -742,6 +753,79 @@ def without_variant_marker(title: str) -> str:
     return VARIANT_MARKER.sub("", title) if NAMES_ITS_REFERENCE.search(title) else title
 
 
+# The ten dharmas of the Daslakshan festival, in the order they are observed,
+# each with the spellings the channel actually uses for it.
+#
+# The festival runs ten days and each dharma is the subject of exactly one of
+# them, so two uploads naming the same dharma on the same date are one
+# sitting however differently they are titled. That is what earns this a
+# table: seven of the ten days of September 2002 were uploaded twice, once as
+# `Uttam Tapa Dharma, उत्तम तप धर्म` and once as `Uttam Tap Dharma, Shri
+# Samaysar Gatha 12`, and nothing else in the two titles agrees — `signature`
+# reads the first as Daslakshan Dharma and the second as Shri Samaysar, so
+# they sign differently and the archive carried both.
+#
+# Length cannot stand in for this, which was the first thing tried. These
+# were cassette recordings, so distinct sittings share a length: Patrank 609
+# Part 3 and Part 4 of 10 August 1998 are five seconds apart and are two
+# different discourses. Anything keyed on duration would have merged them.
+DASLAKSHAN = (
+    ("kshama",       r"kshama|क्षमा"),
+    ("mardhav",      r"mardhav|mardav|मार्दव"),
+    ("arjav",        r"arjav|आर्जव"),
+    ("satya",        r"sat+ya|सत्य"),
+    ("shauch",       r"sh[ao]uch\w*|शौच"),
+    ("sanyam",       r"say+am|sanyam|संयम"),
+    ("tap",          r"\btapa?\b|तप"),
+    ("tyag",         r"tyag|त्याग"),
+    ("aakinchanya",  r"a+kinchan\w*|आकिंचन्य"),
+    ("brahmacharya", r"bh?ra[mh]+acharya|ब्रह्मचर्य"),
+)
+
+# What marks a title as belonging to the festival at all, so that a stray
+# "tap" in an ordinary title cannot be read as Uttam Tap Dharma. Spelled
+# `Utttam`, with three t's, on 14 September 2002.
+FESTIVAL = re.compile(r"ut+am|उत्तम|daslakshan|दसलक्षण", re.I)
+
+
+def festival_subject(title: str) -> str:
+    """Which day of the Daslakshan festival a title names, if any.
+
+    A title naming two of the dharmas is answered with nothing rather than
+    with the first of them: that is a day this table does not understand, and
+    guessing at it would merge two sittings on the strength of a coincidence.
+    """
+    if not FESTIVAL.search(title):
+        return ""
+    named = [name for name, pat in DASLAKSHAN if re.search(pat, title, re.I)]
+    return named[0] if len(named) == 1 else ""
+
+
+def split_conflicting_parts(groups: dict, pubs: list[dict]) -> None:
+    """Undo a festival grouping that folded two parts of one day together.
+
+    Two uploads naming one dharma are one sitting, unless the day was given
+    in two parts and each names it. Where the part numbers disagree the part
+    is the truth and the group is split back apart.
+
+    A part number on only one of them is not a disagreement. On 12 September
+    2002 the `part 2` of `Shri Samaysar, Gatha 12, part 2` counts the reading
+    of the gatha rather than the half of a day, and the re-upload leaves it
+    out entirely — requiring the two to agree would keep that duplicate and
+    the 16 September one as well.
+    """
+    for key in [k for k in groups if k and k[0] == "daslakshan"]:
+        by_part: dict[str, list[int]] = defaultdict(list)
+        for i in groups[key]:
+            said = re.search(r"\bpart\s*(\d{1,2})\b", pubs[i].get("title", ""), re.I)
+            by_part[said.group(1) if said else ""].append(i)
+        if len([p for p in by_part if p]) < 2:
+            continue
+        del groups[key]
+        for part, members in by_part.items():
+            groups[(*key, part)].extend(members)
+
+
 def signature(title: str) -> tuple:
     """What sitting a title names, ignoring how it was worded.
 
@@ -771,6 +855,18 @@ def signature(title: str) -> tuple:
         # which still folds two uploads of one identically-titled sitting.
         return (classify(title), title_key(body), *which)
     return (classify(title), nums, *which)
+
+
+def group_key(title: str) -> tuple:
+    """How a title is filed when looking for two uploads of one sitting.
+
+    `signature` reads the wording, which is the right answer everywhere the
+    two uploads of a sitting were worded from the same habit. A festival day
+    is the exception: the dharma it teaches identifies it outright, and the
+    two uploads of it agree about nothing else.
+    """
+    day = festival_subject(title)
+    return ("daslakshan", day) if day else signature(title)
 
 
 def fold_segments(index: list[dict]) -> list[tuple]:
@@ -973,9 +1069,10 @@ def dedupe(index: list[dict], recency: dict[str, int],
             anchor = pub.get("sitting_of") or pub.get("superseded_by")
             host = where.get(anchor) if anchor else None
             if host is not None and host < len(pubs) and pubs[host].get("title"):
-                groups[signature(pubs[host]["title"])].append(i)
+                groups[group_key(pubs[host]["title"])].append(i)
             else:
-                groups[signature(pub["title"])].append(i)
+                groups[group_key(pub["title"])].append(i)
+        split_conflicting_parts(groups, pubs)
         merge_renumbered(groups, cats, pending, pubs)
         for idxs in groups.values():
             if len(idxs) < 2:
@@ -1289,18 +1386,33 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     # understood; move those onto the real date and leave the rest parked.
     repaired = []
     for entry in [e for e in index if not e["date"][:4].isdigit()]:
-        for pub in list(entry.get("published") or []):
+        pubs = entry.get("published") or []
+        cats = entry.get("catalogued") or []
+        # Which rows can be dated, by position. The published row and the
+        # catalogued row at the same position are the same sitting seen from
+        # two sources, so they have to travel together: the title is in the
+        # published row and the video id is in the catalogued one. Moving the
+        # title alone published 13 October 1999 as a page with nothing on it
+        # to listen to, the id still parked under `?pub2024-07-20`.
+        moving = []
+        for i, pub in enumerate(pubs):
             date, _ = title_date(pub.get("title", ""))
-            if not date:
-                continue
+            if date:
+                moving.append((i, date))
+        for i, date in moving:
             target = by_date.get(date)
             if target is None:
                 target = {"date": date, "published": [], "catalogued": [],
                           "processed": False, "audio": []}
                 by_date[date] = target
-            entry["published"].remove(pub)
-            target.setdefault("published", []).append(pub)
-            repaired.append((pub.get("title", ""), date))
+            target.setdefault("published", []).append(pubs[i])
+            if i < len(cats):
+                target.setdefault("catalogued", []).append(cats[i])
+            repaired.append((pubs[i].get("title", ""), date))
+        if moving:
+            gone = {i for i, _ in moving}
+            entry["published"] = [p for i, p in enumerate(pubs) if i not in gone]
+            entry["catalogued"] = [c for i, c in enumerate(cats) if i not in gone]
 
     dropped = []
     for entry in index:
@@ -1361,10 +1473,24 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
             # One of the three shared titles: a real second sitting. Fall
             # through and give it its own page.
         date, why = title_date(row["title"])
+        text = classify(row["title"])
+        if not date and text == BHAKTI:
+            # A bhajan has no date to be filed under. It was sung at a sitting
+            # the written list does not number, and the only date anywhere
+            # near it is the day it was uploaded to YouTube — which is not
+            # when it was sung, and saying so on the page would be a claim the
+            # archive cannot support. Park it under a key that is not a date,
+            # where the build can publish it without inventing one.
+            #
+            # Deliberately outside `new_days`, which counts days of teaching
+            # this merge learned about; this is not one.
+            date = UNDATED
+            by_date.setdefault(date, {"date": date, "published": [],
+                                      "catalogued": [], "processed": False,
+                                      "audio": []})
         if not date:
             skipped.append((row, why))
             continue
-        text = classify(row["title"])
         if not text:
             skipped.append((row, "names no text we recognise"))
             continue

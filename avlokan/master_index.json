@@ -8047,6 +8047,41 @@
   ]
  },
  {
+  "date": "1999-10-13",
+  "published": [
+   {
+    "title": "Shrimad Rajchandra Vachanamrut, Patrank 548, Part 1",
+    "minutes": 46,
+    "views": 156,
+    "uploaded": "2024-07-20",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   }
+  ],
+  "catalogued": [
+   {
+    "scripture": "Shrimad Rajchandra Vachanamrut",
+    "reference": "Patrank 548",
+    "youtube_id": "9RJh5Z7Ovnk",
+    "location": "",
+    "source": "channel listing",
+    "series_id": "PLQqFhvWZLM83H2X0aECdN-bYS8QIpiTxA",
+    "series": "Shrimad Rajchandra Patrank 548"
+   }
+  ],
+  "processed": false,
+  "audio": [
+   {
+    "n": 312,
+    "date": "1999-10-13",
+    "subject": "Srimad Rajchandra 548",
+    "part": "",
+    "place": "Udasintha Dravyadrushti",
+    "remarks": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   }
+  ]
+ },
+ {
   "date": "1999-10-14",
   "published": [
    {
@@ -17493,7 +17528,17 @@
    }
   ],
   "processed": false,
-  "audio": []
+  "audio": [
+   {
+    "n": 623,
+    "date": "2000-10-09",
+    "subject": "Srimad Rajchandra 414",
+    "part": "",
+    "place": "",
+    "remarks": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   }
+  ]
  },
  {
   "date": "2000-10-10",
@@ -18105,8 +18150,24 @@
  },
  {
   "date": "2000-11-02",
-  "published": [],
-  "catalogued": [],
+  "published": [
+   {
+    "title": "Patrank 371, Part 1, Shrimad Rajchandra Vachanamrut",
+    "minutes": 38,
+    "views": 137,
+    "uploaded": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut"
+   }
+  ],
+  "catalogued": [
+   {
+    "scripture": "Shrimad Rajchandra Vachanamrut",
+    "reference": "Patrank 371",
+    "youtube_id": "yy8m_ZdRpRc",
+    "location": "",
+    "source": "channel listing"
+   }
+  ],
   "audio": [
    {
     "n": 643,
@@ -25787,7 +25848,17 @@
     "source": "channel listing"
    }
   ],
-  "audio": [],
+  "audio": [
+   {
+    "n": 1053,
+    "subject": "Dravyadrushti Prakash 22",
+    "part": "3",
+    "place": "",
+    "scripture": "Shri Dravya Drushti Prakash",
+    "remarks": "",
+    "moved_from": "2002-02-12"
+   }
+  ],
   "processed": false
  },
  {
@@ -25835,17 +25906,7 @@
    }
   ],
   "processed": true,
-  "audio": [
-   {
-    "n": 1053,
-    "subject": "Dravyadrushti Prakash 22",
-    "part": "3",
-    "place": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "remarks": "",
-    "moved_from": "2002-02-09"
-   }
-  ]
+  "audio": []
  },
  {
   "date": "2002-02-13",
@@ -27242,13 +27303,6 @@
   "date": "2002-03-30",
   "published": [
    {
-    "title": "Dravya Drishti Prakash 17, Part 4, Chinchani Yatra, 30 Mar 2002",
-    "minutes": 62,
-    "views": 254,
-    "uploaded": "2020-06-15",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
     "title": "Dravya Drashti Prakash Patra 17, Part 3, 30 Mar 2002",
     "minutes": 62,
     "views": 66,
@@ -27257,23 +27311,13 @@
    },
    {
     "title": "Dravya Drashti Prakash Patra 17, Part 4, 30 Mar 2002 Noon",
-    "minutes": 0,
-    "views": 0,
+    "minutes": 57,
+    "views": 53,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "superseded_by": "I5dXy4QGFOg",
-    "superseded_reason": "not yet premiered"
+    "scripture": "Shri Dravya Drushti Prakash"
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 17",
-    "youtube_id": "I5dXy4QGFOg",
-    "location": "",
-    "series_id": "PLQqFhvWZLM82PoAROveSpBzTFgq_zWOJE",
-    "series": "Dravya Drushti Prakash, Patra 17"
-   },
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 17",
@@ -27305,31 +27349,14 @@
   "date": "2002-03-31",
   "published": [
    {
-    "title": "Dravya Drishti Prakash 17, Part 5, Chinchani Yatra, 31 Mar 2002",
-    "minutes": 64,
-    "views": 207,
-    "uploaded": "2020-06-15",
-    "scripture": "Shri Dravya Drushti Prakash"
-   },
-   {
     "title": "Dravya Drashti Prakash Patra 17, Part 5, 31 Mar 2002",
-    "minutes": 0,
-    "views": 0,
+    "minutes": 64,
+    "views": 119,
     "uploaded": "",
-    "scripture": "Shri Dravya Drushti Prakash",
-    "superseded_by": "4zq34C9f5h0",
-    "superseded_reason": "not yet premiered"
+    "scripture": "Shri Dravya Drushti Prakash"
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Shri Dravya Drushti Prakash",
-    "reference": "Patra 17",
-    "youtube_id": "4zq34C9f5h0",
-    "location": "",
-    "series_id": "PLQqFhvWZLM82PoAROveSpBzTFgq_zWOJE",
-    "series": "Dravya Drushti Prakash, Patra 17"
-   },
    {
     "scripture": "Shri Dravya Drushti Prakash",
     "reference": "Patra 17",
@@ -27762,10 +27789,10 @@
   "date": "2002-04-18",
   "published": [
    {
-    "title": "Srimad Rajchandra Vachanamrut, Patrank 103, Part 1, 18 Apr 2002",
-    "minutes": 55,
-    "views": 257,
-    "uploaded": "2020-06-15",
+    "title": "Shrimad Rajchandra Vachanamrut, Patrank 103, Part 1, 18 Apr 2002",
+    "minutes": 56,
+    "views": 70,
+    "uploaded": "",
     "scripture": "Shrimad Rajchandra Vachanamrut"
    }
   ],
@@ -27773,8 +27800,9 @@
    {
     "scripture": "Shrimad Rajchandra Vachanamrut",
     "reference": "Patrank 103",
-    "youtube_id": "TntMD7CVFro",
-    "location": ""
+    "youtube_id": "LsMAcIkCPRg",
+    "location": "",
+    "source": "channel listing"
    }
   ],
   "processed": false,
@@ -27798,6 +27826,15 @@
     "views": 209,
     "uploaded": "2020-06-15",
     "scripture": "Shrimad Rajchandra Vachanamrut"
+   },
+   {
+    "title": "Shrimad Rajchandra Vachanamrut, Patrank 103, Part 2, 19 Apr 2002",
+    "minutes": 0,
+    "views": 0,
+    "uploaded": "",
+    "scripture": "Shrimad Rajchandra Vachanamrut",
+    "superseded_by": "IaS1U7dbZwM",
+    "superseded_reason": "not yet premiered"
    }
   ],
   "catalogued": [
@@ -27806,6 +27843,13 @@
     "reference": "Patrank 103",
     "youtube_id": "IaS1U7dbZwM",
     "location": ""
+   },
+   {
+    "scripture": "Shrimad Rajchandra Vachanamrut",
+    "reference": "Patrank 103",
+    "youtube_id": "iAKiRDf37O4",
+    "location": "",
+    "source": "channel listing"
    }
   ],
   "processed": false,
@@ -31702,13 +31746,6 @@
   "date": "2002-09-11",
   "published": [
    {
-    "title": "Bhakti & Uttam Kshama Dharma, 11 Sep 2002",
-    "minutes": 38,
-    "views": 242,
-    "uploaded": "2017-08-21",
-    "scripture": "Daslakshan Dharma"
-   },
-   {
     "title": "Uttam Kshama Dharma, 11 Sep 2002",
     "minutes": 38,
     "views": 169,
@@ -31717,14 +31754,6 @@
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Daslakshan Dharma",
-    "reference": "Gatha 12",
-    "youtube_id": "1HjopgwJf60",
-    "location": "",
-    "series_id": "PLQqFhvWZLM82igWrU0fV_k63ywpkum763",
-    "series": "Daslakshan Dharma, Sep 2002"
-   },
    {
     "scripture": "Daslakshan Dharma",
     "reference": "",
@@ -31751,14 +31780,6 @@
   "date": "2002-09-12",
   "published": [
    {
-    "title": "Shri Samaysar, Gatha 12, part 2, 12 Sep 2002, Uttam Mardhav Dharma, Paryushan Parva",
-    "minutes": 60,
-    "views": 323,
-    "uploaded": "2020-07-05",
-    "scripture": "Daslakshan Dharma",
-    "text_source": "playlist"
-   },
-   {
     "title": "Uttam Mardhav Dharma, Samaysar Gatha 12, 12 Sep 2002",
     "minutes": 60,
     "views": 95,
@@ -31768,15 +31789,6 @@
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Daslakshan Dharma",
-    "reference": "Gatha 12",
-    "youtube_id": "ww1XS6WsKW4",
-    "location": "",
-    "text_source": "playlist",
-    "series_id": "PLQqFhvWZLM82igWrU0fV_k63ywpkum763",
-    "series": "Daslakshan Dharma, Sep 2002"
-   },
    {
     "scripture": "Daslakshan Dharma",
     "reference": "Gatha 12, 12",
@@ -31839,14 +31851,6 @@
   "date": "2002-09-14",
   "published": [
    {
-    "title": "Shri Samaysar, Gatha 12, part 4, 14 Sep 2002, Utttam Satya Dharma, Paryushan Parva",
-    "minutes": 50,
-    "views": 348,
-    "uploaded": "2020-07-05",
-    "scripture": "Daslakshan Dharma",
-    "text_source": "playlist"
-   },
-   {
     "title": "Uttam Satya Dharma, Shri Samaysar Gatha 12, Part 4, 14 Sep 2002",
     "minutes": 50,
     "views": 86,
@@ -31855,15 +31859,6 @@
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Daslakshan Dharma",
-    "reference": "Gatha 12",
-    "youtube_id": "vSzUpfpG08M",
-    "location": "",
-    "text_source": "playlist",
-    "series_id": "PLQqFhvWZLM82igWrU0fV_k63ywpkum763",
-    "series": "Daslakshan Dharma, Sep 2002"
-   },
    {
     "scripture": "Daslakshan Dharma",
     "reference": "Gatha 12",
@@ -31927,13 +31922,6 @@
     "views": 55,
     "uploaded": "",
     "scripture": "Daslakshan Dharma"
-   },
-   {
-    "title": "Samaysar Gatha 12, part 5, Uttam Sayam Dharma, 16 Sep 2002",
-    "minutes": 50,
-    "views": 111,
-    "uploaded": "",
-    "scripture": "Daslakshan Dharma"
    }
   ],
   "catalogued": [
@@ -31945,15 +31933,6 @@
     "source": "channel listing",
     "series_id": "PLQqFhvWZLM820NlFsB4lnRCQON5SCnglQ",
     "series": "Daslakshan Parva 2002"
-   },
-   {
-    "scripture": "Daslakshan Dharma",
-    "reference": "Gatha 12",
-    "youtube_id": "ZuV8tFvhnT4",
-    "location": "",
-    "text_source": "playlist",
-    "series_id": "PLQqFhvWZLM82igWrU0fV_k63ywpkum763",
-    "series": "Daslakshan Dharma, Sep 2002"
    }
   ],
   "processed": false,
@@ -31972,13 +31951,6 @@
   "date": "2002-09-17",
   "published": [
    {
-    "title": "Uttam Tapa Dharma, उत्तम तप धर्म, 17 Sep 2002",
-    "minutes": 61,
-    "views": 147,
-    "uploaded": "2017-08-26",
-    "scripture": "Daslakshan Dharma"
-   },
-   {
     "title": "Uttam Tap Dharma, Shri Samaysar Gatha 12, 17 Sep 2002 updated",
     "minutes": 61,
     "views": 70,
@@ -31987,14 +31959,6 @@
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Daslakshan Dharma",
-    "reference": "Gatha 12",
-    "youtube_id": "IwIwpQJbhYE",
-    "location": "",
-    "series_id": "PLQqFhvWZLM82igWrU0fV_k63ywpkum763",
-    "series": "Daslakshan Dharma, Sep 2002"
-   },
    {
     "scripture": "Daslakshan Dharma",
     "reference": "Gatha 12, 17",
@@ -32055,14 +32019,6 @@
   "date": "2002-09-19",
   "published": [
    {
-    "title": "Uttam Aakinchanya Dharma, उत्तम आकिंचन्य धर्म, 19 Sep 2002",
-    "minutes": 62,
-    "views": 152,
-    "uploaded": "2017-08-26",
-    "scripture": "Daslakshan Dharma",
-    "text_source": "playlist"
-   },
-   {
     "title": "Uttam Aakinchanya Dharma, Shri Samaysar Gatha 12, 19 Sep 2002",
     "minutes": 62,
     "views": 80,
@@ -32072,15 +32028,6 @@
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Daslakshan Dharma",
-    "reference": "Gatha 12",
-    "youtube_id": "FQpPTLBDPZM",
-    "location": "",
-    "text_source": "playlist",
-    "series_id": "PLQqFhvWZLM82igWrU0fV_k63ywpkum763",
-    "series": "Daslakshan Dharma, Sep 2002"
-   },
    {
     "scripture": "Daslakshan Dharma",
     "reference": "Gatha 12, 19",
@@ -32103,13 +32050,6 @@
     "views": 123,
     "uploaded": "",
     "scripture": "Daslakshan Dharma"
-   },
-   {
-    "title": "Uttam Bhramacharya, 20 Sep 2002",
-    "minutes": 59,
-    "views": 119,
-    "uploaded": "",
-    "scripture": "Daslakshan Dharma"
    }
   ],
   "catalogued": [
@@ -32121,15 +32061,6 @@
     "source": "channel listing",
     "series_id": "PLQqFhvWZLM820NlFsB4lnRCQON5SCnglQ",
     "series": "Daslakshan Parva 2002"
-   },
-   {
-    "scripture": "Daslakshan Dharma",
-    "reference": "4",
-    "youtube_id": "HBGqSgT1MHg",
-    "location": "",
-    "text_source": "playlist",
-    "series_id": "PLQqFhvWZLM82igWrU0fV_k63ywpkum763",
-    "series": "Daslakshan Dharma, Sep 2002"
    }
   ],
   "processed": false,
@@ -32456,27 +32387,40 @@
   "processed": false
  },
  {
-  "date": "?pub2024-07-20",
+  "date": "?undated",
   "published": [
    {
-    "title": "Shrimad Rajchandra Vachanamrut, Patrank 548, Part 1",
-    "minutes": 46,
-    "views": 156,
-    "uploaded": "2024-07-20",
-    "scripture": "Shrimad Rajchandra Vachanamrut"
+    "title": "Bhakti – Te guru mere man baso",
+    "minutes": 14,
+    "views": 854,
+    "uploaded": "",
+    "scripture": "Bhakti"
+   },
+   {
+    "title": "Te Guru Mere Man Baso । ते गुरु मेरे मन बसो",
+    "minutes": 12,
+    "views": 1800,
+    "uploaded": "",
+    "scripture": "Bhakti"
    }
   ],
   "catalogued": [
    {
-    "scripture": "Shrimad Rajchandra Vachanamrut",
-    "reference": "Patrank 548",
-    "youtube_id": "9RJh5Z7Ovnk",
+    "scripture": "Bhakti",
+    "reference": "",
+    "youtube_id": "QMYeEBAICBA",
     "location": "",
-    "source": "channel listing",
-    "series_id": "PLQqFhvWZLM83H2X0aECdN-bYS8QIpiTxA",
-    "series": "Shrimad Rajchandra Patrank 548"
+    "source": "channel listing"
+   },
+   {
+    "scripture": "Bhakti",
+    "reference": "",
+    "youtube_id": "zt9ptYQ0Rb8",
+    "location": "",
+    "source": "channel listing"
    }
   ],
-  "processed": false
+  "processed": false,
+  "audio": []
  }
 ]

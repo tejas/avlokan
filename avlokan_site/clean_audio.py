@@ -88,11 +88,16 @@ def lift_date(entry: dict) -> str:
     """
     if entry.get("date"):
         return ""
-    hit = re.match(r"\s*(\d{1,2})\s*-\s*([A-Za-z]{3})[a-z]*\s*-\s*(\d{4})\s*",
+    # A zero is allowed where a letter O belongs: #312 reads `13-0ct-1999`,
+    # and that one character kept the sitting out of the archive entirely.
+    # Scoped to the month of an otherwise date-shaped string, because the
+    # reverse reading is everywhere in this catalogue — `Bol 10`, `Patrank
+    # 108` — and a blanket substitution would rewrite the references.
+    hit = re.match(r"\s*(\d{1,2})\s*-\s*([A-Za-z0]{3})[a-z]*\s*-\s*(\d{4})\s*",
                    entry.get("subject") or "")
     if not hit:
         return ""
-    mon = MONTHS.get(hit.group(2).lower())
+    mon = MONTHS.get(hit.group(2).lower().replace("0", "o"))
     if not mon:
         return ""
     rest = (entry["subject"][hit.end():]).lstrip("iI|,. ")

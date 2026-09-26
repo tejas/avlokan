@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "avlokan",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "avlokan_site.editor", "--no-open"],
+      "port": 8799
+    }
+  ]
+}

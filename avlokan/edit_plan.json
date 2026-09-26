@@ -166,5 +166,37 @@
     "cuts": [],
     "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card. His 1:06;06 and 1:04:17;29 decoded straight, not yet measured against an export.",
     "occasion": "Given at Chinchani in March 2002, where he had travelled with other mumukshus on a dharma yatra. The five Patra 17 recordings are that yatra's sittings, which is why 29 March has both a day and a night sitting."
+  },
+  "18Apr2002 SRV103-1-09ab7ad786": {
+    "label": "Patrank 103 Part 1 — 18 Apr 2002",
+    "date": "2002-04-18",
+    "part": 1,
+    "title_card": null,
+    "crop_top": 0,
+    "start": 0.0,
+    "end": 3303.471,
+    "card_seconds": 12.646,
+    "cuts": [
+      [
+        1556.755,
+        1565.731
+      ]
+    ],
+    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card. His new card runs to 12;19 and the lifted segment is 26:09;13 to 26:18;12. No head or tail trim, so start and end are the tape itself: card 12.65 + tape 3303.47 - cut 8.98 = 3307.14s, and the export is 3349.24s, leaving 42.1s of stuti — the same tail as the Patra 17 parts.",
+    "note": "Two VCD segments, AVSEQ01 and AVSEQ02, joined before processing; the seam at 22:47 correlates at 1.000 with zero offset.",
+    "occasion": "Patrank 103 of Shrimad Rajchandra Vachanamrut, written from Bombay in Magh, Vikram 1946. He names the number himself at 50:52 — the opening's \"101\" is the engine mishearing it. Part 2 on 19 April carries the same letter on."
+  },
+  "19Apr2002 SRV103-2-9f29fb2892": {
+    "label": "Patrank 103 Part 2 — 19 Apr 2002",
+    "date": "2002-04-19",
+    "part": 2,
+    "title_card": null,
+    "crop_top": 0,
+    "start": 0.0,
+    "end": 3451.581,
+    "card_seconds": 12.646,
+    "cuts": [],
+    "timecodes": "Final Cut, 29.97 drop-frame, clip laid in at the end of the card. Same longer card as Part 1, running to 12;19, and a single truncation at 57:44;07 which trims 90.75s off the tail. No head trim and no lifted segments. The export is 3508.22s against a 3464.23s timeline, leaving 44.0s of stuti.",
+    "occasion": "Patrank 103 of Shrimad Rajchandra Vachanamrut continued from 18 April. This sitting takes up the seven points Krupaludev gives for one who must remain in the household — alpabhashi, alpahasi, alpaparichayi and the rest. He names the letter as 123 at the opening, which is the engine mishearing 103."
   }
 }

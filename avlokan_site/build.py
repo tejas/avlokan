@@ -137,8 +137,24 @@ def fold(text: str) -> str:
     return re.sub(r"(.)\1+", r"\1", key)
 
 
+# How he abbreviates the three texts he uploads most, expanded before the
+# tokens are taken. Only words longer than three letters count as tokens, so a
+# recording named `DDJ Bol 55` or `DDP 144` yields none at all — and a
+# transcript with no tokens cannot be told from the other sitting that day, so
+# `attach_jobs` refuses to place it. Four of the November 2000 transcripts went
+# missing that way, and every future Jineshwar or Prakash upload named like
+# this would have too.
+ABBREVIATIONS = {
+    "ddj": "Dravya Drashti Jineshwar",
+    "ddp": "Dravya Drushti Prakash",
+    "srv": "Shrimad Rajchandra Vachanamrut",
+}
+
+
 def scripture_tokens(name: str) -> set[str]:
-    return {fold(w) for w in re.findall(r"[A-Za-z]+", str(name))
+    words = re.findall(r"[A-Za-z]+", str(name))
+    words = [x for w in words for x in ABBREVIATIONS.get(w.lower(), w).split()]
+    return {fold(w) for w in words
             if len(w) > 3 and w.lower() not in STOPWORDS}
 
 
@@ -479,6 +495,63 @@ def redirect_page(to: str) -> str:
             f'</body>\n</html>\n')
 
 
+# Numbers in a name that are not a place in the text: the recording date, a
+# bare year, and the part or segment counter.
+NOT_A_REFERENCE = re.compile(
+    r"\b\d{1,2}\s*[a-z]{3,}\w*\.?,?\s*\d{4}\b"
+    r"|\b(?:19|20)\d{2}\b"
+    r"|\b(?:part|segment)\s*\d{1,2}\b",
+    re.I)
+
+
+def cited_numbers(text: str) -> set[str]:
+    """Which places in the text a name cites — 528, or 321 and 608 and 526."""
+    return set(re.findall(r"\d+", NOT_A_REFERENCE.sub(" ", str(text))))
+
+
+def sitting_numbers(s: dict[str, Any]) -> set[str]:
+    for text in (s.get("reference") or "", s["published"].get("title") or "",
+                 s["audio"].get("subject") or ""):
+        found = cited_numbers(text)
+        if found:
+            return found
+    return set()
+
+
+def by_reference(queued: list[dict[str, Any]],
+                 slots: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Put a day's transcripts in the order of the sittings they cite.
+
+    Two sittings of one text on one day cannot be told apart by the text's
+    name, so the caller's order decides — and that order is the label,
+    alphabetically. On 8 November 2000 he taught Patrank 321, 608 and 526 in
+    the morning and Patrank 528 after it; `Patrank 528…` sorts before
+    `Shrimad Rajchandra 321, 608, 526…`, so each page was given the other's
+    transcript. Both were wrong and neither said so.
+
+    The numbers each side names are what actually tell them apart. Returned
+    unchanged wherever they do not give a clear answer — including a tie, where
+    two sittings match one transcript equally well. A transcript on the wrong
+    discourse is the thing this whole path exists to avoid, so an unresolved
+    case is left to the order it had rather than guessed at.
+    """
+    want = [sitting_numbers(s) for s in slots]
+    have = [cited_numbers(j["label"]) for j in queued]
+    if not all(want) or not all(have):
+        return queued
+    taken: set[int] = set()
+    out: list[dict[str, Any]] = []
+    for w in want:
+        scores = [(len(w & have[i]), i) for i in range(len(queued))
+                  if i not in taken]
+        best = max(scores)[0] if scores else 0
+        if not best or sum(1 for n, _ in scores if n == best) > 1:
+            return queued
+        out.append(queued[next(i for n, i in scores if n == best)])
+        taken.add(next(i for n, i in scores if n == best))
+    return out
+
+
 def attach_jobs(all_sittings: list[dict[str, Any]],
                 jobs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Hang each transcript on the sitting it actually belongs to.
@@ -516,6 +589,12 @@ def attach_jobs(all_sittings: list[dict[str, Any]],
         slots = sorted((s for s in by_date[date] if s["scripture"] == scripture),
                        key=lambda s: s["part"])
         queued.sort(key=lambda j: (j["part"], j["label"]))
+        # Only where every transcript has a sitting to go to. With more
+        # transcripts than sittings the extra ones are about to be given
+        # invented pages below, and reordering against a shorter list of slots
+        # would drop one.
+        if len(queued) > 1 and len(queued) == len(slots):
+            queued = by_reference(queued, slots)
         # More recordings than the catalogues list. The recording is the
         # evidence that the sitting happened, so give it a page rather than
         # dropping the transcript — it just has no video to point at.
@@ -704,7 +783,25 @@ def named_part(pub: dict[str, Any]) -> int | None:
     return int(hit.group(1)) if hit else None
 
 
+def bhajan_name(title: str) -> str:
+    """What to call a devotional recording, without the section's own name.
+
+    The channel marks these `Bhakti – <name>` or `<name> – Bhakti`, and a
+    heading on a page inside the Bhakti section that repeats the word is
+    noise. The dash is sometimes followed by a non-breaking space, which is
+    why the separator is matched rather than assumed.
+    """
+    name = re.sub(r"^\s*bhakti\s*[-–—:]\s*", "", title or "", flags=re.I)
+    name = re.sub(r"\s*[-–—:]\s*bhakti\s*$", "", name, flags=re.I)
+    return name.strip() or (title or "").strip()
+
+
 def sitting_slug(s: dict[str, Any]) -> str:
+    # A recording with no date cannot be addressed by one, so it brings its
+    # own address — built from what it is called, which for a bhajan is the
+    # only thing that distinguishes it.
+    if s.get("slug"):
+        return s["slug"]
     base = slug(f'{s["date"]}-{s["scripture"]}')
     return base if s["part"] == 1 else f'{base}-{s["part"]}'
 
@@ -723,7 +820,7 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
             f'data-text="{e(scripture)}" data-when="{e(pretty_date(date))}" '
             f'data-ref="{e(reference)}" '
             f'data-minutes="{pub.get("minutes") or 0}">',
-            f'<h1>{e(scripture)}</h1>',
+            f'<h1>{e(s.get("heading") or scripture)}</h1>',
             '<p class="meta">']
     line = [pretty_date(date)]
     if s["of"] > 1:
@@ -734,7 +831,9 @@ def discourse_page(s: dict[str, Any], siblings: list[dict[str, Any]], depth: int
         line.append(e(location))
     if pub.get("minutes"):
         line.append(f'{pub["minutes"]} minutes')
-    bits.append(" &middot; ".join(line))
+    # An undated recording contributes nothing to the first slot, and joining
+    # an empty first piece would open the line with a stray separator.
+    bits.append(" &middot; ".join(p for p in line if p))
     bits.append("</p>")
 
     # Where this sitting sits in its run, and how to get to the next one. He
@@ -1090,7 +1189,10 @@ def series_name(s: dict[str, Any]) -> str:
 
 def sitting_row(s: dict[str, Any], name: str) -> str:
     pub = s["published"]
-    when = pretty_date(s["date"])
+    # The date is what a row is normally called. A bhajan has none, so it is
+    # called what it is — otherwise the link has no text at all and the row
+    # cannot be clicked or read out.
+    when = pretty_date(s["date"]) or e(s.get("heading") or "")
     if s["of"] > 1:
         when += f' <span class="muted">&middot; {s["part"]} of {s["of"]}</span>'
     part = f'{s["part_no"]}' if s["part_no"] is not None else ""
@@ -1170,7 +1272,8 @@ def text_page(name: str, group: list[dict[str, Any]]) -> str:
             + listing([sitting_row(x, name) for x in run]) + '</section>')
 
     if loose:
-        loose.sort(key=lambda x: (x["date"], x["part"]))
+        # Same ordering as the page loop: undated last, not before 1994.
+        loose.sort(key=lambda x: (not x["date"], x["date"], x["part"]))
         heading = ("Other sittings" if sections else "")
         sections.append(
             (f'<section class="run-block"><h2 id="other">{heading}'
@@ -1178,10 +1281,21 @@ def text_page(name: str, group: list[dict[str, Any]]) -> str:
              if heading else '<section class="run-block">')
             + listing([sitting_row(x, name) for x in loose]) + '</section>')
 
-    days = len({s["date"] for s in group})
+    # Undated recordings are counted apart rather than folded in. They all
+    # carry the same empty date, so counting days over the whole group would
+    # read the nine bhajans as one more day of teaching.
+    dated = [s for s in group if s["date"]]
+    days = len({s["date"] for s in dated})
     word = "sitting" if len(group) == 1 else "sittings"
-    count = (f"{len(group)} {word}" if days == len(group)
-             else f"{len(group)} {word} across {days} days")
+    if len(dated) == len(group):
+        count = (f"{len(group)} {word}" if days == len(group)
+                 else f"{len(group)} {word} across {days} days")
+    elif dated:
+        count = (f"{len(dated)} {'sitting' if len(dated) == 1 else 'sittings'} "
+                 f"on record, and {len(group) - len(dated)} recordings with no "
+                 f"date")
+    else:
+        count = f"{len(group)} recordings, none of them dated"
     if named:
         count += f", in {len(named)} runs"
     art = cover(name, depth=1)
@@ -3400,6 +3514,44 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
 
     build_series(all_sittings)
 
+    # The recordings that have no date and never will. The bhajans were sung
+    # at sittings the written list does not number, so they cannot be
+    # addressed by the day he taught like every other page here; each is
+    # addressed by its own name, and the Bhakti page lists it with no date
+    # rather than under the day it happened to be uploaded.
+    #
+    # Only the devotional recordings. The other undated rows are discourses
+    # whose day is not known *yet* — publishing those undated would settle a
+    # question that still has an answer somewhere in the written list.
+    #
+    # Collected after build_series so the run-and-next-sitting machinery never
+    # sees them: a bhajan is not part 3 of anything.
+    undated: list[dict[str, Any]] = []
+    for entry in master:
+        if re.match(r"\d{4}-\d{2}-\d{2}", entry.get("date", "")):
+            continue
+        for s in sittings(entry):
+            if s["scripture"] != "Bhakti":
+                continue
+            s["date"] = ""
+            s["heading"] = bhajan_name(s["published"].get("title") or "")
+            # Parked several to an entry, so `sittings` numbered them against
+            # each other. They are not a day's sittings and must not say so.
+            s["of"] = 1
+            undated.append(s)
+    # Three separate renditions of Te Guru Mere Man Baso are on the channel,
+    # 9, 11 and 13 minutes long, so a name is not unique. Where it repeats,
+    # the video ids break the tie: that order is stable, so an address does
+    # not move the next time the site is built.
+    sharing: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for s in undated:
+        sharing[slug(s["heading"])].append(s)
+    for base, alike in sharing.items():
+        alike.sort(key=lambda s: s["youtube_id"])
+        for n, s in enumerate(alike):
+            s["slug"] = base if n == 0 else f"{base}-{n + 1}"
+    all_sittings.extend(undated)
+
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for s in all_sittings:
         groups[s["scripture"]].append(s)
@@ -3409,7 +3561,9 @@ def build(out_dir: Path, outputs: Path) -> dict[str, int]:
 
     pages = 0
     for name, group in groups.items():
-        group.sort(key=lambda s: (s["date"], s["part"]))
+        # Undated last: an empty date would otherwise sort before 1994 and
+        # open the Bhakti page with the recordings that say the least.
+        group.sort(key=lambda s: (not s["date"], s["date"], s["part"]))
         for s in group:
             path = out_dir / "d" / f"{sitting_slug(s)}.html"
             path.write_text(discourse_page(s, day[s["date"]]), encoding="utf-8")
