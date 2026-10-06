@@ -141,6 +141,14 @@ RETIRED_FILE = ROOT / "avlokan" / "superseded_uploads.json"
 RETIRED: dict = json.loads(RETIRED_FILE.read_text(encoding="utf-8")) \
     if RETIRED_FILE.exists() else {}
 
+# Uploads that have left the channel. Read so that a withdrawal already
+# accounted for is reported quietly and a new one is reported loudly: the
+# difference between "these two are gone, as you decided" and "something
+# disappeared since the last run" is the whole value of noticing.
+WITHDRAWN_FILE = ROOT / "avlokan" / "withdrawn_uploads.json"
+WITHDRAWN: dict = json.loads(WITHDRAWN_FILE.read_text(encoding="utf-8")) \
+    if WITHDRAWN_FILE.exists() else {}
+
 # What `classify` calls the devotional singing.
 BHAKTI = "Bhakti"
 
@@ -1226,6 +1234,65 @@ def attach_id(entry: dict, i: int, row: dict[str, str]) -> int:
     return 1
 
 
+def withdraw(index: list[dict], channel: dict[str, str]) -> tuple[list[dict], list[dict]]:
+    """Deal with a video id the channel no longer has.
+
+    An upload can leave the channel: he takes one down when it was published in
+    error, or while it is being replaced. Nothing here looked for that.
+    `realign` clears an id only when the channel gives that id a *different*
+    date, so an id the channel has never heard of fell through every check —
+    the catalogue row kept it, the page quietly lost its video, and the only
+    trace in the report was a line saying the upload was "already listed under
+    a different id", which is not what had happened.
+
+    Two things can be true of a withdrawn id, and they want opposite answers.
+
+    Either the same sitting is back on the channel under a new id, in which
+    case that id belongs on the row. 19 January 2002 had been re-uploaded and
+    the archive went on publishing the sitting as *recorded, not published*
+    while a copy of it sat on the channel unused.
+
+    Or nothing on the channel names it, and then the id is cleared. Keeping it
+    leaves the page linking out to a video YouTube will not serve, and a page
+    that offers an hour of his teaching and delivers an error is worse than one
+    that admits it has no recording.
+
+    Replaced only where the answer is unambiguous: exactly one live upload
+    carries the sitting's title, and it is not already spoken for by another
+    row on the same day.
+    """
+    live_by_title: dict[str, list[str]] = defaultdict(list)
+    for vid, title in channel.items():
+        if title:
+            live_by_title[title_key(title)].append(vid)
+
+    recovered, cleared = [], []
+    for entry in index:
+        cats = entry.get("catalogued") or []
+        pubs = entry.get("published") or []
+        spoken_for = {c.get("youtube_id") for c in cats if c.get("youtube_id")}
+        for i, cat in enumerate(cats):
+            vid = cat.get("youtube_id") or ""
+            if not vid or vid in channel:
+                continue
+            title = (pubs[i].get("title") or "") if i < len(pubs) else ""
+            options = ([v for v in live_by_title.get(title_key(title), [])
+                        if v not in spoken_for] if title else [])
+            record = {"youtube_id": vid, "date": entry["date"], "title": title}
+            if len(options) == 1:
+                cat["youtube_id"] = options[0]
+                spoken_for.add(options[0])
+                recovered.append(dict(record, now=options[0]))
+            else:
+                cat["youtube_id"] = ""
+                cleared.append(dict(
+                    record,
+                    why=(WITHDRAWN.get(vid, {}).get("why")
+                         or "no longer on the channel, and nothing there carries its title"),
+                    known=vid in WITHDRAWN))
+    return recovered, cleared
+
+
 def retire(index: list[dict], pending: set[str]) -> list[dict]:
     """Drop an upload that a better one has replaced.
 
@@ -1526,6 +1593,10 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
     again, more_stale, more_misfiled = realign(list(by_date.values()), channel)
     misfiled.extend(more_misfiled)
     relocated = relocate(list(by_date.values()))
+    # After realign, which settles where each id the channel *does* know
+    # belongs, and before the passes that read ids off the rows: an id the
+    # channel has dropped should not reach them still looking usable.
+    recovered, withdrawn = withdraw(list(by_date.values()), channel)
     by_date = {e["date"]: e for e in by_date.values()}
     for entry in index:
         by_date.setdefault(entry["date"], entry)
@@ -1574,6 +1645,7 @@ def merge(rows: list[dict[str, str]], index: list[dict]) -> dict:
             "crossed": crossed, "resorted": resorted, "ambiguous": ambiguous,
             "repointed": repointed, "retired": retired, "orphans": orphans,
             "relengthed": relengthed,
+            "recovered": recovered, "withdrawn": withdrawn,
             "pending": [r for r in rows if r["id"] in pending]}
 
 
@@ -1662,6 +1734,23 @@ def main() -> None:
               f"of what they are; taken from the channel:")
         for date, vid, title in result["orphans"]:
             print(f"   {date}  {vid}  {title[:52]}")
+    if result["recovered"]:
+        print(f"{len(result['recovered'])} sitting(s) were pointing at an upload the "
+              f"channel no longer has, and it is back under a new id:")
+        for r in result["recovered"]:
+            print(f"   {r['date']}  {r['youtube_id']} -> {r['now']}  {r['title'][:44]}")
+    if result["withdrawn"]:
+        fresh = [r for r in result["withdrawn"] if not r["known"]]
+        known = len(result["withdrawn"]) - len(fresh)
+        if fresh:
+            print(f"{len(fresh)} upload(s) have LEFT the channel since the last run, "
+                  f"and nothing there carries the title. The sitting now says it has "
+                  f"no recording rather than linking to a video YouTube will not serve:")
+            for r in fresh:
+                print(f"   {r['date']}  {r['youtube_id']}  {r['title'][:50]}")
+        if known:
+            print(f"{known} upload(s) taken down on purpose, still gone "
+                  f"(see {WITHDRAWN_FILE.name})")
     if result["retired"]:
         print(f"{len(result['retired'])} older upload(s) removed from the archive, "
               f"replaced by a better one of the same sitting:")
@@ -1711,6 +1800,23 @@ def main() -> None:
             encoding="utf-8")
         print(f"{len(result['retired'])} upload(s) recorded in "
               f"{RETIRED_FILE.name} so they are not added back")
+    fresh = [r for r in result["withdrawn"] if not r["known"]]
+    if fresh:
+        # Recorded so the next run can tell a withdrawal already accounted for
+        # from one that happened since. An entry keeps whatever reason is
+        # written against it by hand; this only fills in one where there is
+        # none, and never overwrites.
+        keeping = dict(WITHDRAWN)
+        for r in fresh:
+            keeping.setdefault(r["youtube_id"], {
+                "date": r["date"], "title": r["title"],
+                "noticed": _date.today().isoformat(), "why": r["why"],
+            })
+        WITHDRAWN_FILE.write_text(
+            json.dumps(keeping, indent=1, ensure_ascii=False, sort_keys=True) + "\n",
+            encoding="utf-8")
+        print(f"{len(fresh)} withdrawal(s) recorded in {WITHDRAWN_FILE.name} — "
+              f"add the reason to each so a later reader knows it was deliberate")
     print(f"\nwritten. previous index kept at {backup.name}")
 
 

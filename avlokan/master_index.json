@@ -21625,8 +21625,52 @@
  },
  {
   "date": "2001-07-23",
-  "published": [],
-  "catalogued": [],
+  "published": [
+   {
+    "title": "Tatva Charcha, Part 3, 23 Jul 2001",
+    "minutes": 51,
+    "views": 123,
+    "uploaded": "",
+    "scripture": "Tatva Charcha"
+   },
+   {
+    "title": "Tatva Charcha, Part 2, 23 Jul 2001",
+    "minutes": 55,
+    "views": 172,
+    "uploaded": "",
+    "scripture": "Tatva Charcha"
+   },
+   {
+    "title": "Tatva Charcha 23 Jul 2001",
+    "minutes": 52,
+    "views": 257,
+    "uploaded": "",
+    "scripture": "Tatva Charcha"
+   }
+  ],
+  "catalogued": [
+   {
+    "scripture": "Tatva Charcha",
+    "reference": "",
+    "youtube_id": "6qI3kJFdnpE",
+    "location": "",
+    "source": "channel listing"
+   },
+   {
+    "scripture": "Tatva Charcha",
+    "reference": "",
+    "youtube_id": "7PuovOaMhFM",
+    "location": "",
+    "source": "channel listing"
+   },
+   {
+    "scripture": "Tatva Charcha",
+    "reference": "",
+    "youtube_id": "UGLqaBDBnJY",
+    "location": "",
+    "source": "channel listing"
+   }
+  ],
   "audio": [
    {
     "n": 851,
@@ -25306,7 +25350,7 @@
   "published": [
    {
     "title": "Kuch Kuch me Sab kuch, 19 Jan 2002, General Discussion",
-    "minutes": 33,
+    "minutes": 34,
     "views": 340,
     "uploaded": "2020-09-13",
     "scripture": "(other)"
@@ -25316,7 +25360,7 @@
    {
     "scripture": "Tatva Charcha",
     "reference": "",
-    "youtube_id": "1rYoiergCmM",
+    "youtube_id": "TFBlbasBazY",
     "location": "Bangalore"
    }
   ],
@@ -27821,29 +27865,14 @@
   "date": "2002-04-19",
   "published": [
    {
-    "title": "Srimad Rajchandra Vachanamrut, Patrank 103, Part 2, 19 Apr 2002",
-    "minutes": 59,
-    "views": 209,
-    "uploaded": "2020-06-15",
-    "scripture": "Shrimad Rajchandra Vachanamrut"
-   },
-   {
     "title": "Shrimad Rajchandra Vachanamrut, Patrank 103, Part 2, 19 Apr 2002",
-    "minutes": 0,
-    "views": 0,
+    "minutes": 58,
+    "views": 163,
     "uploaded": "",
-    "scripture": "Shrimad Rajchandra Vachanamrut",
-    "superseded_by": "IaS1U7dbZwM",
-    "superseded_reason": "not yet premiered"
+    "scripture": "Shrimad Rajchandra Vachanamrut"
    }
   ],
   "catalogued": [
-   {
-    "scripture": "Shrimad Rajchandra Vachanamrut",
-    "reference": "Patrank 103",
-    "youtube_id": "IaS1U7dbZwM",
-    "location": ""
-   },
    {
     "scripture": "Shrimad Rajchandra Vachanamrut",
     "reference": "Patrank 103",
@@ -30359,7 +30388,7 @@
    {
     "scripture": "Bhakti",
     "reference": "",
-    "youtube_id": "EqUune5KaN0",
+    "youtube_id": "",
     "location": ""
    }
   ],
@@ -31896,7 +31925,7 @@
    {
     "scripture": "Daslakshan Dharma",
     "reference": "",
-    "youtube_id": "aeTXg55J_qg",
+    "youtube_id": "",
     "location": ""
    }
   ],
