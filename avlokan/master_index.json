@@ -18511,8 +18511,24 @@
  },
  {
   "date": "2000-12-27",
-  "published": [],
-  "catalogued": [],
+  "published": [
+   {
+    "title": "Samaysar Sloka 164, Part 1, 27 Dec 2000",
+    "minutes": 43,
+    "views": 158,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
+  "catalogued": [
+   {
+    "scripture": "Shri Samaysar",
+    "reference": "Sloka 164",
+    "youtube_id": "eGAhTFjpohk",
+    "location": "",
+    "source": "channel listing"
+   }
+  ],
   "audio": [
    {
     "n": 655,
@@ -18543,8 +18559,24 @@
  },
  {
   "date": "2000-12-28",
-  "published": [],
-  "catalogued": [],
+  "published": [
+   {
+    "title": "Shri Samaysar, Sloka 164, Gatha 288, Bandh Adhikar, Part 2, 28 Dec 2000",
+    "minutes": 57,
+    "views": 142,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
+  "catalogued": [
+   {
+    "scripture": "Shri Samaysar",
+    "reference": "Sloka 164",
+    "youtube_id": "9Bk8aCg0--I",
+    "location": "",
+    "source": "channel listing"
+   }
+  ],
   "audio": [
    {
     "n": 658,
@@ -18575,8 +18607,24 @@
  },
  {
   "date": "2000-12-29",
-  "published": [],
-  "catalogued": [],
+  "published": [
+   {
+    "title": "Shri Samaysar Gathat 294, 29 Dec 2000",
+    "minutes": 54,
+    "views": 134,
+    "uploaded": "",
+    "scripture": "Shri Samaysar"
+   }
+  ],
+  "catalogued": [
+   {
+    "scripture": "Shri Samaysar",
+    "reference": "",
+    "youtube_id": "clNXXx9ZMqE",
+    "location": "",
+    "source": "channel listing"
+   }
+  ],
   "audio": [
    {
     "n": 661,
