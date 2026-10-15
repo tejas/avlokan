@@ -34,6 +34,12 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "avlokan"
 OUTPUTS_DEFAULT = ROOT / "outputs"
+# The two files of each job that the site is built from, kept in the repository.
+# They used to be tracked in place under outputs/<job>/, but outputs/ entries
+# are symlinks into ~/Pravachan Process now, and git cannot track a file
+# through a symlink: it saw every one of them as deleted. sync_transcripts
+# copies them here from the job folders before each build.
+TRANSCRIPTS = ROOT / "transcripts"
 WORK = ROOT / "work"
 
 SITE_TITLE = "Avlokan"
@@ -218,10 +224,10 @@ def job_index(outputs: Path) -> list[dict[str, Any]]:
             "part": part,
             "tokens": scripture_tokens(re.sub(r"\d+", " ", label)),
             "transcript": (out_dir / "corrected_mixed_script_transcript.txt"),
-            "vtt": (out_dir / "subtitles.vtt"),
+            "vtt": (TRANSCRIPTS / job_id / "subtitles.vtt"),
             "srt": (out_dir / "subtitles.srt"),
             "search_text": (out_dir / "romanized_search_text.txt"),
-            "passages": read_json(out_dir / "passage_matches.json", []),
+            "passages": read_json(TRANSCRIPTS / job_id / "passage_matches.json", []),
         })
     return jobs
 

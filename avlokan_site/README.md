@@ -208,9 +208,9 @@ No account, no server, no database. Nothing leaves the browser.
 | title, date, text, reference, location | `avlokan/master_index.json` |
 | YouTube id | the channel listing, merged into the master index |
 | cover image, photograph | `avlokan/images/`, copied from avlokan.org |
-| timed transcript | `outputs/<job>/subtitles.vtt` |
+| timed transcript | `transcripts/<job>/subtitles.vtt` (copied from `outputs/<job>/` by `sync_transcripts`) |
 | fallback plain transcript | `outputs/<job>/corrected_mixed_script_transcript.txt` |
-| restored recitations note | `outputs/<job>/passage_matches.json` |
+| restored recitations note | `transcripts/<job>/passage_matches.json` |
 
 A sitting with no transcript still gets a page — title, date, reference and the
 recording. Those pages are worth publishing: they are what makes the archive

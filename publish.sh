@@ -54,6 +54,7 @@ say "2. Folding it into the archive"
 python3 -m avlokan_site.merge_youtube "$LIST" $([ $dry -eq 1 ] && echo "" || echo "--write")
 
 say "3. Building the site"
+python3 -m avlokan_site.sync_transcripts
 python3 -m avlokan_site.build
 
 say "4. What changed"
